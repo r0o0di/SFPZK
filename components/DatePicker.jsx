@@ -11,26 +11,26 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 
-export function DatePicker({ date, onChange, label = "Select date" }) {
+export function DatePicker({ date, onChange }) {
   const [open, setOpen] = React.useState(false);
 
   return (
     <div className="flex flex-col gap-3">
       <Label htmlFor="date" className="px-1">
-        {label}
+        Dîrok
       </Label>
       <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
           <Button
             variant="outline"
             id="date"
-            className="w-48 justify-between font-normal"
+            className="w-30 cursor-pointer justify-between font-normal"
             type="button"
           >
             {date ? (() => {
               const [day, month, year] = date.split("-");
               return `${day}-${month}-${year}`;
-            })() : "Select date"}
+            })() : "- -  - - - - - -"}
 
             <ChevronDownIcon />
           </Button>

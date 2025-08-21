@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import {
   Select,
   SelectContent,
@@ -12,11 +12,12 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from '@/components/ui/button';
-import { Loader2Icon } from "lucide-react"
-import { toast } from "sonner"
+import { Loader2Icon } from "lucide-react";
+import { toast } from "sonner";
 
 
 export default function CourseForm() {
+  const [submitted, setSubmitted] = useState(false);
   const [form, setForm] = useState({
     name: "",
     surname: "",
@@ -26,7 +27,6 @@ export default function CourseForm() {
     option: "",
     note: "",
   });
-  const [submitted, setSubmitted] = useState(false);
 
   const handleChange = e => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -67,40 +67,39 @@ export default function CourseForm() {
 
   return (
     <form className='place-self-center' onSubmit={handleSubmit} style={{ maxWidth: 500, margin: '0 auto', padding: 20, boxShadow: "black 0px 0px 200px 2px", borderRadius: "2rem" }}>
-      <h2>Fêrbûna zimanê Kurdî</h2>
+      <h2 className='text-2xl'>Fêrbûna zimanê Kurdî</h2>
 
       <div className='flex mb-4 mt-2'>
-        <div className="grid w-full max-w-sm items-center gap-3 mr-2">
+        <div className="grid gap-2 mr-2">
           <Label htmlFor="name">Nav</Label>
           <Input type="text" id="name" name="name" placeholder="Sevîn" value={form.name} onChange={handleChange} required />
         </div>
-        <div className="grid w-full max-w-sm items-center gap-3">
-          <Label htmlFor="Surname">Paşnav</Label>
+        <div className="grid gap-2">
+          <Label htmlFor="surname">Paşnav</Label>
           <Input type="text" id="surname" name="surname" placeholder="Omer" value={form.surname} onChange={handleChange} required />
         </div>
-        <br /><br />
       </div>
 
-      <div className='flex mb-4 mt-2'>
-        <div className="grid w-full max-w-sm items-center gap-3 mr-2">
+      <div className='flex mb-2'>
+        <div className="grid gap-2 mr-2">
           <Label htmlFor="age">Temen</Label>
           <Input type="number" id="age" name="age" placeholder="22" value={form.age} onChange={handleChange} required />
         </div>
-        <div className="grid w-full max-w-sm items-center gap-3">
+        <div className="grid gap-2">
           <Label htmlFor="phone">Jimara Telefonê</Label>
           <Input type="tel" id="phone" name="phone" placeholder="+4912345678900" value={form.phone} onChange={handleChange} required />
         </div>
       </div>
 
-      <div className='flex mb-4 mt-2'>
-        <div className="grid w-full max-w-sm items-center gap-3 mr-2">
+      <div className='flex mb-4 items-end'>
+        <div className="grid w-full gap-2 mr-2">
           <Label htmlFor="email">E-Mail</Label>
           <Input type="email" id="email" name="email" placeholder="abc@gmail.com" value={form.email} onChange={handleChange} required />
         </div>
-        <div className='grid w-full max-w-sm items-center gap-3'>
-          <label className="text-sm font-medium select-none">Ast</label>
+        <div className='grid w-full gap-2'>
+          <label htmlFor='ast' className="text-sm font-medium select-none">Ast</label>
           <Select value={form.option} onValueChange={(val) => handleChange({ target: { name: "option", value: val } })}>
-            <SelectTrigger className="w-full cursor-pointer selection:bg-primary selection:text-primary-foreground">
+            <SelectTrigger id="ast" className="w-full cursor-pointer selection:bg-primary selection:text-primary-foreground">
               <SelectValue placeholder="Asta..." />
             </SelectTrigger>
             <SelectContent>
@@ -115,7 +114,7 @@ export default function CourseForm() {
         </div>
       </div>
 
-      <div className='grid w-full max-w-sm items-center gap-3'>
+      <div className='grid gap-2'>
         <Label htmlFor={"note"}>Têbîn / Peyam</Label>
         <Textarea
           id={"note"}
@@ -123,20 +122,19 @@ export default function CourseForm() {
           name={"note"}
           value={form.note}
           onChange={handleChange}
-          rows={4}
           placeholder={`Eger Têbînên yan jî Peyamên te hene, wan li vir binivîse...`}
         />
       </div>
 
       {!submitted ? (
         <Button
-          className="w-full mt-4 select-none cursor-pointer"
+          className="w-full mt-4 select-none cursor-pointer bg-green-500 hover:bg-green-600 text-white"
           type="submit"
         >
           Bişîne
         </Button>
       ) : (
-        <Button className="w-full mt-4 select-none" size="sm" type='submit' disabled>
+        <Button className="w-full mt-4 select-none bg-green-500 hover:bg-green-600 text-white" type='submit' disabled>
           <Loader2Icon className="animate-spin" />
           Tê şandin...
         </Button>

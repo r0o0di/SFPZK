@@ -47,7 +47,7 @@ export default function FormPage() {
       });
       // router.push('/');
       // router.refresh();
-      location.reload();
+      // location.reload();
     } catch (err) {
       console.error(err);
       if (err.code === 'permission-denied') {
@@ -58,20 +58,22 @@ export default function FormPage() {
 
 
   return (
-    <div style={{ padding: 20 }}>
+    <div>
       {!user ? (
         <div>
-          <p>Please log in to add an entry.</p>
+          <p>Please log in to add a post.</p>
           <button onClick={handleLogin}>Login with Google</button>
         </div>
       ) : (
-        <div>
-          <p>Logged in as {user.displayName} ({user.email})</p>
+        <>
+          <p>{user.displayName} ({user.email})</p>
           <button onClick={handleLogout}>Logout</button>
-          <h2>Add Entry</h2>
-          <EntryForm onSubmit={handleFormSubmit} buttonText="Save Entry" />
+        <div style={{ height: "90vh", alignContent: "center" }}>
+          <EntryForm onSubmit={handleFormSubmit} buttonText="Save Post" />
         </div>
+        </>
       )}
+      
     </div>
   );
 }

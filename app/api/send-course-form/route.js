@@ -14,15 +14,15 @@ export async function POST(req) {
   await transporter.sendMail({
     from: email,
     to: 'rodikhello2000@gmail.com',
-    subject: 'New Course Form Submission',
+    subject: 'Fêrbûn',
     text: `
-      Name: ${name}
-      Surname: ${surname}
-      Age: ${age}
-      Email: ${email}
-      Phone: ${phone}
+      Nav: ${name}
+      Paşnav: ${surname}
+      Temen: ${age}
+      Jimara Telefonê: ${phone}
+      E-Mail: ${email}
       Asta: ${option}
-      Note: ${note}
+      Têbîn / Peyam: ${note}
     `,
   });
 

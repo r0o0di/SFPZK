@@ -10,6 +10,8 @@ export default function DisplayEntries() {
   const [user, setUser] = useState(null);
   const [editingId, setEditingId] = useState(null);
   const [editData, setEditData] = useState({ date: '', title: '', content: '', media: [] });
+  const [activeId, setActiveId] = useState(null);
+
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged(setUser);
@@ -157,8 +159,14 @@ export default function DisplayEntries() {
             <>
               {isAdmin && (
                 <>
-                  <button onClick={() => startEdit(entry)}>Edit</button>
-                  <button onClick={() => handleDelete(entry.id)}>Delete</button>
+                  {/* Delete */}
+                  <button className='cursor-pointer' onClick={() => handleDelete(entry.id)}>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="inline lucide lucide-trash2-icon lucide-trash-2"><path d="M10 11v6" /><path d="M14 11v6" /><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6" /><path d="M3 6h18" /><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" /></svg> Delete
+                  </button> ||
+                  {/* Edit */}
+                  <button className='cursor-pointer' onClick={() => startEdit(entry)}>
+                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="ml-1 inline lucide lucide-pencil-icon lucide-pencil"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z" /><path d="m15 5 4 4" /></svg> Edit
+                  </button> 
                 </>
               )}
               <h3>{entry.title}</h3>
