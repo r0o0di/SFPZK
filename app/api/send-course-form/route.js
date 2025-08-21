@@ -7,7 +7,7 @@ export async function POST(req) {
     service: 'gmail',
     auth: {
       user: 'rodikhello2000@gmail.com',
-      pass: 'xtng ezoc xooq xkbk', // Use App Password, not your main password
+      pass: process.env.EMAIL_PASS, // Use App Password, not main password
     },
   });
 

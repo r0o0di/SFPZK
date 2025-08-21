@@ -5,6 +5,7 @@
 
 import React from 'react';
 import { notFound } from 'next/navigation';
+import Link from 'next/link';
 import DisplayEntries from '@/components/DisplayEntries';
 import SearchEntries from '@/components/SearchEntries';
 import CourseForm from '@/components/CourseForm';
@@ -19,7 +20,7 @@ export default function customPage({ params }) {
         <SearchEntries />
         <div style={{ padding: 20, paddingTop: 60 }}>
           <h1>All Entries</h1>
-          <a href="/new-entry">Add New</a>
+          <Link href="/new-entry">Add New</Link>
           <br /><br />
           <DisplayEntries />
         </div>
