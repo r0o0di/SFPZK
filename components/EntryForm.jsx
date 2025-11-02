@@ -74,7 +74,7 @@ export default function EntryForm({
 
 
   return (
-    <form className='min-w-fit max-w-[700px] w-[50vw] place-self-center' onSubmit={handleSubmit} style={{ margin: '0', padding: 20, boxShadow: "white 0px 0px 200px 2px", borderRadius: "2rem" }}>
+    <form className='min-w-fit max-w-[700px] w-[50vw] place-self-center border' onSubmit={handleSubmit} style={{ margin: '0', padding: 20, boxShadow: "white 0px 0px 200px 2px", borderRadius: "2rem" }}>
       {onCancel && (
         <div className='place-self-end mb-[-32px]'>
           <Button onClick={onCancel} className=" rounded-sm select-none cursor-pointer text-white bg-transparent hover:bg-transparent w-12 h-12" type="button">
