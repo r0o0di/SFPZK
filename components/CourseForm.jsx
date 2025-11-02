@@ -66,6 +66,7 @@ export default function CourseForm() {
   };
 
   return (
+    <div style={{ height: "100vh", alignContent: "center" }}>
     <form className='place-self-center' onSubmit={handleSubmit} style={{ maxWidth: 500, margin: '0 auto', padding: 20, boxShadow: "black 0px 0px 200px 2px", borderRadius: "2rem" }}>
       <h2 className='text-2xl'>Fêrbûna zimanê Kurdî</h2>
 
@@ -128,17 +129,18 @@ export default function CourseForm() {
 
       {!submitted ? (
         <Button
-          className="w-full mt-4 select-none cursor-pointer bg-green-500 hover:bg-green-600 text-white"
+          className="w-full mt-4 select-none cursor-pointer bg-green-500 hover:bg-green-600 text-secondary"
           type="submit"
         >
           Bişîne
         </Button>
       ) : (
-        <Button className="w-full mt-4 select-none bg-green-500 hover:bg-green-600 text-white" type='submit' disabled>
+        <Button className="w-full mt-4 select-none bg-green-500 hover:bg-green-600 text-secondary" type='submit' disabled>
           <Loader2Icon className="animate-spin" />
           Tê şandin...
         </Button>
       )}
     </form>
+    </div>
   );
 }

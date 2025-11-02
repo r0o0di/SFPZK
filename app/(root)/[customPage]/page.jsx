@@ -30,9 +30,7 @@ export default function customPage({ params }) {
 
   if (param === 'fêrbûn') {
     return (
-      <div style={{ height: "100vh", alignContent: "center" }}>
-        <CourseForm />
-      </div>
+      <CourseForm />
     );
   }
 

@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
 import { Toaster } from "@/components/ui/sonner"
 import { SpeedInsights } from '@vercel/speed-insights/next';
 
@@ -20,16 +22,19 @@ export const metadata: Metadata = {
 };
 
 export default function RootLayout({
-  children,
+  children, theme
 }: Readonly<{
   children: React.ReactNode;
+  theme?: 'dark' | 'light';
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" className={theme === 'dark' ? 'dark' : ''}>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased dark bg-gray-900`}
       >
+        <Navbar />
         {children}
+        <Footer />
         <Toaster /> {/* Sonner toast notifications, used in /fêrbûn and /new-entry */}
         <SpeedInsights /> {/* Vercel Speed Insights for performance monitoring */}
       </body>

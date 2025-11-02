@@ -42,7 +42,7 @@ export default function SearchEntries() {
   };
 
   return (
-    <div style={{ position: 'fixed', width: '100%', padding: 8 }}>
+    <div style={{ position: 'fixed', width: '100%', padding: 8, zIndex: 99 }}>
       <input
         type="text"
         placeholder="Search by date (Roj-Meh-Sal) or title..."

@@ -58,7 +58,7 @@ export default function FormPage() {
 
 
   return (
-    <div>
+    <div className='mt-20'>
       {!user ? (
         <div>
           <p>Please log in to add a post.</p>
