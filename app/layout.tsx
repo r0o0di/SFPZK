@@ -22,13 +22,12 @@ export const metadata: Metadata = {
 };
 
 export default function RootLayout({
-  children, theme
+  children
 }: Readonly<{
   children: React.ReactNode;
-  theme?: 'dark' | 'light';
 }>) {
   return (
-    <html lang="en" className={theme === 'dark' ? 'dark' : ''}>
+    <html lang="en">
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased dark bg-gray-900`}
       >
