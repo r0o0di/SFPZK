@@ -17,11 +17,8 @@ export default function customPage({ params }) {
   if (param === 'çalakî') {
     return (
       <>
-        <SearchEntries />
+        {/* <SearchEntries /> */}
         <div style={{ padding: 20, paddingTop: 60 }}>
-          <h1>All Entries</h1>
-          <Link href="/new-entry">Add New</Link>
-          <br /><br />
           <DisplayEntries />
         </div>
       </>

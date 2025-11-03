@@ -205,11 +205,6 @@ import {
   Timestamp
 } from 'firebase/firestore';
 
-/**
- * Hinweise zur Tailwind-Konfiguration (falls noch nicht gesetzt):
- * - tailwind.config.js: module.exports = { darkMode: 'class', ... }
- * - In layout.tsx: setze <html className={theme}> oder <body className={theme}> mit 'dark' für dark mode.
- */
 
 export default function DisplayEntries() {
   const [entries, setEntries] = useState([]);
@@ -294,11 +289,13 @@ export default function DisplayEntries() {
       const match = link.match(/imgur\.com\/(?:gallery\/|a\/)?([A-Za-z0-9]+)/);
       if (!match) return null;
       return (
+        // <div className="w-full h-full">
         <img
           src={`https://i.imgur.com/${match[1]}.jpg`}
           alt="Imgur"
-          className={`w-full max-w-md rounded-lg pointer-events-${pointerEvents}`}
+          className={`w-full rounded-lg pointer-events-${pointerEvents}`}
         />
+        // </div>
       );
     }
 
@@ -504,7 +501,7 @@ export default function DisplayEntries() {
   return (
     <div className="min-h-screen py-10 bg-gray-900 transition-colors">
       <div className="max-w-4xl mx-auto">
-        <h1 className="text-3xl font-semibold text-center mb-8 text-green-300">Beiträge</h1>
+        <h1 className="text-3xl font-semibold text-center mb-8 text-green-300">Çalakî</h1>
 
         {entries.length === 0 && (
           <p className="text-center text-gray-400">Ein Moment warten...</p>

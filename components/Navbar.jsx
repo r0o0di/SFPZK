@@ -7,7 +7,7 @@ export default function Navbar() {
                 {/* links: logo */}
                 <div className="flex items-center gap-2">
                     <Link href="/" className="font-semibold text-lg">
-                    <img src="/vercel.svg" alt="" width={40}/>
+                    <img src="/logo.jpg" alt="" width={40}/>
                         {/* SFPZK */}
                     </Link>
                 </div>
@@ -36,7 +36,7 @@ export default function Navbar() {
                         href="/new-entry"
                         className="hover:text-green-300 transition-colors"
                     >
-                        Neuer Eintrag
+                        Nû
                     </Link>
                 </nav>
             </div>

@@ -177,45 +177,56 @@ export default function HomePage() {
         </section>
 
         {/* PIRTÛK Û FÊRNAMÊ */}
-        <section>
-          <h3 className="text-3xl font-semibold text-red-300 mb-4">
-            Pirtûk û Fêrnamê
-          </h3>
-          <div className="grid md:grid-cols-3 gap-8 mt-8">
-            {[
-              {
-                title: 'Zimanê Kurdî Fêr Dibim',
-                desc: 'M. Merwan Berekat (çapkirî & PDF)',
-              },
-              {
-                title: 'Rêzimana Kurdî',
-                desc: 'Endez. Memê Alan, Dr. Mihemed Ebdo Elî, Kamîran Bêkes (niha nayê bikaranîn)',
-              },
-              {
-                title: 'Nasîna Zimanê Kurdî',
-                desc: 'Dr. Mihemed Ebdo Elî (çapkirî & PDF)',
-              },
-              {
-                title: 'Ji Bingehên Rêzimana Kurdî',
-                desc: 'Dr. Mihemed Ebdo Elî (çapkirî & PDF)',
-              },
-              {
-                title: 'Bingehên Fêrkirina Rêzimana Zimanê Kurdî, ji bo Qonaxa 1em',
-                desc: 'M. Dilovanê Deştê',
-              },
-            ].map((item, i) => (
-              <div
-                key={i}
-                className="text-center bg-gray-800 border border-gray-700 rounded-xl p-6 shadow-md hover:shadow-lg hover:scale-[1.02] transition-all"
-              >
-                <h4 className="text-xl font-semibold text-gray-100 mb-2">
-                  {item.title}
-                </h4>
-                <p className="text-gray-400">{item.desc}</p>
-              </div>
-            ))}
+<section className="overflow-hidden">
+  <h3 className="text-3xl font-semibold text-red-300 mb-8">
+    Pirtûk û Fêrnamê
+  </h3>
+
+  <div className="relative w-full overflow-hidden">
+    <div className="flex animate-scroll-smooth gap-6">
+      {[
+        {
+          title: 'Zimanê Kurdî Fêr Dibim',
+          desc: 'M. Merwan Berekat (çapkirî & PDF)',
+        },
+        {
+          title: 'Rêzimana Kurdî',
+          desc: 'Endez. Memê Alan, Dr. Mihemed Ebdo Elî, Kamîran Bêkes (niha nayê bikaranîn)',
+        },
+        {
+          title: 'Nasîna Zimanê Kurdî',
+          desc: 'Dr. Mihemed Ebdo Elî (çapkirî & PDF)',
+        },
+        {
+          title: 'Ji Bingehên Rêzimana Kurdî',
+          desc: 'Dr. Mihemed Ebdo Elî (çapkirî & PDF)',
+        },
+        {
+          title: 'Bingehên Fêrkirina Rêzimana Zimanê Kurdî, ji bo Qonaxa 1em',
+          desc: 'M. Dilovanê Deştê',
+        },
+      ].flatMap((item, i, arr) => [item, ...arr]) // duplicate for smooth loop
+        .map((item, i) => (
+          <div
+            key={i}
+            className="flex-shrink-0 min-w-[18rem] max-w-[20rem] bg-gray-800 border border-gray-700 rounded-xl p-6 text-center shadow-md hover:shadow-lg hover:scale-[1.02] transition-all"
+          >
+            <h4 className="text-xl font-semibold text-gray-100 mb-2 break-words">
+              {item.title}
+            </h4>
+            <p className="text-gray-400 text-sm whitespace-pre-wrap break-words leading-relaxed">
+              {item.desc}
+            </p>
           </div>
-        </section>
+        ))}
+    </div>
+
+    {/* fade on edges */}
+    <div className="pointer-events-none absolute top-0 left-0 w-24 h-full bg-gradient-to-r from-gray-900 to-transparent"></div>
+    <div className="pointer-events-none absolute top-0 right-0 w-24 h-full bg-gradient-to-l from-gray-900 to-transparent"></div>
+  </div>
+</section>
+
 
         {/* ARMANCÊN ME */}
         <section>

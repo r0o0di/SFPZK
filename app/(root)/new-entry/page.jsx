@@ -69,7 +69,7 @@ export default function FormPage() {
           <p>{user.displayName} ({user.email})</p>
           <button onClick={handleLogout}>Logout</button>
         <div style={{ height: "90vh", alignContent: "center" }}>
-          <EntryForm onSubmit={handleFormSubmit} buttonText="Save Post" />
+          <EntryForm onSubmit={handleFormSubmit} buttonText="Biweşîne" />
         </div>
         </>
       )}

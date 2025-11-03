@@ -134,3 +134,25 @@
 width: 30px;
 height: 30px;
 }
+
+
+
+
+@keyframes scroll-smooth {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-scroll-smooth {
+  display: flex;
+  width: max-content;
+  animation: scroll-smooth 60s linear infinite;
+}
+
+.animate-scroll-smooth:hover {
+  animation-play-state: paused;
+}
