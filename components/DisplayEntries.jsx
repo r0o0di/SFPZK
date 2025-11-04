@@ -501,7 +501,7 @@ export default function DisplayEntries() {
   return (
     <div className="min-h-screen py-10 bg-gray-900 transition-colors">
       <div className="max-w-4xl mx-auto">
-        <h1 className="text-3xl font-semibold text-center mb-8 text-green-300">Çalakî</h1>
+        <h1 className="text-3xl font-semibold text-center mb-8 text-yellow-200">Çalakî</h1>
 
         {entries.length === 0 && (
           <p className="text-center text-gray-400">Ein Moment warten...</p>
