@@ -6,6 +6,7 @@ import Footer from "@/components/Footer";
 import { Toaster } from "@/components/ui/sonner"
 import { SpeedInsights } from '@vercel/speed-insights/next';
 
+
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],

@@ -1,193 +1,9 @@
-// 'use client';
-
-// import EntryForm from '@/components/EntryForm';
-// import { useEffect, useState } from 'react';
-// import { db, auth } from '@/lib/firebase';
-// import { collection, getDocs, orderBy, query, deleteDoc, doc, setDoc, Timestamp } from 'firebase/firestore';
-
-// export default function DisplayEntries() {
-//   const [entries, setEntries] = useState([]);
-//   const [user, setUser] = useState(null);
-//   const [editingId, setEditingId] = useState(null);
-//   const [editData, setEditData] = useState({ date: '', title: '', content: '', media: [] });
-//   const [activeId, setActiveId] = useState(null);
-
-
-//   useEffect(() => {
-//     const unsubscribe = auth.onAuthStateChanged(setUser);
-//     return () => unsubscribe();
-//   }, []);
-
-//   async function fetchEntries() {
-//     const ref = collection(db, 'entries');
-//     const q = query(ref, orderBy('date', 'desc'));
-//     const snap = await getDocs(q);
-//     setEntries(snap.docs.map(d => ({ id: d.id, ...d.data() })));
-//   }
-
-//   useEffect(() => {
-//     fetchEntries();
-//   }, []);
-
-//   function renderMedia(link) {
-//     if (/youtube\.com\/watch\?v=|youtu\.be\//.test(link)) {
-//       // Extract video ID
-//       let videoId = '';
-//       const ytMatch = link.match(/(?:v=|youtu\.be\/)([A-Za-z0-9_-]{11})/);
-//       if (ytMatch) videoId = ytMatch[1];
-//       if (videoId) {
-//         return (
-//           <iframe
-//             width="560"
-//             height="315"
-//             src={`https://www.youtube.com/embed/${videoId}`}
-//             title="YouTube video player"
-//             frameBorder="0"
-//             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-//             referrerPolicy="strict-origin-when-cross-origin"
-//             allowFullScreen
-//             style={{ marginBottom: 10 }}
-//           />
-//         );
-//       }
-//     }
-//     if (/facebook\.com/.test(link)) {
-//       const encoded = encodeURIComponent(link);
-//       return (
-//         <iframe
-//           src={`https://www.facebook.com/plugins/post.php?href=${encoded}&show_text=true&width=500`}
-//           width="500"
-//           height="673"
-//           style={{ border: "none", overflow: "hidden", marginBottom: 10 }}
-//           scrolling="no"
-//           frameBorder="0"
-//           allowFullScreen={true}
-//           allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
-//         />
-//       );
-//     }
-//     if (/imgur\.com/.test(link)) {
-//       // Extract image ID
-//       const imgMatch = link.match(/imgur\.com\/(?:gallery\/|a\/)?([A-Za-z0-9]+)/);
-//       if (imgMatch) {
-//         return (
-//           <img
-//             src={`https://i.imgur.com/${imgMatch[1]}.jpg`}
-//             alt="Imgur"
-//             style={{ wdth: 350, marginBottom: 10 }}
-//           />
-//         );
-//       }
-//     }
-//     return null;
-//   }
-//   const adminList = ['rodikhello2000@gmail.com', 'rodykhello@gmail.com', "sfpzk.s@gmail.com"];
-//   const isAdmin = adminList.includes(user?.email);
-
-//   const handleDelete = async (id) => {
-//     if (!isAdmin) return;
-//     const confirmed = window.confirm('هل أنت متأكد أنك تريد حذف هذه المنشور؟');
-//     if (!confirmed) return;
-//     await deleteDoc(doc(db, 'entries', id));
-//     setEntries(entries.filter(e => e.id !== id));
-//   };
-
-//   const startEdit = (entry) => {
-//     setEditingId(entry.id);
-//     setEditData({ date: entry.date, title: entry.title, content: entry.content, media: entry.media || [] });
-//   };
-
-//   const handleEditSubmit = async (date, title, content, media) => {
-//     if (!isAdmin || !editingId) return;
-//     const newId = `${date}-${title}`;
-
-//     // Get previous history if exists
-//     let prevHistory = [];
-//     const oldDocRef = doc(db, 'entries', editingId);
-//     const oldDocSnap = await getDocs(query(collection(db, 'entries'), orderBy('date', 'desc')));
-//     const oldDoc = oldDocSnap.docs.find(d => d.id === editingId);
-//     if (oldDoc && oldDoc.data().history) {
-//       prevHistory = oldDoc.data().history;
-//     }
-
-//     // Add new history entry
-//     const newHistory = [
-//       ...prevHistory,
-//       {
-//         editedAt: Timestamp.now(),
-//         editor: user.email,
-//       },
-//     ];
-
-//     await setDoc(doc(db, 'entries', newId), {
-//       date,
-//       title,
-//       content,
-//       media,
-//       createdAt: Timestamp.now(),
-//       author: {
-//         name: user.displayName,
-//         email: user.email,
-//       },
-//       history: newHistory,
-//     });
-
-//     if (newId !== editingId) {
-//       await deleteDoc(doc(db, 'entries', editingId));
-//     }
-
-//     setEditingId(null);
-//     setEditData({ date: '', title: '', content: '', media: [] });
-//     fetchEntries();
-//   };
-
-//   return (
-//     <div>
-//       {entries.map(entry => (
-//         <section key={entry.id} id={entry.id} style={{ marginBottom: 20 }}>
-//           {editingId === entry.id ? (
-//             <EntryForm
-//               initialDate={editData.date}
-//               initialTitle={editData.title}
-//               initialContent={editData.content}
-//               initialMedia={editData.media}
-//               onSubmit={handleEditSubmit}
-//               buttonText="Save"
-//               onCancel={() => setEditingId(null)}
-//             />
-//           ) : (
-//             <>
-//               {isAdmin && (
-//                 <>
-//                   {/* Delete */}
-//                   <button className='cursor-pointer' onClick={() => handleDelete(entry.id)}>
-//                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="inline lucide lucide-trash2-icon lucide-trash-2"><path d="M10 11v6" /><path d="M14 11v6" /><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6" /><path d="M3 6h18" /><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" /></svg> Delete
-//                   </button> ||
-//                   {/* Edit */}
-//                   <button className='cursor-pointer' onClick={() => startEdit(entry)}>
-//                      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="ml-1 inline lucide lucide-pencil-icon lucide-pencil"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z" /><path d="m15 5 4 4" /></svg> Edit
-//                   </button> 
-//                 </>
-//               )}
-//               <h3>{entry.title}</h3>
-//               <small>{entry.date}</small>
-//               <p>{entry.content}</p>
-//               {entry.media && entry.media.map((link, idx) => (
-//                 <div key={idx}>{renderMedia(link)}</div>
-//               ))}
-//             </>
-//           )}
-//         </section>
-//       ))}
-//     </div>
-//   );
-// }
-
-
 'use client';
 
 import EntryForm from '@/components/EntryForm';
+import Share from "@/components/Share";
 import { useEffect, useRef, useState } from 'react';
+import { SquarePen, Trash2 } from "lucide-react"
 import {
   Dialog,
   DialogContent,
@@ -238,6 +54,10 @@ export default function DisplayEntries() {
       // if activeMenu is null no need to check
       if (!activeMenu) return;
       const ref = menusRef.current[activeMenu];
+      const shareDialog = document.getElementById('share');
+      if (shareDialog && shareDialog.contains(e.target)) {
+        return; // don't close when clicking inside share dialog
+      }
       if (ref && !ref.contains(e.target)) {
         setActiveMenu(null);
       }
@@ -301,119 +121,6 @@ export default function DisplayEntries() {
 
     return null;
   }
-
-  function GalleryGroup({ media, renderMedia }) {
-    const [isDialogOpen, setIsDialogOpen] = useState(false);
-    const [currentIndex, setCurrentIndex] = useState(0);
-    const [currentGroup, setCurrentGroup] = useState([]);
-
-    // handle keyboard navigation
-    useEffect(() => {
-      function handleKey(e) {
-        if (!isDialogOpen) return;
-        if (e.key === 'ArrowRight') {
-          setCurrentIndex((prev) => (prev + 1) % currentGroup.length);
-        } else if (e.key === 'ArrowLeft') {
-          setCurrentIndex((prev) => (prev - 1 + currentGroup.length) % currentGroup.length);
-        }
-      }
-      document.addEventListener('keydown', handleKey);
-      return () => document.removeEventListener('keydown', handleKey);
-    }, [isDialogOpen, currentGroup]);
-
-    return (
-      <>
-        {Array.from({ length: Math.ceil(media.length / 10) }, (_, groupIdx) => {
-          const group = media.slice(groupIdx * 10, groupIdx * 10 + 10);
-          const count = group.length;
-
-          // Discord-style layout
-          let gridTemplate;
-          switch (count) {
-            case 1: gridTemplate = 'grid-cols-1 grid-rows-1'; break;
-            case 2: gridTemplate = 'grid-cols-2 grid-rows-1'; break;
-            case 3: gridTemplate = 'grid-cols-2 grid-rows-2'; break;
-            case 4: gridTemplate = 'grid-cols-2 grid-rows-2'; break;
-            case 5: gridTemplate = 'grid-cols-3 grid-rows-2'; break;
-            case 6: gridTemplate = 'grid-cols-3 grid-rows-2'; break;
-            case 7: gridTemplate = 'grid-cols-4 grid-rows-2'; break;
-            case 8: gridTemplate = 'grid-cols-4 grid-rows-2'; break;
-            case 9: gridTemplate = 'grid-cols-3 grid-rows-3'; break;
-            case 10:
-            default:
-              gridTemplate = 'grid-cols-4 grid-rows-3';
-              break;
-          }
-
-          return (
-            <div
-              key={groupIdx}
-              className={`grid ${gridTemplate} gap-1 my-2 rounded-lg overflow-hidden`}
-              style={{ aspectRatio: '16 / 9' }}
-            >
-              {group.map((link, idx) => (
-                <div
-                  key={idx}
-                  className="relative w-full h-full bg-gray-700 overflow-hidden cursor-pointer hover:opacity-90 transition"
-                  onClick={() => {
-                    setCurrentGroup(group);
-                    setCurrentIndex(idx);
-                    setIsDialogOpen(true);
-                  }}
-                >
-                  <div className="w-full h-full">
-                    <div className="w-full h-full overflow-hidden">
-                      <div className="w-full h-full">
-                        {renderMedia(link)}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          );
-        })}
-
-        {/* GALLERY DIALOG / POPUP */}
-        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-          <DialogContent className="bg-transparent border-none">
-            <DialogTitle className="sr-only">Media Gallery</DialogTitle>
-            <div className="relative w-full h-full flex items-center justify-center">
-              {/* Media */}
-              <div className="w-full h-full max-h-[90vh] max-w-[90vw] overflow-hidden rounded-lg shadow-lg">
-                {currentGroup.length > 0 && renderMedia(currentGroup[currentIndex], 'auto')}
-              </div>
-
-              {/* Left arrow */}
-              {currentGroup.length > 1 && (
-                <button
-                  onClick={() =>
-                    setCurrentIndex((prev) => (prev - 1 + currentGroup.length) % currentGroup.length)
-                  }
-                  className="bg-gray-700 text-[2rem] absolute left-[-1.75rem] text-white/80 hover:text-white p-2 bg-black/40 rounded-full cursor-pointer"
-                >
-                  ‹
-                </button>
-              )}
-
-              {/* Right arrow */}
-              {currentGroup.length > 1 && (
-                <button
-                  onClick={() =>
-                    setCurrentIndex((prev) => (prev + 1) % currentGroup.length)
-                  }
-                  className="bg-gray-700 text-[2rem] absolute right-[-1.75rem] text-white/80 hover:text-white p-2 bg-black/40 rounded-full cursor-pointer"
-                >
-                  ›
-                </button>
-              )}
-            </div>
-          </DialogContent>
-        </Dialog>
-      </>
-    );
-  }
-
 
   const adminList = ['rodikhello2000@gmail.com', 'rodykhello@gmail.com', 'sfpzk.s@gmail.com'];
   const isAdmin = adminList.includes(user?.email);
@@ -498,6 +205,119 @@ export default function DisplayEntries() {
     }
   };
 
+
+  function GalleryGroup({ media, renderMedia }) {
+    const [isDialogOpen, setIsDialogOpen] = useState(false);
+    const [currentIndex, setCurrentIndex] = useState(0);
+    const [currentGroup, setCurrentGroup] = useState([]);
+
+    // handle keyboard navigation
+    useEffect(() => {
+      function handleKey(e) {
+        if (!isDialogOpen) return;
+        if (e.key === 'ArrowRight') {
+          setCurrentIndex((prev) => (prev + 1) % currentGroup.length);
+        } else if (e.key === 'ArrowLeft') {
+          setCurrentIndex((prev) => (prev - 1 + currentGroup.length) % currentGroup.length);
+        }
+      }
+      document.addEventListener('keydown', handleKey);
+      return () => document.removeEventListener('keydown', handleKey);
+    }, [isDialogOpen, currentGroup]);
+
+    return (
+      <>
+        {Array.from({ length: Math.ceil(media.length / 10) }, (_, groupIdx) => {
+          const group = media.slice(groupIdx * 10, groupIdx * 10 + 10);
+          const count = group.length;
+
+          // Discord-style layout
+          let gridTemplate;
+          switch (count) {
+            case 1: gridTemplate = 'grid-cols-1 grid-rows-1'; break;
+            case 2: gridTemplate = 'grid-cols-2 grid-rows-1'; break;
+            case 3: gridTemplate = 'grid-cols-2 grid-rows-2'; break;
+            case 4: gridTemplate = 'grid-cols-2 grid-rows-2'; break;
+            case 5: gridTemplate = 'grid-cols-3 grid-rows-2'; break;
+            case 6: gridTemplate = 'grid-cols-3 grid-rows-2'; break;
+            case 7: gridTemplate = 'grid-cols-4 grid-rows-2'; break;
+            case 8: gridTemplate = 'grid-cols-4 grid-rows-2'; break;
+            case 9: gridTemplate = 'grid-cols-3 grid-rows-3'; break;
+            case 10:
+            default:
+              gridTemplate = 'grid-cols-4 grid-rows-3';
+              break;
+          }
+
+          return (
+            <div
+              key={groupIdx}
+              className={`grid ${gridTemplate} gap-1 my-2 rounded-lg overflow-hidden`}
+              style={{ aspectRatio: '16 / 9' }}
+            >
+              {group.map((link, idx) => (
+                <div
+                  key={idx}
+                  className="relative w-full h-full bg-gray-700 overflow-hidden cursor-pointer hover:opacity-90 transition"
+                  onClick={() => {
+                    setCurrentGroup(group);
+                    setCurrentIndex(idx);
+                    setIsDialogOpen(true);
+                  }}
+                >
+                  <div className="w-full h-full">
+                    <div className="w-full h-full overflow-hidden">
+                      <div className="w-full h-full">
+                        {renderMedia(link)}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          );
+        })}
+
+        {/* GALLERY DIALOG / POPUP */}
+        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+          <DialogContent className="bg-transparent border-none">
+            <DialogTitle className="sr-only">Media Gallery</DialogTitle>
+            <div className="relative w-full h-full flex items-center justify-center">
+              {/* Media */}
+              <div className="w-full h-full overflow-hidden rounded-lg shadow-lg">
+                {currentGroup.length > 0 && renderMedia(currentGroup[currentIndex], 'auto')}
+              </div>
+
+              {/* Left arrow */}
+              {currentGroup.length > 1 && (
+                <button
+                  onClick={() =>
+                    setCurrentIndex((prev) => (prev - 1 + currentGroup.length) % currentGroup.length)
+                  }
+                  className="bg-gray-700 text-[2rem] absolute left-[-1.75rem] text-white/80 hover:text-white p-2 bg-black/40 rounded-full cursor-pointer"
+                >
+                  
+                </button>
+              )}
+
+              {/* Right arrow */}
+              {currentGroup.length > 1 && (
+                <button
+                  onClick={() =>
+                    setCurrentIndex((prev) => (prev + 1) % currentGroup.length)
+                  }
+                  className="bg-gray-700 text-[2rem] absolute right-[-1.75rem] text-white/80 hover:text-white p-2 bg-black/40 rounded-full cursor-pointer"
+                >
+                  ›
+                </button>
+              )}
+            </div>
+          </DialogContent>
+        </Dialog>
+      </>
+    );
+  }
+
   return (
     <div className="min-h-screen py-10 bg-gray-900 transition-colors">
       <div className="max-w-4xl mx-auto">
@@ -561,16 +381,19 @@ export default function DisplayEntries() {
                         {/* menu dropdown */}
                         {activeMenu === entry.id && (
                           <div className="absolute right-0 mt-2 w-36 bg-gray-800 border border-gray-700 rounded-lg shadow-lg z-30 overflow-hidden">
+                            <Share id={entry.id} />
                             <button
                               onClick={() => startEdit(entry)}
-                              className="w-full text-left px-3 py-2 hover:bg-gray-700 transition text-sm"
+                              className="flex gap-2 w-full text-left px-3 py-2 hover:bg-gray-700 transition text-sm"
                             >
+                              <SquarePen size={20} strokeWidth={1.5} />
                               Edit
                             </button>
                             <button
                               onClick={() => handleDelete(entry.id)}
-                              className="w-full text-left px-3 py-2 hover:bg-gray-700 transition text-sm text-red-400"
+                              className="flex gap-2 w-full text-left px-3 py-2 hover:bg-gray-700 transition text-sm text-red-400"
                             >
+                              <Trash2 size={20} strokeWidth={1.5} />
                               Delete
                             </button>
                           </div>

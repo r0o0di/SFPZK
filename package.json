@@ -22,6 +22,7 @@
     "firebase": "^12.0.0",
     "lucide-react": "^0.539.0",
     "next": "15.4.6",
+    "next-share": "^0.27.0",
     "next-themes": "^0.4.6",
     "nodemailer": "^7.0.5",
     "popover": "^2.4.1",
@@ -29,6 +30,7 @@
     "react-day-picker": "^9.8.1",
     "react-dom": "19.1.0",
     "react-hook-form": "^7.62.0",
+    "react-player": "^3.3.3",
     "sonner": "^2.0.7",
     "tailwind-merge": "^3.3.1",
     "zod": "^4.0.17"
