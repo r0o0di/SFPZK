@@ -43,7 +43,7 @@ export default function Navbar() {
         <nav className="flex items-center gap-6">
           {!authReady ? (
             //  placeholder while auth loads
-            <div className="w-[300px] h-5 bg-gray-700 rounded animate-pulse" />
+            <div className="w-[250px] h-5 bg-gray-700 rounded animate-pulse" />
           ) : (
             <>
               {links.map(({ href, label }) => {

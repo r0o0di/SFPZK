@@ -4,6 +4,7 @@ import EntryForm from '@/components/EntryForm';
 import Share from "@/components/Share";
 import { useEffect, useRef, useState } from 'react';
 import { SquarePen, Trash2 } from "lucide-react"
+import TranslateMenu from './TranslateMenu';
 import {
   Dialog,
   DialogContent,
@@ -380,14 +381,47 @@ export default function DisplayEntries() {
 
                       {/* menu dropdown */}
                       {activeMenu === entry.id && (
-                        <div className="absolute right-0 mt-2 w-36 bg-gray-800 border border-gray-700 rounded-lg shadow-lg z-30 overflow-hidden">
-                          <Share id={entry.id} />
+                        <div className="absolute right-0 mt-2 w-36 bg-gray-800 border border-gray-700 rounded-lg shadow-lg z-30">
 
+                          <TranslateMenu 
+                            onTranslate={async (targetLang) => {
+                              if (!entry.content) return;
+
+                              // temporary feedback
+                              setEntries(prev => prev.map(e => e.id === entry.id ? { ...e, translating: true } : e));
+
+                              try {
+                                const res = await fetch('/api/translate', {
+                                  method: 'POST',
+                                  headers: { 'Content-Type': 'application/json' },
+                                  body: JSON.stringify({ text: entry.content, target: targetLang })
+                                });
+
+                                const data = await res.json();
+                                if (data.translatedText) {
+                                  setEntries(prev => prev.map(e =>
+                                    e.id === entry.id
+                                      ? { ...e, translatedContent: data.translatedText, translating: false }
+                                      : e
+                                  ));
+                                } else {
+                                  throw new Error(data.error || 'Translation failed');
+                                }
+                              } catch (err) {
+                                console.error(err);
+                                setEntries(prev => prev.map(e => e.id === entry.id ? { ...e, translating: false } : e));
+                              }
+
+                              setActiveMenu(null);
+                            }}
+                          />
+
+                          <Share id={entry.id} />
                           {isAdmin && (
                             <>
                               <button
                                 onClick={() => startEdit(entry)}
-                                className="flex gap-2 w-full text-left px-3 py-2 hover:bg-gray-700 transition text-sm"
+                                className="flex gap-3 w-full text-left px-3 py-2 hover:bg-gray-700 transition text-sm"
                               >
                                 <SquarePen size={20} strokeWidth={1.5} />
                                 Edit
@@ -395,7 +429,7 @@ export default function DisplayEntries() {
 
                               <button
                                 onClick={() => handleDelete(entry.id)}
-                                className="flex gap-2 w-full text-left px-3 py-2 hover:bg-gray-700 transition text-sm text-red-400"
+                                className="flex gap-3 w-full text-left px-3 py-2 hover:bg-gray-700 transition text-sm text-red-400"
                               >
                                 <Trash2 size={20} strokeWidth={1.5} />
                                 Delete
@@ -415,22 +449,39 @@ export default function DisplayEntries() {
                         className={`text-gray-200 leading-relaxed whitespace-pre-wrap ${!isExpanded && textTooLong ? 'overflow-hidden' : ''}`}
                         style={!isExpanded && textTooLong ? { maxHeight: '6.2em' } : {}}
                       >
-                        <p>{entry.content}</p>
+                        <p>
+                          {entry.translating
+                            ? 'Übersetzen...'
+                            : entry.translatedContent
+                              ? entry.translatedContent
+                              : entry.content
+                          }
+                        </p>
+
                       </div>
 
-
-
-                      {/* show more / show less */}
-                      {textTooLong && (
-                        <div className="mt-1 mb-4">
+                      <div className="mt-1 mb-4 flex gap-2">
+                        {textTooLong && (
                           <button
                             onClick={() => toggleExpand(entry.id)}
                             className="text-blue-400 hover:underline"
                           >
                             {isExpanded ? 'Weniger zeigen' : 'Mehr zeigen...'}
                           </button>
-                        </div>
-                      )}
+                        )}
+                        {entry.translatedContent && (
+                          <button
+                            onClick={() => {
+                              setEntries(prev => prev.map(e =>
+                                e.id === entry.id ? { ...e, translatedContent: null } : e
+                              ));
+                            }}
+                            className="text-blue-400 hover:underline"
+                          >
+                            Original anzeigen
+                          </button>
+                        )}
+                      </div>
                     </div>
 
                     {/* media always visible even when text collapsed */}
