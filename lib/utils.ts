@@ -13,9 +13,13 @@ const Utilities = {
   validatePhoneNumber(number: string) {
 
   },
-  isLoggedIn() {
-    return !!auth.currentUser;
+  isAdminEmail(email: string) {
+   const adminList = ['rodikhello2000@gmail.com'];
+    return adminList.includes(email || '')
+  },
+  onAuthChange(callback: (user: any) => void) {
+    return auth.onAuthStateChanged(callback)
   }
-  
+
 };
 export default Utilities;

@@ -296,7 +296,7 @@ export default function DisplayEntries() {
                   }
                   className="bg-gray-700 text-[2rem] absolute left-[-1.75rem] text-white/80 hover:text-white p-2 bg-black/40 rounded-full cursor-pointer"
                 >
-                  
+                  ‹
                 </button>
               )}
 
@@ -360,46 +360,51 @@ export default function DisplayEntries() {
                       <div className="text-sm text-gray-400 mt-1">{entry.date}</div>
                     </div>
 
-                    {isAdmin && (
-                      <div
-                        className="relative"
-                        ref={node => registerMenuRef(entry.id, node)}
-                      >
-                        <button
-                          aria-label="open menu"
-                          onClick={() => setActiveMenu(activeMenu === entry.id ? null : entry.id)}
-                          className="p-1 rounded-md hover:bg-gray-700 transition cursor-pointer"
-                        >
-                          {/* three vertical dots */}
-                          <svg className="w-5 h-5 text-gray-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-                            <circle cx="12" cy="5" r="1.5"></circle>
-                            <circle cx="12" cy="12" r="1.5"></circle>
-                            <circle cx="12" cy="19" r="1.5"></circle>
-                          </svg>
-                        </button>
 
-                        {/* menu dropdown */}
-                        {activeMenu === entry.id && (
-                          <div className="absolute right-0 mt-2 w-36 bg-gray-800 border border-gray-700 rounded-lg shadow-lg z-30 overflow-hidden">
-                            <Share id={entry.id} />
-                            <button
-                              onClick={() => startEdit(entry)}
-                              className="flex gap-2 w-full text-left px-3 py-2 hover:bg-gray-700 transition text-sm"
-                            >
-                              <SquarePen size={20} strokeWidth={1.5} />
-                              Edit
-                            </button>
-                            <button
-                              onClick={() => handleDelete(entry.id)}
-                              className="flex gap-2 w-full text-left px-3 py-2 hover:bg-gray-700 transition text-sm text-red-400"
-                            >
-                              <Trash2 size={20} strokeWidth={1.5} />
-                              Delete
-                            </button>
-                          </div>
-                        )}
-                      </div>
-                    )}
+                    <div
+                      className="relative"
+                      ref={node => registerMenuRef(entry.id, node)}
+                    >
+                      <button
+                        aria-label="open menu"
+                        onClick={() => setActiveMenu(activeMenu === entry.id ? null : entry.id)}
+                        className="p-1 rounded-md hover:bg-gray-700 transition cursor-pointer"
+                      >
+                        {/* three vertical dots */}
+                        <svg className="w-5 h-5 text-gray-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+                          <circle cx="12" cy="5" r="1.5"></circle>
+                          <circle cx="12" cy="12" r="1.5"></circle>
+                          <circle cx="12" cy="19" r="1.5"></circle>
+                        </svg>
+                      </button>
+
+                      {/* menu dropdown */}
+                      {activeMenu === entry.id && (
+                        <div className="absolute right-0 mt-2 w-36 bg-gray-800 border border-gray-700 rounded-lg shadow-lg z-30 overflow-hidden">
+                          <Share id={entry.id} />
+
+                          {isAdmin && (
+                            <>
+                              <button
+                                onClick={() => startEdit(entry)}
+                                className="flex gap-2 w-full text-left px-3 py-2 hover:bg-gray-700 transition text-sm"
+                              >
+                                <SquarePen size={20} strokeWidth={1.5} />
+                                Edit
+                              </button>
+
+                              <button
+                                onClick={() => handleDelete(entry.id)}
+                                className="flex gap-2 w-full text-left px-3 py-2 hover:bg-gray-700 transition text-sm text-red-400"
+                              >
+                                <Trash2 size={20} strokeWidth={1.5} />
+                                Delete
+                              </button>
+                            </>
+                          )}
+                        </div>
+                      )}
+                    </div>
                   </div>
 
                   {/* body: collapsed text + media */}
