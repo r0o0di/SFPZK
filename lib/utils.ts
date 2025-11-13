@@ -7,6 +7,8 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 
+export const adminList = ['rodikhello2000@gmail.com', "sfpzk.s@gmail.com"];
+
 const Utilities = {
   validateEmail(email: string) {
 
@@ -15,7 +17,6 @@ const Utilities = {
 
   },
   isAdminEmail(email: string) {
-   const adminList = ['rodikhello2000@gmail.com'];
     return adminList.includes(email || '')
   },
   onAuthChange(callback: (user: User | null) => void) {

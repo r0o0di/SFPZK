@@ -33,7 +33,7 @@ export default function FormPage() {
 
   const handleFormSubmit = async (date, title, content, mediaLinks = []) => {
     try {
-      const entryId = `${date}-${title}`;
+      const entryId = `${date}`;
       await setDoc(doc(db, 'entries', entryId), {
         date,
         title,
