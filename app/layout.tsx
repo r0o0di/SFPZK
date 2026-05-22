@@ -18,8 +18,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "SFPZK - Şaxê Ewropa",
-  description: "SFPZK - Şaxê Ewropa",
+  title: "SFPZK - Şaxa Ewropa",
+  description: "SFPZK - Şaxa Ewropa",
 };
 
 export default function RootLayout({

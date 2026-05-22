@@ -7,7 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from '@/components/ui/button';
 import ImageUploader from "@/components/ImageUploader";
-import { Plus, Save, Trash2, X } from 'lucide-react';
+import { Check, Save, Trash2, X } from 'lucide-react';
 import { toast } from "sonner";
 import { storage } from '@/lib/firebase';
 import { ref, uploadBytesResumable, getDownloadURL, deleteObject } from 'firebase/storage';
@@ -99,6 +99,11 @@ export default function EntryForm({
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (!date) {
+      toast.error('Dîrok pêwîst e.');
+      return;
+    }
 
     // We will: upload any new image files, compute final media URLs array,
     // delete any removed old storage URLs, then call onSubmit(finalUrls).
@@ -218,7 +223,7 @@ export default function EntryForm({
       {onCancel && (
         <div className='place-self-end mb-[-32px]'>
           <Button onClick={onCancel} className=" rounded-sm select-none cursor-pointer text-white bg-transparent hover:bg-transparent w-12 h-12" type="button">
-            <X color="#ff0000" strokeWidth={2} className='size-8' />
+            <X color="#ff0000" strokeWidth={3} className='size-8' />
           </Button>
         </div>
       )}
@@ -257,8 +262,8 @@ export default function EntryForm({
           <Input type="url" id="media" name="media" placeholder="https://youtu.be/CnoXR7dDo" value={newMedia} onChange={e => setNewMedia(e.target.value)} />
         </div>
         <div className="grid gap-2">
-          <Button className="select-none cursor-pointer" type="button" onClick={handleAddMedia}>
-            <Plus />
+          <Button className="select-none cursor-pointer w-16" type="button" onClick={handleAddMedia}>
+            <Check strokeWidth={3} size={28} className="size-"/>
           </Button>
         </div>
       </div>
@@ -283,7 +288,7 @@ export default function EntryForm({
 
 
       <div className="grid gap-2">
-        <Button className="select-none cursor-pointer bg-green-500 hover:bg-green-600 mt-5" type="submit">
+        <Button className="select-none cursor-pointer bg-green-500 hover:bg-green-600 mt-5 h-11" type="submit">
           <Save />
           {buttonText}
         </Button>

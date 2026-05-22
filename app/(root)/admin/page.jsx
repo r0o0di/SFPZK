@@ -51,7 +51,7 @@ export default function FormPage() {
     } catch (err) {
       console.error(err);
       if (err.code === 'permission-denied') {
-        alert('ليس لديك صلاحية نشر المنشورات. إذا كنت تعتقد أن هذا خطأ، يُرجى التواصل مع أحد المشرفين');
+        alert('ليس لديك الصلاحية لنشر المنشورات. إذا كنت تعتقد أن هذا خطأ، يُرجى التواصل مع أحد المشرفين');
       }
     }
   };

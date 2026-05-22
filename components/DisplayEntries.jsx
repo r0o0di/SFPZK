@@ -3,9 +3,8 @@ import EntryForm from '@/components/EntryForm';
 import Share from "@/components/Share";
 import { adminList } from '@/lib/utils';
 import { useEffect, useRef, useState } from 'react';
-import { SquarePen, Trash2 } from "lucide-react";
+import { SquarePen, Trash2, Languages, Loader2Icon } from "lucide-react";
 import TranslateMenu from './TranslateMenu';
-import ImageUploader from "@/components/ImageUploader";
 import {
   Dialog,
   DialogContent,
@@ -43,7 +42,7 @@ export default function DisplayEntries() {
 
   async function fetchEntries() {
     const ref = collection(db, 'entries');
-    const q = query(ref, orderBy('date', 'desc'));
+    const q = query(ref, orderBy('date', 'asc'));
     const snap = await getDocs(q);
     setEntries(snap.docs.map(d => ({ id: d.id, ...d.data() })));
   }
@@ -375,7 +374,19 @@ export default function DisplayEntries() {
                   <div className="flex items-start justify-between gap-4">
                     <div className="flex-1">
                       <h2 className="text-xl font-semibold text-gray-100">{entry.title}</h2>
-                      <div className="text-sm text-gray-400 mt-1">{entry.date}</div>
+                      <div className="text-sm text-gray-400 mt-1 mr-2 inline">{entry.date}</div>
+                      {entry.translatedContent && (
+                          <button
+                            onClick={() => {
+                              setEntries(prev => prev.map(e =>
+                                e.id === entry.id ? { ...e, translatedContent: null } : e
+                              ));
+                            }}
+                            className="text-blue-400 hover:underline text-sm inline cursor-pointer"
+                          >
+                            <Languages strokeWidth={1.5} className='inline' />Original zeigen 
+                          </button>
+                        )}
                     </div>
 
                     <div
@@ -403,7 +414,7 @@ export default function DisplayEntries() {
                                 className="flex gap-3 w-full text-left px-3 py-2 hover:bg-gray-700 transition text-sm"
                               >
                                 <SquarePen size={20} strokeWidth={1.5} />
-                                Edit
+                                Sererastkirin 
                               </button>
                             </>
                           )}
@@ -444,7 +455,7 @@ export default function DisplayEntries() {
                                 className="flex gap-3 w-full text-left px-3 py-2 hover:bg-gray-700 transition text-sm text-red-400"
                               >
                                 <Trash2 size={20} strokeWidth={1.5} />
-                                Delete
+                                Rakirin
                               </button>
                             </>
                           )}
@@ -461,11 +472,11 @@ export default function DisplayEntries() {
                       >
                         <p>
                           {entry.translating
-                            ? 'Übersetzen...'
+                            ? (<> <Loader2Icon className="animate-spin inline" /> Übersetzen...</>)
                             : entry.translatedContent
                               ? entry.translatedContent
                               : entry.content
-                          }
+                          } 
                         </p>
                       </div>
 
@@ -473,21 +484,9 @@ export default function DisplayEntries() {
                         {textTooLong && (
                           <button
                             onClick={() => toggleExpand(entry.id)}
-                            className="text-blue-400 hover:underline"
+                            className="text-blue-400 hover:underline cursor-pointer"
                           >
                             {isExpanded ? 'Weniger zeigen' : 'Mehr zeigen...'}
-                          </button>
-                        )}
-                        {entry.translatedContent && (
-                          <button
-                            onClick={() => {
-                              setEntries(prev => prev.map(e =>
-                                e.id === entry.id ? { ...e, translatedContent: null } : e
-                              ));
-                            }}
-                            className="text-blue-400 hover:underline"
-                          >
-                            Original zeigen
                           </button>
                         )}
                       </div>

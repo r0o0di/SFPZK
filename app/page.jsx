@@ -5,7 +5,7 @@ export default function HomePage() {
       {/* HERO-BEREICH */}
       <section className="w-full h-[70vh] mt-20 relative">
         <img
-          src="/hero.jpg"
+          src="/hero.webp"
           alt="Bingehên SFPZK"
           className="w-full h-full object-cover opacity-70"
         />

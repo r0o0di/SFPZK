@@ -19,9 +19,9 @@ export default function Navbar() {
   }, [])
 
   const links = [
-    { href: '/kontakt', label: 'Kontakt' },
     { href: '/%C3%A7alak%C3%AE', label: 'Çalakî' },
     { href: '/f%C3%AArb%C3%BBn', label: 'Fêrbûn' },
+    { href: '/kontakt', label: 'Kontakt' },
   ]
 
   return (
@@ -66,9 +66,9 @@ export default function Navbar() {
               {isAdmin && (
                 <Link
                   prefetch
-                  href="/new-entry"
+                  href="/admin"
                   className={`transition-colors ${
-                    pathname === '/new-entry'
+                    pathname === '/admin'
                       ? 'text-yellow-200'
                       : 'text-gray-200 hover:text-yellow-200 active:text-yellow-200 focus:text-yellow-200'
                   }`}
