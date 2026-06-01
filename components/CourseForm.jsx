@@ -32,10 +32,18 @@ export default function CourseForm() {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
+  const isFormReady = Boolean(
+    form.name &&
+    form.surname &&
+    form.age &&
+    form.email &&
+    form.phone &&
+    form.option
+  );
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!form.option) {
-      alert("Astekê (Yekem/Duyem/Sêyem) hilbijêre.");
+    if (!isFormReady) {
       return;
     }
 
@@ -144,19 +152,20 @@ export default function CourseForm() {
           />
         </div>
 
-        {!submitted ? (
-          <Button
-            className="w-full mt-4 select-none cursor-pointer bg-green-500 hover:bg-green-600 text-secondary"
-            type="submit"
-          >
-            Bişîne
-          </Button>
-        ) : (
-          <Button className="w-full mt-4 select-none bg-green-500 hover:bg-green-600 text-secondary" type='submit' disabled>
-            <Loader2Icon className="animate-spin" />
-            Tê şandin...
-          </Button>
-        )}
+        <Button
+          className={`w-full mt-4 select-none transition-colors duration-200 ${isFormReady && !submitted ? 'bg-green-500 hover:bg-green-600 text-secondary cursor-pointer' : 'bg-gray-500 text-gray-200 cursor-not-allowed'}`}
+          type="submit"
+          disabled={!isFormReady || submitted}
+        >
+          {submitted ? (
+            <>
+              <Loader2Icon className="animate-spin" />
+              Tê şandin...
+            </>
+          ) : (
+            'Bişîne'
+          )}
+        </Button>
       </form>
     </div>
   );

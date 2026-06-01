@@ -39,6 +39,54 @@ export default function DisplayEntries() {
   const ignorePopstateRef = useRef(false);
 
   const menusRef = useRef({}); // store refs for menus to support click outside
+  const TRANSLATION_CACHE_PREFIX = 'entryTranslation_v1';
+  const TRANSLATION_CACHE_TTL = 24 * 60 * 60 * 1000; // 1 day
+
+  function hashString(str) {
+    let hash = 5381;
+    for (let i = 0; i < str.length; i += 1) {
+      hash = ((hash << 5) + hash) + str.charCodeAt(i);
+    }
+    return `${hash >>> 0}`;
+  }
+
+  function getTranslationCacheKey(entryId, targetLang, text) {
+    return `${TRANSLATION_CACHE_PREFIX}:${entryId}:${targetLang}:${hashString(text || '')}`;
+  }
+
+  function loadTranslationFromCache(entryId, targetLang, text) {
+    if (typeof window === 'undefined') return null;
+    try {
+      const key = getTranslationCacheKey(entryId, targetLang, text);
+      const stored = localStorage.getItem(key);
+      if (!stored) return null;
+      const parsed = JSON.parse(stored);
+      if (!parsed || typeof parsed.expiresAt !== 'number' || typeof parsed.translatedText !== 'string') {
+        localStorage.removeItem(key);
+        return null;
+      }
+      if (parsed.expiresAt <= Date.now()) {
+        localStorage.removeItem(key);
+        return null;
+      }
+      return parsed.translatedText;
+    } catch (error) {
+      return null;
+    }
+  }
+
+  function saveTranslationToCache(entryId, targetLang, text, translatedText) {
+    if (typeof window === 'undefined') return;
+    try {
+      const key = getTranslationCacheKey(entryId, targetLang, text);
+      localStorage.setItem(key, JSON.stringify({
+        translatedText,
+        expiresAt: Date.now() + TRANSLATION_CACHE_TTL,
+      }));
+    } catch (error) {
+      // ignore localStorage failures silently
+    }
+  }
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged(setUser);
@@ -481,7 +529,7 @@ export default function DisplayEntries() {
                           <>
                             <button
                               onClick={() => startEdit(entry)}
-                              className="flex gap-3 w-full text-left px-3 py-2 hover:bg-gray-700 transition text-sm"
+                              className="flex gap-3 w-full text-left px-3 py-2 hover:bg-gray-700 transition text-sm cursor-pointer"
                             >
                               <SquarePen size={20} strokeWidth={1.5} />
                               Sererastkirin 
@@ -493,6 +541,18 @@ export default function DisplayEntries() {
                           onTranslate={async (targetLang) => {
                             if (!entry.content) return;
                             setEntries(prev => prev.map(e => e.id === entry.id ? { ...e, translating: true } : e));
+
+                            const cachedTranslation = loadTranslationFromCache(entry.id, targetLang, entry.content);
+                            if (cachedTranslation) {
+                              setEntries(prev => prev.map(e =>
+                                e.id === entry.id
+                                  ? { ...e, translatedContent: cachedTranslation, translating: false }
+                                  : e
+                              ));
+                              setActiveMenu(null);
+                              return;
+                            }
+
                             try {
                               const res = await fetch('/api/translate', {
                                 method: 'POST',
@@ -501,6 +561,7 @@ export default function DisplayEntries() {
                               });
                               const data = await res.json();
                               if (data.translatedText) {
+                                saveTranslationToCache(entry.id, targetLang, entry.content, data.translatedText);
                                 setEntries(prev => prev.map(e =>
                                   e.id === entry.id
                                     ? { ...e, translatedContent: data.translatedText, translating: false }
@@ -523,7 +584,7 @@ export default function DisplayEntries() {
                           <>
                             <button
                               onClick={() => handleDelete(entry.id)}
-                              className="flex gap-3 w-full text-left px-3 py-2 hover:bg-gray-700 transition text-sm text-red-400"
+                              className="flex gap-3 w-full text-left px-3 py-2 hover:bg-gray-700 transition text-sm text-red-400 cursor-pointer"
                             >
                               <Trash2 size={20} strokeWidth={1.5} />
                               Rakirin

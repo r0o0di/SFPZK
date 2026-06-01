@@ -23,8 +23,19 @@ export default function KontaktForm() {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
+  const isFormReady = Boolean(
+    form.name &&
+    form.phone &&
+    form.email &&
+    form.note
+  );
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (!isFormReady) {
+      return;
+    }
 
     // === 10/day submission limit ===
     const now = Date.now();
@@ -102,19 +113,20 @@ export default function KontaktForm() {
           />
         </div>
 
-        {!submitted ? (
-          <Button
-            className="w-full mt-4 select-none cursor-pointer bg-green-500 hover:bg-green-600 text-secondary"
-            type="submit"
-          >
-            Bişîne
-          </Button>
-        ) : (
-          <Button className="w-full mt-4 select-none bg-green-500 hover:bg-green-600 text-secondary" type='submit' disabled>
-            <Loader2Icon className="animate-spin" />
-            Tê şandin...
-          </Button>
-        )}
+        <Button
+          className={`w-full mt-4 select-none transition-colors duration-200 ${isFormReady && !submitted ? 'bg-green-500 hover:bg-green-600 text-secondary cursor-pointer' : 'bg-gray-500 text-gray-200 cursor-not-allowed'}`}
+          type="submit"
+          disabled={!isFormReady || submitted}
+        >
+          {submitted ? (
+            <>
+              <Loader2Icon className="animate-spin" />
+              Tê şandin...
+            </>
+          ) : (
+            'Bişîne'
+          )}
+        </Button>
       </form>
     </div>
   );
