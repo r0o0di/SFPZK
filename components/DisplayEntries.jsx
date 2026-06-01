@@ -23,6 +23,7 @@ import {
 } from 'firebase/firestore';
 import { storage } from '@/lib/firebase';
 import { ref as storageRef, deleteObject } from 'firebase/storage';
+import { Button } from '@/components/ui/button';
 
 
 export default function DisplayEntries() {
@@ -32,6 +33,10 @@ export default function DisplayEntries() {
   const [editData, setEditData] = useState({ date: '', title: '', content: '', media: [] });
   const [activeMenu, setActiveMenu] = useState(null); // id of open menu
   const [expandedIds, setExpandedIds] = useState([]);
+  const [showConfirmClose, setShowConfirmClose] = useState(false);
+  const historyPushRef = useRef(false);
+  const editingIdRef = useRef(null);
+  const ignorePopstateRef = useRef(false);
 
   const menusRef = useRef({}); // store refs for menus to support click outside
 
@@ -40,9 +45,33 @@ export default function DisplayEntries() {
     return () => unsubscribe();
   }, []);
 
+  useEffect(() => {
+    editingIdRef.current = editingId;
+  }, [editingId]);
+
+  useEffect(() => {
+    const handlePopState = () => {
+      if (editingIdRef.current) {
+        if (ignorePopstateRef.current) {
+          ignorePopstateRef.current = false;
+          setEditingId(null);
+          setEditData({ date: '', title: '', content: '', media: [] });
+          historyPushRef.current = false;
+          return;
+        }
+
+        setShowConfirmClose(true);
+        window.history.pushState({ editingEntryId: editingIdRef.current }, '', window.location.href);
+      }
+    };
+
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, []);
+
   async function fetchEntries() {
     const ref = collection(db, 'entries');
-    const q = query(ref, orderBy('date', 'asc'));
+    const q = query(ref, orderBy('date'));
     const snap = await getDocs(q);
     setEntries(snap.docs.map(d => ({ id: d.id, ...d.data() })));
   }
@@ -172,6 +201,33 @@ export default function DisplayEntries() {
     if (activeMenu === id) setActiveMenu(null);
   };
 
+  const resetEditingState = () => {
+    setEditingId(null);
+    setEditData({ date: '', title: '', content: '', media: [] });
+    if (historyPushRef.current && typeof window !== 'undefined') {
+      // window.history.replaceState(null, '', window.location.href);
+      historyPushRef.current = false;
+    }
+  };
+
+  const confirmCloseForm = () => {
+    setShowConfirmClose(false);
+    if (historyPushRef.current && typeof window !== 'undefined') {
+      ignorePopstateRef.current = true;
+      window.history.back();
+    } else {
+      resetEditingState();
+    }
+  };
+
+  const cancelCloseForm = () => {
+    setShowConfirmClose(false);
+  };
+
+  const handleCancelEdit = () => {
+    setShowConfirmClose(true);
+  };
+
   const startEdit = (entry) => {
     setEditingId(entry.id);
     setEditData({
@@ -181,6 +237,10 @@ export default function DisplayEntries() {
       media: entry.media || []
     });
     setActiveMenu(null);
+    if (typeof window !== 'undefined') {
+      window.history.pushState({ editingEntryId: entry.id }, '', window.location.href);
+      historyPushRef.current = true;
+    }
     setTimeout(() => {
       const el = document.getElementById(entry.id);
       if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -220,8 +280,7 @@ export default function DisplayEntries() {
 
     if (newId !== editingId) await deleteDoc(doc(db, 'entries', editingId));
 
-    setEditingId(null);
-    setEditData({ date: '', title: '', content: '', media: [] });
+    resetEditingState();
     fetchEntries();
   };
 
@@ -341,6 +400,17 @@ export default function DisplayEntries() {
   return (
     <div className="min-h-screen py-10 bg-gray-900 transition-colors">
       <div className="max-w-4xl mx-auto">
+        <Dialog open={showConfirmClose} onOpenChange={(open) => { if (!open) setShowConfirmClose(false); }}>
+          <DialogContent className="bg-gray-900 border border-gray-700 shadow-2xl max-w-md mx-auto rounded-2xl transition-all duration-300">
+            <DialogTitle className="text-lg font-semibold text-gray-100 mb-2">Formê bigire</DialogTitle>
+            <p className="text-sm text-gray-200 mb-4">Forma sererastkirinê bigire?</p>
+            <div className="flex justify-end gap-2">
+              <Button type="button" className="bg-red-900 hover:bg-red-600 text-white cursor-pointer" onClick={cancelCloseForm}>Na</Button>
+              <Button type="button" className="bg-green-600 hover:bg-green-500 text-white cursor-pointer" onClick={confirmCloseForm}>Erê</Button>
+            </div>
+          </DialogContent>
+        </Dialog>
+
         <h1 className="text-3xl font-semibold text-center mb-8 text-yellow-200">Çalakî</h1>
 
         {entries.length === 0 && (
@@ -365,8 +435,8 @@ export default function DisplayEntries() {
                     initialContent={editData.content}
                     initialMedia={editData.media}
                     onSubmit={handleEditSubmit}
-                    buttonText="Save"
-                    onCancel={() => setEditingId(null)}
+                    buttonText="Sererast bike"
+                    onCancel={handleCancelEdit}
                   />
                 </div>
               ) : (
@@ -389,6 +459,7 @@ export default function DisplayEntries() {
                         )}
                     </div>
 
+                    {/* Dropdown Menu */}
                     <div
                       className="relative"
                       ref={node => registerMenuRef(entry.id, node)}
@@ -396,7 +467,7 @@ export default function DisplayEntries() {
                       <button
                         aria-label="open menu"
                         onClick={() => setActiveMenu(activeMenu === entry.id ? null : entry.id)}
-                        className="p-1 rounded-md hover:bg-gray-700 transition cursor-pointer"
+                        className="p-1 rounded-md hover:bg-gray-700 transition-all duration-250 cursor-pointer"
                       >
                         <svg className="w-5 h-5 text-gray-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
                           <circle cx="12" cy="5" r="1.5"></circle>
@@ -405,62 +476,61 @@ export default function DisplayEntries() {
                         </svg>
                       </button>
 
-                      {activeMenu === entry.id && (
-                        <div className="absolute right-0 mt-2 w-36 bg-gray-800 border border-gray-700 rounded-lg shadow-lg z-30">
-                          {isAdmin && (
-                            <>
-                              <button
-                                onClick={() => startEdit(entry)}
-                                className="flex gap-3 w-full text-left px-3 py-2 hover:bg-gray-700 transition text-sm"
-                              >
-                                <SquarePen size={20} strokeWidth={1.5} />
-                                Sererastkirin 
-                              </button>
-                            </>
-                          )}
+                      <div className={`absolute right-0 mt-2 w-36 bg-gray-800 border border-gray-700 rounded-lg shadow-lg z-30 origin-top-right transition-all duration-250 ${activeMenu === entry.id ? 'opacity-100 scale-100 pointer-events-auto' : 'opacity-0 scale-95 pointer-events-none'}`}>
+                        {isAdmin && (
+                          <>
+                            <button
+                              onClick={() => startEdit(entry)}
+                              className="flex gap-3 w-full text-left px-3 py-2 hover:bg-gray-700 transition text-sm"
+                            >
+                              <SquarePen size={20} strokeWidth={1.5} />
+                              Sererastkirin 
+                            </button>
+                          </>
+                        )}
 
-                          <TranslateMenu
-                            onTranslate={async (targetLang) => {
-                              if (!entry.content) return;
-                              setEntries(prev => prev.map(e => e.id === entry.id ? { ...e, translating: true } : e));
-                              try {
-                                const res = await fetch('/api/translate', {
-                                  method: 'POST',
-                                  headers: { 'Content-Type': 'application/json' },
-                                  body: JSON.stringify({ text: entry.content, target: targetLang })
-                                });
-                                const data = await res.json();
-                                if (data.translatedText) {
-                                  setEntries(prev => prev.map(e =>
-                                    e.id === entry.id
-                                      ? { ...e, translatedContent: data.translatedText, translating: false }
-                                      : e
-                                  ));
-                                } else {
-                                  throw new Error(data.error || 'Translation failed');
-                                }
-                              } catch (err) {
-                                console.error(err);
-                                setEntries(prev => prev.map(e => e.id === entry.id ? { ...e, translating: false } : e));
+                        <TranslateMenu
+                          onTranslate={async (targetLang) => {
+                            if (!entry.content) return;
+                            setEntries(prev => prev.map(e => e.id === entry.id ? { ...e, translating: true } : e));
+                            try {
+                              const res = await fetch('/api/translate', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({ text: entry.content, target: targetLang })
+                              });
+                              const data = await res.json();
+                              if (data.translatedText) {
+                                setEntries(prev => prev.map(e =>
+                                  e.id === entry.id
+                                    ? { ...e, translatedContent: data.translatedText, translating: false }
+                                    : e
+                                ));
+                              } else {
+                                throw new Error(data.error || 'Translation failed');
                               }
-                              setActiveMenu(null);
-                            }}
-                          />
+                            } catch (err) {
+                              console.error(err);
+                              setEntries(prev => prev.map(e => e.id === entry.id ? { ...e, translating: false } : e));
+                            }
+                            setActiveMenu(null);
+                          }}
+                        />
 
-                          <Share id={entry.id} />
-                          {isAdmin && (
-                            <>
-                              <button
-                                onClick={() => handleDelete(entry.id)}
-                                className="flex gap-3 w-full text-left px-3 py-2 hover:bg-gray-700 transition text-sm text-red-400"
-                              >
-                                <Trash2 size={20} strokeWidth={1.5} />
-                                Rakirin
-                              </button>
-                            </>
-                          )}
-                        </div>
-                      )}
+                        <Share id={entry.id} />
+
+                        {isAdmin && (
+                          <>
+                            <button
+                              onClick={() => handleDelete(entry.id)}
+                              className="flex gap-3 w-full text-left px-3 py-2 hover:bg-gray-700 transition text-sm text-red-400"
+                            >
+                              <Trash2 size={20} strokeWidth={1.5} />
+                              Rakirin
+                            </button>
+                          </>
+                        )}
+                      </div>
                     </div>
                   </div>
 

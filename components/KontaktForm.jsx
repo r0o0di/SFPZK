@@ -69,12 +69,12 @@ export default function KontaktForm() {
   return (
     <div style={{ height: "100vh", alignContent: "center" }}>
       <form className='place-self-center border' onSubmit={handleSubmit} style={{ maxWidth: 500, margin: '0 auto', padding: 20, boxShadow: "black 0px 0px 200px 2px", borderRadius: "2rem" }}>
-        <h2 className='text-2xl'>Kontakt</h2>
+        <h2 className='text-2xl text-yellow-200'>Kontakt</h2>
 
         <div className='flex mb-4 mt-2'>
           <div className="grid gap-2 mr-2">
             <Label htmlFor="name">Nav</Label>
-            <Input type="text" id="name" name="name" placeholder="Sevîn" value={form.name} onChange={handleChange} required />
+            <Input type="text" id="name" name="name" placeholder="Sevîn Omer" value={form.name} onChange={handleChange} required />
           </div>
           <div className="grid gap-2">
             <Label htmlFor="phone">Jimara Telefonê</Label>
@@ -98,6 +98,7 @@ export default function KontaktForm() {
             value={form.note}
             onChange={handleChange}
             placeholder={`Peyama xwe li vir binivîse...`}
+            required
           />
         </div>
 

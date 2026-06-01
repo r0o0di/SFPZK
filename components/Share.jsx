@@ -17,17 +17,29 @@ import {
   DialogContent,
   DialogTitle,
 } from "@/components/ui/dialog"
-import { Share2 } from "lucide-react"
+import { Share2, Copy } from "lucide-react"
 
 
 export default function Share({ id }) {
   const [isDialogOpen, setIsDialogOpen] = useState(false)
 
-  const shareUrl = `https://sfpzk.vercel.app/çalakî#${id}` // ✅ replace with your actual domain
+  const shareUrl = `https://sfpzk.vercel.app/çalakî#${id}` // replace with actual domain
+
+  const [copied, setCopied] = useState(false);
+  const handleClick = () => {
+    navigator.clipboard.writeText(shareUrl);
+
+    setCopied(true);
+
+    setTimeout(() => {
+      setCopied(false);
+    }, 200);
+  };
+
 
   return (
     <>
-    {/* Trigger Button */}
+      {/* Trigger Button */}
       <button
         onClick={() => setIsDialogOpen(true)}
         className="flex gap-[14px] w-full text-left px-3 py-2 hover:bg-gray-700 transition text-sm"
@@ -47,7 +59,7 @@ export default function Share({ id }) {
 
           <div className="flex justify-center gap-4 flex-wrap mb-4">
             <FacebookShareButton url={shareUrl}>
-              <FacebookIcon size={48} round />
+              <FacebookIcon size={48} round className="hover:brightness-85" />
             </FacebookShareButton>
             {/* <PinterestShareButton url={shareUrl}>
               <PinterestIcon size={48} round />
@@ -56,25 +68,24 @@ export default function Share({ id }) {
               <RedditIcon size={48} round />
             </RedditShareButton> */}
             <WhatsappShareButton url={shareUrl}>
-              <WhatsappIcon size={48} round />
+              <WhatsappIcon size={48} round className="hover:brightness-85"/>
             </WhatsappShareButton>
             {/* <LinkedinShareButton url={shareUrl}>
               <LinkedinIcon size={48} round />
             </LinkedinShareButton> */}
           </div>
 
-          <div className="bg-gray-800 text-gray-300 text-sm p-3 rounded-lg select-all break-all">
+          <div
+            onClick={handleClick}
+            className={`text-gray-300 text-sm p-3 rounded-lg select-none break-all cursor-pointer transition-colors duration-200 ${copied
+              ? "bg-gray-800"
+              : "bg-gray-800 hover:bg-gray-700"
+              }`}
+          >
             {shareUrl}
+            <Copy className="inline float-end" />
           </div>
 
-          <button
-            onClick={() => {
-              navigator.clipboard.writeText(shareUrl)
-            }}
-            className="w-full mt-4 py-2 rounded-lg bg-green-600 hover:bg-green-500 text-white font-medium transition-all cursor-pointer"
-          >
-            Girêdanê Kopî Bike
-          </button>
         </DialogContent>
       </Dialog>
     </>

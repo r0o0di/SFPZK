@@ -3,7 +3,8 @@ export default function HomePage() {
     <div className="min-h-screen text-gray-100 flex flex-col">
 
       {/* HERO-BEREICH */}
-      <section className="w-full h-[70vh] mt-20 relative">
+      {/* <section className="w-full h-[70vh] mt-20 relative"> */}
+      <section className="w-full h-[85vh] relative">
         <img
           src="/hero.webp"
           alt="Bingehên SFPZK"

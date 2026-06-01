@@ -103,7 +103,7 @@ export default function ImageUploader({ media = [], onChange }) {
       <div className="flex gap-2 items-center">
         <button
           type="button"
-          className="flex gap-3 w-fit text-left px-3 py-2 bg-input/30 hover:bg-gray-800 rounded-sm cursor-pointer"
+          className="flex gap-3 w-fit text-left px-3 py-2 bg-input/30 hover:bg-gray-800 rounded-sm cursor-pointer border border-gray-700 transition-all duration-200"
           onClick={() => fileInputRef.current?.click()}
         >
           <Image /> Wêneyan hilbijêre
@@ -123,7 +123,7 @@ export default function ImageUploader({ media = [], onChange }) {
         {preview.map((item, idx) => (
           <div
             key={item.id || item.url}
-            className="relative border border-gray-700 rounded overflow-hidden"
+            className="relative border border-gray-700 rounded overflow-hidden "
           >
             <img
               src={item.url}

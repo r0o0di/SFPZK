@@ -85,7 +85,7 @@ export default function CourseForm() {
   return (
     <div style={{ height: "100vh", alignContent: "center" }}>
       <form className='place-self-center border' onSubmit={handleSubmit} style={{ maxWidth: 500, margin: '0 auto', padding: 20, boxShadow: "black 0px 0px 200px 2px", borderRadius: "2rem" }}>
-        <h2 className='text-2xl'>Fêrbûna zimanê Kurdî</h2>
+        <h2 className='text-2xl text-yellow-200'>Fêrbûna zimanê Kurdî</h2>
 
         <div className='flex mb-4 mt-2'>
           <div className="grid gap-2 mr-2">

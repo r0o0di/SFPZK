@@ -227,6 +227,11 @@ export default function EntryForm({
           </Button>
         </div>
       )}
+      {/* {onCancel && (
+        <div className="text-sm text-gray-300 mb-4">
+          Ji bo girtina forma sererastkirinê, bişkoja browserê ya paşve an jî bişkoja X bikirtînin.
+        </div>
+      )} */}
       <div className="grid gap-3 mb-4 w-min">
         <DatePicker
           date={date}
