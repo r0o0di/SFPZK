@@ -42,8 +42,8 @@ export default function Navbar() {
 
   return (
     <header className="fixed inset-x-0 top-0 z-50">
-      <div className="mx-auto max-w-5xl px-4 sm:px-6">
-        <div className="rounded-2xl border border-gray-700/50 bg-gray-900/80 backdrop-blur-xl shadow-xl">
+      <div className="mx-auto ">
+        <div className=" border border-gray-700/50 bg-gray-900/80 backdrop-blur-xl shadow-xl">
           <div className="flex items-center justify-between px-4 py-3">
             {/* Logo */}
             <Link
@@ -85,7 +85,7 @@ export default function Navbar() {
                         key={href}
                         href={href}
                         prefetch
-                        className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 ${
+                        className={`px-4 py-1 rounded-full text-sm font-medium transition-all duration-300 ${
                           isActive
                             ? 'bg-yellow-200 text-gray-900 shadow-lg'
                             : 'text-gray-200 hover:text-yellow-200 hover:bg-gray-700/70'

@@ -355,6 +355,17 @@ export default function DisplayEntries() {
       return () => document.removeEventListener('keydown', handleKey);
     }, [isDialogOpen, media]);
 
+// Preload all media when dialog opens
+    useEffect(() => {
+      if (!isDialogOpen) return;
+
+      media.forEach((url) => {
+        const img = new Image();
+        img.src = url;
+      });
+    }, [isDialogOpen, media]);
+
+
     if (!media || media.length === 0) return null;
 
     // Determine how many tiles to show in the preview grid.
@@ -385,7 +396,7 @@ export default function DisplayEntries() {
         case 1: return { gridColumn: '2 / 3', gridRow: '1 / 2' }; // top-right
         case 2: return { gridColumn: '1 / 2', gridRow: '2 / 3' }; // bottom-left
         case 3: return { gridColumn: '2 / 3', gridRow: '2 / 3' }; // bottom-right
-        default: return {}; 
+        default: return {};
       }
     };
 
@@ -494,17 +505,17 @@ export default function DisplayEntries() {
                       <h2 className="text-xl font-semibold text-gray-100">{entry.title}</h2>
                       <div className="text-sm text-gray-400 mt-1 mr-2 inline">{entry.date}</div>
                       {entry.translatedContent && (
-                          <button
-                            onClick={() => {
-                              setEntries(prev => prev.map(e =>
-                                e.id === entry.id ? { ...e, translatedContent: null } : e
-                              ));
-                            }}
-                            className="text-blue-400 hover:underline text-sm inline cursor-pointer"
-                          >
-                            <Languages strokeWidth={1.5} className='inline' />Original zeigen 
-                          </button>
-                        )}
+                        <button
+                          onClick={() => {
+                            setEntries(prev => prev.map(e =>
+                              e.id === entry.id ? { ...e, translatedContent: null } : e
+                            ));
+                          }}
+                          className="text-blue-400 hover:underline text-sm inline cursor-pointer"
+                        >
+                          <Languages strokeWidth={1.5} className='inline' />Original zeigen
+                        </button>
+                      )}
                     </div>
 
                     {/* Dropdown Menu */}
@@ -532,7 +543,7 @@ export default function DisplayEntries() {
                               className="flex gap-3 w-full text-left px-3 py-2 hover:bg-gray-700 transition text-sm cursor-pointer"
                             >
                               <SquarePen size={20} strokeWidth={1.5} />
-                              Sererastkirin 
+                              Sererastkirin
                             </button>
                           </>
                         )}
@@ -607,7 +618,7 @@ export default function DisplayEntries() {
                             : entry.translatedContent
                               ? entry.translatedContent
                               : entry.content
-                          } 
+                          }
                         </p>
                       </div>
 

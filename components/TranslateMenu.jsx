@@ -33,7 +33,7 @@ export default function TranslateMenu({ onTranslate, disabled = false }) {
         // disabled:opacity-50 -> dims the text/icon
         // disabled:cursor-not-allowed -> shows the 'stop' cursor
         // disabled:hover:bg-transparent -> prevents the gray hover background
-        className="flex gap-[8px] w-full text-left px-3 py-2 hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-transparent transition text-sm items-center"
+        className="flex gap-[8px] w-full text-left px-3 py-2 hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-transparent transition text-sm items-center cursor-pointer"
         
         onClick={() => setIsOpen(!isOpen)}
       >
