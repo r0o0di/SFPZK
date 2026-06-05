@@ -141,7 +141,7 @@ export default function DisplayEntries() {
     return () => document.removeEventListener('mousedown', handleDocClick);
   }, [activeMenu]);
 
-  function renderMedia(link, pointerEvents = 'none') {
+  function renderMedia(link, pointerEvents = 'none', onImageLoad = null) {
     if (!link) return null;
 
     // YouTube
@@ -156,6 +156,7 @@ export default function DisplayEntries() {
             title="YouTube video"
             allow=" autoplay; clipboard-write; encrypted-media; picture-in-picture"
             allowFullScreen
+            onLoad={onImageLoad}
             className={`w-full h-full rounded-lg shadow-sm`}
           />
         </div>
@@ -176,6 +177,7 @@ export default function DisplayEntries() {
             frameBorder="0"
             allowFullScreen
             allow="autoplay; clipboard-write; encrypted-media"
+            onLoad={onImageLoad}
           />
         </div>
       );
@@ -189,6 +191,7 @@ export default function DisplayEntries() {
         <img
           src={`https://i.imgur.com/${match[1]}.jpg`}
           alt="Imgur"
+          onLoad={onImageLoad}
           className={`w-full rounded-lg`}
         />
       );
@@ -202,6 +205,7 @@ export default function DisplayEntries() {
             src={link}
             alt="Photo"
             loading="lazy"
+            onLoad={onImageLoad}
             className={`w-full object-cover rounded-lg`}
           />
         </div>
@@ -344,6 +348,7 @@ export default function DisplayEntries() {
   function GalleryGroup({ media, renderMedia }) {
     const [isDialogOpen, setIsDialogOpen] = useState(false);
     const [currentIndex, setCurrentIndex] = useState(0);
+    const [imageLoaded, setImageLoaded] = useState(false);
 
     useEffect(() => {
       function handleKey(e) {
@@ -355,7 +360,7 @@ export default function DisplayEntries() {
       return () => document.removeEventListener('keydown', handleKey);
     }, [isDialogOpen, media]);
 
-// Preload all media when dialog opens
+    // Preload all media when dialog opens
     useEffect(() => {
       if (!isDialogOpen) return;
 
@@ -364,6 +369,10 @@ export default function DisplayEntries() {
         img.src = url;
       });
     }, [isDialogOpen, media]);
+
+    useEffect(() => {
+      setImageLoaded(false);
+    }, [currentIndex]);
 
 
     if (!media || media.length === 0) return null;
@@ -427,9 +436,16 @@ export default function DisplayEntries() {
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <DialogContent className="bg-transparent border-none">
             <DialogTitle className="sr-only">Media Gallery</DialogTitle>
-            <div className="relative w-full h-full flex items-center justify-center">
-              <div className="w-full h-full overflow-hidden rounded-lg shadow-lg">
-                {media.length > 0 && renderMedia(media[currentIndex], 'auto')}
+            <div className="relative w-full h-full flex flex-col items-center justify-center">
+              <div className="w-full h-full overflow-hidden rounded-lg shadow-lg relative">
+                {!imageLoaded && (
+                  <div className="absolute inset-0 bg-gray-800 animate-pulse z-10" />
+                )}
+                {media.length > 0 && renderMedia(media[currentIndex], 'auto', () => setImageLoaded(true))}
+              </div>
+
+              <div className="mt-3 text-white text-sm font-medium">
+                {currentIndex + 1} / {media.length}
               </div>
 
               {media.length > 1 && (
