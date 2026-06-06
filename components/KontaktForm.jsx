@@ -3,7 +3,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from '@/components/ui/button';
-import { Loader2Icon } from "lucide-react";
+import { Loader2Icon, Mail } from "lucide-react";
 import { toast } from "sonner";
 
 
@@ -78,56 +78,60 @@ export default function KontaktForm() {
 
 
   return (
-    <div style={{ height: "100vh", alignContent: "center" }}>
-      <form className='place-self-center border' onSubmit={handleSubmit} style={{ maxWidth: 500, margin: '0 auto', padding: 20, boxShadow: "black 0px 0px 200px 2px", borderRadius: "2rem" }}>
-        <h2 className='text-2xl text-yellow-200'>Kontakt</h2>
+    <div className="min-h-screen bg-gradient-to-b from-slate-900 to-slate-800 flex items-center justify-center p-6">
+      <div className="w-full max-w-2xl bg-slate-900/70 backdrop-blur-sm border border-slate-700 rounded-2xl shadow-xl p-8">
+        <header className="flex items-center gap-4 mb-6">
+          <h1 className="text-2xl font-semibold text-yellow-200">Kontakt</h1>
+        </header>
 
-        <div className='flex mb-4 mt-2'>
-          <div className="grid gap-2 mr-2">
-            <Label htmlFor="name">Nav</Label>
-            <Input type="text" id="name" name="name" placeholder="Sevîn Omer" value={form.name} onChange={handleChange} required />
+        <form className="grid gap-4" onSubmit={handleSubmit}>
+          <div className="grid sm:grid-cols-2 gap-4">
+            <div className="grid gap-2">
+              <Label htmlFor="name">Nav</Label>
+              <Input type="text" id="name" name="name" placeholder="Sevîn Omer" value={form.name} onChange={handleChange} required />
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="phone">Jimara Telefonê</Label>
+              <Input type="tel" id="phone" name="phone" placeholder="+4912345678900" value={form.phone} onChange={handleChange} required />
+            </div>
           </div>
+
           <div className="grid gap-2">
-            <Label htmlFor="phone">Jimara Telefonê</Label>
-            <Input type="tel" id="phone" name="phone" placeholder="+4912345678900" value={form.phone} onChange={handleChange} required />
-          </div>
-        </div>
-
-        <div className='flex mb-4 items-end'>
-          <div className="grid w-full gap-2 mr-2">
             <Label htmlFor="email">E-Mail</Label>
             <Input type="email" id="email" name="email" placeholder="abc@gmail.com" value={form.email} onChange={handleChange} required />
           </div>
-        </div>
 
-        <div className='grid gap-2'>
-          <Label htmlFor={"note"}>Peyam</Label>
-          <Textarea
-            id={"note"}
-            className="selection:bg-primary selection:text-primary-foreground"
-            name={"note"}
-            value={form.note}
-            onChange={handleChange}
-            placeholder={`Peyama xwe li vir binivîse...`}
-            required
-          />
-        </div>
+          <div className='grid gap-2'>
+            <Label htmlFor={"note"}>Peyam</Label>
+            <Textarea
+              id={"note"}
+              className="selection:bg-primary selection:text-primary-foreground"
+              name={"note"}
+              value={form.note}
+              onChange={handleChange}
+              placeholder={`Peyama xwe li vir binivîse...`}
+              required
+            />
+          </div>
 
-        <Button
-          className={`w-full mt-4 select-none transition-colors duration-200 ${isFormReady && !submitted ? 'bg-green-500 hover:bg-green-600 text-secondary cursor-pointer' : 'bg-gray-500 text-gray-200 cursor-not-allowed'}`}
-          type="submit"
-          disabled={!isFormReady || submitted}
-        >
-          {submitted ? (
-            <>
-              <Loader2Icon className="animate-spin" />
-              Tê şandin...
-            </>
-          ) : (
-            'Bişîne'
-          )}
-        </Button>
-      </form>
+          <div>
+            <Button
+              className={`w-full mt-2 select-none transition-colors duration-200 ${isFormReady && !submitted ? 'bg-green-500 hover:bg-green-600 text-secondary cursor-pointer' : 'bg-gray-500 text-gray-200 cursor-not-allowed'}`}
+              type="submit"
+              disabled={!isFormReady || submitted}
+            >
+              {submitted ? (
+                <>
+                  <Loader2Icon className="animate-spin mr-2 inline-block" />
+                  Tê şandin...
+                </>
+              ) : (
+                'Bişîne'
+              )}
+            </Button>
+          </div>
+        </form>
+      </div>
     </div>
   );
 }
