@@ -3,7 +3,7 @@ import EntryForm from '@/components/EntryForm';
 import Share from "@/components/Share";
 import { adminList } from '@/lib/utils';
 import { useEffect, useRef, useState } from 'react';
-import { SquarePen, Trash2, Languages, Loader2Icon } from "lucide-react";
+import { SquarePen, Trash2, Languages, Loader2Icon, Expand, Shrink } from "lucide-react";
 import TranslateMenu from './TranslateMenu';
 import {
   Dialog,
@@ -371,8 +371,27 @@ export default function DisplayEntries() {
     }, [isDialogOpen, media]);
 
     useEffect(() => {
-      setImageLoaded(false);
-    }, [currentIndex]);
+      let cancelled = false;
+      const url = media[currentIndex];
+      if (!url) return;
+
+      const img = new Image();
+      img.src = url;
+
+      if (img.complete) {
+        setImageLoaded(true);
+      } else {
+        setImageLoaded(false);
+        img.onload = () => { if (!cancelled) setImageLoaded(true); };
+        img.onerror = () => { if (!cancelled) setImageLoaded(true); };
+      }
+
+      return () => {
+        cancelled = true;
+        img.onload = null;
+        img.onerror = null;
+      };
+    }, [currentIndex, media]);
 
 
     if (!media || media.length === 0) return null;
@@ -439,7 +458,12 @@ export default function DisplayEntries() {
             <div className="relative w-full h-full flex flex-col items-center justify-center">
               <div className="w-full h-full overflow-hidden rounded-lg shadow-lg relative">
                 {!imageLoaded && (
-                  <div className="absolute inset-0 bg-gray-800 animate-pulse z-10" />
+                  <>
+                    {/* Solid backdrop prevents underlying image from peeking through while pulse animates */}
+                    <div className="absolute inset-0 bg-gray-900 z-20" />
+                    {/* Slightly lighter pulsing layer on top for the skeleton effect */}
+                    <div className="absolute inset-0 bg-gray-700/60 animate-pulse z-30" />
+                  </>
                 )}
                 {media.length > 0 && renderMedia(media[currentIndex], 'auto', () => setImageLoaded(true))}
               </div>
@@ -642,9 +666,19 @@ export default function DisplayEntries() {
                         {textTooLong && (
                           <button
                             onClick={() => toggleExpand(entry.id)}
-                            className="text-blue-400 hover:underline cursor-pointer"
+                            className="text-blue-400 hover:underline cursor-pointer flex items-center gap-1"
                           >
-                            {isExpanded ? 'Weniger zeigen' : 'Mehr zeigen...'}
+                            {isExpanded ? (
+                              <>
+                                <Shrink size={20} />
+                                biçûk bike
+                              </>
+                            ) : (
+                              <>
+                                <Expand size={20} />
+                                berfireh bike...
+                              </>
+                            )}
                           </button>
                         )}
                       </div>
@@ -664,3 +698,4 @@ export default function DisplayEntries() {
     </div>
   );
 }
+// mehr ze
