@@ -127,7 +127,7 @@ export default function CourseForm() {
                 <SelectTrigger id="ast" className="w-full cursor-pointer selection:bg-primary selection:text-primary-foreground">
                   <SelectValue placeholder="Asta..." />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent className="bg-slate-900 border border-slate-700">
                   <SelectGroup>
                     <SelectLabel>Asta...</SelectLabel>
                     <SelectItem value="Yekem">Yekem</SelectItem>

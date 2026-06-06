@@ -35,7 +35,7 @@ export function DatePicker({ date, onChange }) {
             <ChevronDownIcon />
           </Button>
         </PopoverTrigger>
-        <PopoverContent className="w-auto overflow-hidden p-0 bg-gray-900" align="start">
+        <PopoverContent className="w-auto overflow-hidden p-0 bg-slate-900 border border-slate-700" align="start">
           <Calendar
             mode="single"
             selected={date ? new Date(date) : undefined}
