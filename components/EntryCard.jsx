@@ -136,7 +136,7 @@ export default function EntryCard({
                 <p>
                   {entry.translating ? (
                     <>
-                      <Loader2Icon className="animate-spin inline" /> Übersetzen...
+                      <Loader2Icon className="animate-spin inline" /> Tê wergerandin...
                     </>
                   ) : entry.translatedContent ? (
                     entry.translatedContent

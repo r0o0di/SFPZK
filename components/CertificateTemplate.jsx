@@ -1,0 +1,458 @@
+import React from 'react';
+export default function CertificateTemplate({ data, totalScore }) {
+  const {
+    branchName,
+    studentLevel,
+    studentName,
+    studentNumber,
+    studentBirthdate,
+    studentBirthplace,
+    gradeReading,
+    gradeReadingMax,
+    gradeWriting,
+    gradeWritingMax,
+    gradeVekitMijar,
+    gradeVekitMijarMax,
+    certificateLocation,
+    certificateDate,
+    teacherName,
+  } = data;
+
+  return (
+    <div
+      className="certificate"
+      style={{
+        position: 'relative',
+        display: 'flex',
+        flexDirection: 'column',
+        boxSizing: 'border-box',
+        width: '210mm',
+        minHeight: '297mm',
+        padding: '15mm 15mm',
+        background: '#fff',
+        boxShadow: '0 4px 40px rgba(0, 0, 0, 0.22)',
+        fontFamily: "'Times New Roman', Times, serif",
+        color: '#000',
+      }}
+    >
+      <div
+        className="certificate-title-wrapper"
+        style={{
+          display: 'flex',
+          justifyContent: 'center',
+        }}
+      >
+        <div
+          className="header-column"
+          style={{
+            width: '100%',
+            justifyItems: 'center',
+          }}
+        >
+          <h1
+            className="certificate-title"
+            style={{
+              margin: 0,
+              fontSize: '40px',
+              fontWeight: 500,
+              letterSpacing: '1px',
+            }}
+          >
+            Fêrname
+          </h1>
+        </div>
+      </div>
+
+      <header>
+        <div
+          className="header"
+          style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            marginTop: '20px',
+            paddingBottom: '15px',
+          }}
+        >
+          <div
+            className="header-left"
+            style={{
+              width: '30%',
+            }}
+          >
+            <div
+              className="logo-wrapper logo-wrapper-left"
+              style={{
+                display: 'flex',
+                justifyContent: 'flex-start',
+              }}
+            >
+              <img
+                src="krg-logo.png"
+                alt="KRG Logo"
+                className="logo logo-side"
+                style={{
+                  height: 'auto',
+                  width: '90px',
+                }}
+              />
+            </div>
+          </div>
+
+          <div
+            className="header-column"
+            style={{
+              width: '100%',
+              justifyItems: 'center',
+            }}
+          >
+            <div
+              className="logo-wrapper logo-wrapper-center"
+              style={{
+                display: 'flex',
+                justifyContent: 'center',
+              }}
+            >
+              <img
+                src="sfpzk-logo.png"
+                alt="SFPZK Logo"
+                className="logo logo-main"
+                style={{
+                  height: 'auto',
+                  width: '130px',
+                  marginTop: '-15px',
+                }}
+              />
+            </div>
+          </div>
+
+          <div
+            className="header-right"
+            style={{
+              width: '30%',
+              textAlign: 'right',
+            }}
+          >
+            <div
+              className="logo-wrapper logo-wrapper-right"
+              style={{
+                display: 'flex',
+                justifyContent: 'flex-end',
+              }}
+            >
+              <img
+                src="iklf-logo.png"
+                alt="IKLF Logo"
+                className="logo logo-side"
+                style={{
+                  height: 'auto',
+                  width: '90px',
+                }}
+              />
+            </div>
+          </div>
+        </div>
+
+        <div
+          className="institution-info"
+          style={{
+            marginTop: '-10px',
+            textAlign: 'center',
+            fontSize: '20px',
+          }}
+        >
+          <span>Saziya Fêrkirin û Parastina Zimanê Kurdî</span>
+
+          <span
+            className="institution-branch"
+            style={{
+              display: 'block',
+              marginTop: '5px',
+              fontSize: '18px',
+            }}
+          >
+            Şaxa <strong id="branch-name">{branchName}</strong>
+          </span>
+        </div>
+      </header>
+
+      <section
+        className="student-info"
+        style={{
+          marginBottom: '20px',
+          paddingBottom: '10px',
+          borderBottom: '1px solid #000',
+          fontSize: '15px',
+        }}
+      >
+        <p
+          className="level-text"
+          style={{
+            margin: '5px 0',
+            textAlign: 'center',
+          }}
+        >
+          Asta <strong id="student-level">{studentLevel}</strong>
+        </p>
+
+        <p style={{ margin: '5px 0' }}>Ji bo</p>
+
+        <strong id="student-name">{studentName}</strong>
+        <br />
+
+        Hejmar <strong id="student-number">{studentNumber}</strong>
+        <br />
+
+        <div
+          className="student-details-right"
+          style={{
+            float: 'right',
+            marginTop: '-35px',
+          }}
+        >
+          <strong id="student-birthdate">{studentBirthdate}</strong>
+          <br />
+          <strong id="student-birthplace">{studentBirthplace}</strong>
+        </div>
+      </section>
+
+      <main>
+        <h3
+          className="section-title"
+          style={{
+            margin: '15px 0 8px',
+            fontSize: '20px',
+            fontWeight: 900,
+          }}
+        >
+          Pile
+        </h3>
+
+        <div
+          className="subjects-grid"
+          style={{
+            display: 'grid',
+            gridTemplateColumns: '1fr',
+            gap: '10px 25px',
+            marginBottom: '20px',
+          }}
+        >
+          <div
+            className="subject-row"
+            style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              minHeight: '24px',
+              padding: '5px 0',
+              borderBottom: '1px dotted #999',
+            }}
+          >
+            <span className="subject-name">Xwendin</span>
+
+            <span
+              className="grade-box"
+              style={{
+                minWidth: '25px',
+                padding: '2px 8px',
+                textAlign: 'center',
+                fontWeight: 'bold',
+                border: '1px solid #000',
+                background: '#fafafa',
+              }}
+            >
+              <span id="grade-reading">{gradeReading}</span>{' '}
+              <span
+                id="grade-reading-max"
+                className="grade-max"
+                style={{ fontWeight: 100 }}
+              >
+                / {gradeReadingMax}
+              </span>
+            </span>
+          </div>
+
+          <div
+            className="subject-row"
+            style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              minHeight: '24px',
+              padding: '5px 0',
+              borderBottom: '1px dotted #999',
+            }}
+          >
+            <span className="subject-name">Nivîsandin</span>
+
+            <span
+              className="grade-box"
+              style={{
+                minWidth: '25px',
+                padding: '2px 8px',
+                textAlign: 'center',
+                fontWeight: 'bold',
+                border: '1px solid #000',
+                background: '#fafafa',
+              }}
+            >
+              <span id="grade-writing">{gradeWriting}</span>{' '}
+              <span
+                id="grade-writing-max"
+                className="grade-max"
+                style={{ fontWeight: 100 }}
+              >
+                / {gradeWritingMax}
+              </span>
+            </span>
+          </div>
+
+          <div
+            className="subject-row"
+            style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              minHeight: '24px',
+              padding: '5px 0',
+              borderBottom: '1px dotted #999',
+            }}
+          >
+            <span className="subject-name">Vekît / Mijar</span>
+
+            <span
+              className="grade-box"
+              style={{
+                minWidth: '25px',
+                padding: '2px 8px',
+                textAlign: 'center',
+                fontWeight: 'bold',
+                border: '1px solid #000',
+                background: '#fafafa',
+              }}
+            >
+              <span id="grade-vekit-mijar">{gradeVekitMijar}</span>{' '}
+              <span
+                id="grade-vekit-mijar-max"
+                className="grade-max"
+                style={{ fontWeight: 100 }}
+              >
+                / {gradeVekitMijarMax}
+              </span>
+            </span>
+          </div>
+
+          <div
+            className="subject-row total-row"
+            style={{
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              minHeight: '24px',
+              padding: '5px 0',
+              borderBottom: '1px dotted #999',
+              gap: '2rem',
+              marginTop: '5px',
+              fontSize: '18px',
+            }}
+          >
+            <span className="subject-name">Tevahî</span>
+
+            <span
+              className="grade-box"
+              style={{
+                minWidth: '25px',
+                padding: '2px 8px',
+                textAlign: 'center',
+                fontWeight: 'bold',
+                border: '1px solid #000',
+                background: '#fafafa',
+              }}
+            >
+              <span id="grade-total">{totalScore}</span> <span style={{ fontWeight: 100 }}>/ 100</span>
+            </span>
+          </div>
+        </div>
+      </main>
+
+      <section
+        className="signature-section"
+        style={{
+          display: 'flex',
+          justifyContent: 'space-around',
+          alignItems: 'flex-end',
+          height: '18rem',
+        }}
+      >
+        <div className="stamp-container">
+          <img
+            src="stamp.jpg"
+            alt="SFPZK Stamp"
+            className="stamp-image"
+            style={{
+              width: '150px',
+              height: 'auto',
+              rotate: '-25deg',
+            }}
+          />
+        </div>
+
+        <div
+          className="signature-container"
+          style={{
+            width: '300px',
+            textAlign: 'center',
+          }}
+        >
+          <span>
+            <strong id="certificate-location">{certificateLocation}</strong>
+          </span>
+
+          <br />
+
+          <span>
+            <strong id="certificate-date">{certificateDate}</strong>
+          </span>
+
+          <p
+            className="proxy-text"
+            style={{
+              margin: '5px 0 0',
+            }}
+          >
+            bi navê
+          </p>
+
+          <div
+            className="signature-line"
+            style={{
+              marginTop: '5px',
+              borderBottom: '1px solid #000',
+            }}
+          >
+            <span
+              id="teacher-name"
+              className="signature-name"
+              style={{
+                fontFamily: "'Courier New', monospace",
+                fontSize: '18px',
+                fontStyle: 'italic',
+              }}
+            >
+              {teacherName}
+            </span>
+          </div>
+
+          <p
+            className="signature-title"
+            style={{
+              margin: '5px 0 0',
+            }}
+          >
+            (Mamoste)
+          </p>
+        </div>
+      </section>
+    </div>
+  );
+}

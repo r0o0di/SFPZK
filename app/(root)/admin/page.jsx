@@ -62,14 +62,14 @@ export default function FormPage() {
       {!user ? (
         <div className="mx-2">
           <p>Ji bo ku tu bikaribî çalakiyan biweşînî û sererast bikî, xwe bi hesabê xwe yê Google-ê ve girêde</p>
-          <button className="bg-green-500 hover:bg-green-600 text-white py-2 px-4 rounded cursor-pointer" onClick={handleLogin}>Login with Google</button>
+          <button className="bg-green-500 hover:bg-green-600 text-white py-2 px-4 rounded cursor-pointer" onClick={handleLogin}>Girêde</button>
         </div>
       ) : (
         <>
           <p className=" mx-2">{user.displayName} ({user.email})</p>
           <p className="mx-2">Ji hesabê xwe yê Google-ê derkeve:</p>
           <button onClick={handleLogout} className="bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded cursor-pointer mx-2">
-            Logout
+            Derkeve
           </button>
           <div style={{ height: "90vh", alignContent: "center" }}>
             <EntryForm onSubmit={handleFormSubmit} buttonText="Biweşîne" />

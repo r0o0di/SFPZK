@@ -268,4 +268,3 @@ export default function DisplayEntries() {
     </div>
   );
 }
-// mehr ze
