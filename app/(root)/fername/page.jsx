@@ -11,3 +11,17 @@ export default function Kontakt( ) {
 
 
 }
+
+// "use client"
+
+// import React from 'react';
+// import CertificateTemplate from '@/components/CertificateTemplate';
+
+// export default function Kontakt( ) {
+  
+//     return (
+//       <CertificateTemplate data="j"/>
+//     );
+
+
+// }

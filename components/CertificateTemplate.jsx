@@ -53,7 +53,7 @@ export default function CertificateTemplate({ data, totalScore }) {
             className="certificate-title"
             style={{
               margin: 0,
-              fontSize: '40px',
+              fontSize: '50px',
               fontWeight: 500,
               letterSpacing: '1px',
             }}
@@ -93,7 +93,7 @@ export default function CertificateTemplate({ data, totalScore }) {
                 className="logo logo-side"
                 style={{
                   height: 'auto',
-                  width: '90px',
+                  width: '115px',
                 }}
               />
             </div>
@@ -119,7 +119,7 @@ export default function CertificateTemplate({ data, totalScore }) {
                 className="logo logo-main"
                 style={{
                   height: 'auto',
-                  width: '130px',
+                  width: '155px',
                   marginTop: '-15px',
                 }}
               />
@@ -146,7 +146,7 @@ export default function CertificateTemplate({ data, totalScore }) {
                 className="logo logo-side"
                 style={{
                   height: 'auto',
-                  width: '90px',
+                  width: '115px',
                 }}
               />
             </div>
@@ -158,7 +158,7 @@ export default function CertificateTemplate({ data, totalScore }) {
           style={{
             marginTop: '-10px',
             textAlign: 'center',
-            fontSize: '20px',
+            fontSize: '30px',
           }}
         >
           <span>Saziya Fêrkirin û Parastina Zimanê Kurdî</span>
@@ -168,7 +168,7 @@ export default function CertificateTemplate({ data, totalScore }) {
             style={{
               display: 'block',
               marginTop: '5px',
-              fontSize: '18px',
+              fontSize: '28px',
             }}
           >
             Şaxa <strong id="branch-name">{branchName}</strong>
@@ -182,7 +182,7 @@ export default function CertificateTemplate({ data, totalScore }) {
           marginBottom: '20px',
           paddingBottom: '10px',
           borderBottom: '1px solid #000',
-          fontSize: '15px',
+          fontSize: '20px',
         }}
       >
         <p
@@ -190,6 +190,7 @@ export default function CertificateTemplate({ data, totalScore }) {
           style={{
             margin: '5px 0',
             textAlign: 'center',
+            fontSize: '25px',
           }}
         >
           Asta <strong id="student-level">{studentLevel}</strong>
@@ -210,7 +211,10 @@ export default function CertificateTemplate({ data, totalScore }) {
             marginTop: '-35px',
           }}
         >
-          <strong id="student-birthdate">{studentBirthdate}</strong>
+          <strong id="student-birthdate" style={{
+            float: 'right'
+          }}
+          >{studentBirthdate}</strong>
           <br />
           <strong id="student-birthplace">{studentBirthplace}</strong>
         </div>
@@ -221,7 +225,7 @@ export default function CertificateTemplate({ data, totalScore }) {
           className="section-title"
           style={{
             margin: '15px 0 8px',
-            fontSize: '20px',
+            fontSize: '30px',
             fontWeight: 900,
           }}
         >
@@ -316,6 +320,7 @@ export default function CertificateTemplate({ data, totalScore }) {
               minHeight: '24px',
               padding: '5px 0',
               borderBottom: '1px dotted #999',
+              fontSize: "24px"
             }}
           >
             <span className="subject-name">Vekît / Mijar</span>
@@ -353,7 +358,7 @@ export default function CertificateTemplate({ data, totalScore }) {
               borderBottom: '1px dotted #999',
               gap: '2rem',
               marginTop: '5px',
-              fontSize: '18px',
+              fontSize: '28px',
             }}
           >
             <span className="subject-name">Tevahî</span>
@@ -382,6 +387,7 @@ export default function CertificateTemplate({ data, totalScore }) {
           justifyContent: 'space-around',
           alignItems: 'flex-end',
           height: '18rem',
+          fontSite: "22px"
         }}
       >
         <div className="stamp-container">
@@ -390,7 +396,7 @@ export default function CertificateTemplate({ data, totalScore }) {
             alt="SFPZK Stamp"
             className="stamp-image"
             style={{
-              width: '150px',
+              width: '165px',
               height: 'auto',
               rotate: '-25deg',
             }}
@@ -435,7 +441,7 @@ export default function CertificateTemplate({ data, totalScore }) {
               className="signature-name"
               style={{
                 fontFamily: "'Courier New', monospace",
-                fontSize: '18px',
+                fontSize: '28px',
                 fontStyle: 'italic',
               }}
             >

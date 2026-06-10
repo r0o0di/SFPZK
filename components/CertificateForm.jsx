@@ -1,4 +1,4 @@
-// if (element)
+// sertîfîk 
 import React, { useState, useRef } from 'react';
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -12,7 +12,7 @@ import {
     SelectValue,
 } from "@/components/ui/select";
 import { Button } from '@/components/ui/button';
-import { Loader2Icon } from "lucide-react";
+import { Loader2Icon, Download } from "lucide-react";
 import { toast } from "sonner";
 
 // Import your custom template component
@@ -21,6 +21,13 @@ import CertificateTemplate from '@/components/CertificateTemplate';
 export default function CertificateForm() {
     const [generating, setGenerating] = useState(false);
     const templateRef = useRef(null);
+
+    const getTodayDate = () => {
+        const today = new Date();
+        const day = String(today.getDate()).padStart(2, "0");
+        const month = String(today.getMonth() + 1).padStart(2, "0");
+        return `${day}.${month}.${today.getFullYear()}`;
+    };
 
     const [form, setForm] = useState({
         branchName: "",
@@ -36,7 +43,7 @@ export default function CertificateForm() {
         gradeVekitMijar: "",
         gradeVekitMijarMax: "/ 60",
         certificateLocation: "",
-        certificateDate: "",
+        certificateDate: getTodayDate(),
         teacherName: "",
     });
 
@@ -132,7 +139,7 @@ export default function CertificateForm() {
             const fileName = `Sertifika_${form.studentName.replace(/\s+/g, '_')}.pdf`;
             pdf.save(fileName);
 
-            toast.success("Sertîfîka bi serkeftî hat amadekirin!");
+            toast.success("Fêrname bi serkeftî hat amadekirin!");
         } catch (error) {
             console.error("PDF generation failed:", error);
             toast.error("Şaşiyek çêbû di dema çêkirina PDFê de.");
@@ -185,6 +192,7 @@ export default function CertificateForm() {
                         </div>
                     </div>
 
+                    <hr className="border-slate-700 my-2" />
                     {/* Student Info */}
                     <div className="grid sm:grid-cols-2 gap-4">
                         <div className="grid gap-2">
@@ -193,7 +201,7 @@ export default function CertificateForm() {
                         </div>
                         <div className="grid gap-2">
                             <Label htmlFor="studentNumber">Hejmara Xwendekarê</Label>
-                            <Input type="text" id="studentNumber" name="studentNumber" placeholder="335" value={form.studentNumber} onChange={handleChange} required />
+                            <Input type="number" id="studentNumber" name="studentNumber" placeholder="335" value={form.studentNumber} onChange={handleChange} required />
                         </div>
                     </div>
 
@@ -210,7 +218,7 @@ export default function CertificateForm() {
                     </div>
 
                     <hr className="border-slate-700 my-2" />
-                    <h2 className="text-sm font-semibold text-slate-400 uppercase tracking-wider">Pilên Ezmûnên</h2>
+                    <h2 className="text-sm font-semibold text-slate-400 uppercase tracking-wider">Pilên Ezmûnê</h2>
 
                     {/* Grades Grid */}
                     <div className="grid grid-cols-3 gap-4">
@@ -259,7 +267,10 @@ export default function CertificateForm() {
                                     Fêrname tê amadekirin...
                                 </>
                             ) : (
-                                'Fêrnamê wek PDF daxîne'
+                                <>
+                                    <Download strokeWidth={2.5} className="h-auto size-6" />
+                                    Fêrnamê wek PDF daxîne
+                                </>
                             )}
                         </Button>
                     </div>
