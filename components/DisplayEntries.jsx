@@ -1,6 +1,6 @@
 "use client";
 import EntryCard from '@/components/EntryCard';
-import { adminList } from '@/lib/utils';
+import { useAdminState } from '@/lib/useAuth';
 import { useEffect, useRef, useState } from 'react';
 import {
   Dialog,
@@ -27,7 +27,7 @@ import { loadTranslationFromCache, saveTranslationToCache } from '@/lib/translat
 
 export default function DisplayEntries() {
   const [entries, setEntries] = useState([]);
-  const [user, setUser] = useState(null);
+  const { user, isAdmin } = useAdminState();
   const [editingId, setEditingId] = useState(null);
   const [editData, setEditData] = useState({ date: '', title: '', content: '', media: [] });
   const [expandedIds, setExpandedIds] = useState([]);
@@ -36,10 +36,6 @@ export default function DisplayEntries() {
   const editingIdRef = useRef(null);
   const ignorePopstateRef = useRef(false);
 
-  useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged(setUser);
-    return () => unsubscribe();
-  }, []);
 
   useEffect(() => {
     editingIdRef.current = editingId;
@@ -76,7 +72,7 @@ export default function DisplayEntries() {
     fetchEntries();
   }, []);
 
-  const isAdmin = adminList.includes(user?.email);
+  // const isAdmin = adminList.includes(user?.email);
 
   const handleDelete = async (id) => {
     if (!isAdmin) return;

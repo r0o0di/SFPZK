@@ -1,5 +1,4 @@
-// sertîfîk 
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
@@ -47,8 +46,57 @@ export default function CertificateForm() {
         teacherName: "",
     });
 
+    const STORAGE_KEY = 'certificateTeacherPrefs';
+    const PREF_FIELDS = ['branchName', 'studentLevel', 'certificateLocation', 'teacherName'];
+
+    const formatGradeValue = (value) => {
+        const normalized = String(value || '').trim();
+        return /^[0-9]$/.test(normalized) ? `0${normalized}` : normalized;
+    };
+
+    const saveTeacherPreferences = (newForm) => {
+        if (typeof window === 'undefined') return;
+        const payload = {
+            updatedAt: Date.now(),
+        };
+        PREF_FIELDS.forEach((key) => {
+            payload[key] = newForm[key] || '';
+        });
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
+    };
+
+    const loadTeacherPreferences = () => {
+        if (typeof window === 'undefined') return null;
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) return null;
+        try {
+            const parsed = JSON.parse(raw);
+            if (!parsed?.updatedAt || Date.now() - parsed.updatedAt > 24 * 60 * 60 * 1000) {
+                localStorage.removeItem(STORAGE_KEY);
+                return null;
+            }
+            return parsed;
+        } catch (error) {
+            return null;
+        }
+    };
+
+    useEffect(() => {
+        const saved = loadTeacherPreferences();
+        if (saved) {
+            setForm((prev) => ({
+                ...prev,
+                branchName: saved.branchName || prev.branchName,
+                studentLevel: saved.studentLevel || prev.studentLevel,
+                certificateLocation: saved.certificateLocation || prev.certificateLocation,
+                teacherName: saved.teacherName || prev.teacherName,
+            }));
+        }
+    }, []);
+
     const handleChange = e => {
-        setForm({ ...form, [e.target.name]: e.target.value });
+        const updatedForm = { ...form, [e.target.name]: e.target.value };
+        setForm(updatedForm);
     };
 
     // Automatically calculate total score
@@ -75,6 +123,13 @@ export default function CertificateForm() {
         e.preventDefault();
         if (!isFormReady) return;
 
+        // save teacher preferences once when the teacher clicks download
+        try {
+            saveTeacherPreferences(form);
+        } catch (err) {
+            // ignore storage errors
+        }
+
         setGenerating(true);
 
         // 1. Safely inject form data into the hidden HTML Template elements via ID matching
@@ -91,11 +146,11 @@ export default function CertificateForm() {
             setField("#student-number", form.studentNumber);
             setField("#student-birthdate", form.studentBirthdate);
             setField("#student-birthplace", form.studentBirthplace);
-            setField("#grade-reading", form.gradeReading);
+            setField("#grade-reading", formatGradeValue(form.gradeReading));
             setField("#grade-reading-max", form.gradeReadingMax);
-            setField("#grade-writing", form.gradeWriting);
+            setField("#grade-writing", formatGradeValue(form.gradeWriting));
             setField("#grade-writing-max", form.gradeWritingMax);
-            setField("#grade-vekit-mijar", form.gradeVekitMijar);
+            setField("#grade-vekit-mijar", formatGradeValue(form.gradeVekitMijar));
             setField("#grade-vekit-mijar-max", form.gradeVekitMijarMax);
             setField("#grade-total", totalScore);
             setField("#certificate-location", form.certificateLocation);
@@ -136,7 +191,7 @@ export default function CertificateForm() {
             pdf.addImage(imgData, 'JPEG', 0, 0, 210, 297);
 
             // 8. Download the finished document
-            const fileName = `Sertifika_${form.studentName.replace(/\s+/g, '_')}.pdf`;
+            const fileName = `Fêrnama_${form.studentName.replace(/\s+/g, '_')}.pdf`;
             pdf.save(fileName);
 
             toast.success("Fêrname bi serkeftî hat amadekirin!");
@@ -183,9 +238,9 @@ export default function CertificateForm() {
                                 </SelectTrigger>
                                 <SelectContent className="bg-slate-900 border border-slate-700">
                                     <SelectGroup>
-                                        <SelectItem value="yekem">Yekem</SelectItem>
-                                        <SelectItem value="duyem">Duyem</SelectItem>
-                                        <SelectItem value="sêyem">Sêyem</SelectItem>
+                                        <SelectItem value="Yekem">Yekem</SelectItem>
+                                        <SelectItem value="Duyem">Duyem</SelectItem>
+                                        <SelectItem value="Sêyem">Sêyem</SelectItem>
                                     </SelectGroup>
                                 </SelectContent>
                             </Select>

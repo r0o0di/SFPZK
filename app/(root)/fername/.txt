@@ -412,3 +412,144 @@ id="certificate-date"
 
 id="teacher-name"
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// this page uses dynamic routing 
+// because otherwise it would not be able to handle 
+// special characters like ç, î, ê in the URL
+"use client"
+
+import React, { useEffect, useState } from 'react';
+import { notFound } from 'next/navigation';
+import DisplayEntries from '@/components/DisplayEntries';
+import CourseForm from '@/components/CourseForm';
+import CertificateForm from '@/components/CertificateForm';
+import { auth } from '@/lib/firebase';
+import { adminList } from '@/lib/utils';
+
+export default function customPage({ params }) {
+  const param = decodeURIComponent(params.customPage);
+  const [user, setUser] = useState(null);
+  const [authLoading, setAuthLoading] = useState(true);
+
+  useEffect(() => {
+    const unsubscribe = auth.onAuthStateChanged((currentUser) => {
+      setUser(currentUser);
+      setAuthLoading(false);
+    });
+    return () => unsubscribe();
+  }, []);
+
+  const isAdmin = adminList.includes(user?.email);
+
+  if (param === 'çalakî') {
+    return (
+      <>
+        <div style={{ padding: 20, paddingTop: 60 }}>
+          <DisplayEntries />
+        </div>
+      </>
+    );
+  }
+
+  if (param === 'fêrbûn') {
+    return <CourseForm />;
+  }
+
+  if (param === 'fêrname') {
+    if (authLoading) {
+      return (
+        <div className="min-h-screen bg-slate-950 text-slate-200 flex items-center justify-center p-8">
+          <div className="rounded-3xl border border-slate-700/60 bg-slate-900/95 p-8 text-center">
+            <p className="text-lg">Tê barkirin...</p>
+          </div>
+        </div>
+      );
+    }
+
+    if (!isAdmin) {
+      return (
+        <div className="min-h-screen bg-slate-950 text-slate-200 flex items-center justify-center p-8">
+          <div className="max-w-md rounded-3xl border border-red-600/40 bg-slate-900/90 p-8 text-center">
+            <h1 className="text-2xl font-semibold text-red-300 mb-4">Destûr têxe</h1>
+            <p className="text-slate-300">Tenê xwendekarên admin dikarin vê rûpelê bixwînin.</p>
+          </div>
+        </div>
+      );
+    }
+
+    return <CertificateForm />;
+  }
+
+  notFound();
+}

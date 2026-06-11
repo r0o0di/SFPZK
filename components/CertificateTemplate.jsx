@@ -47,6 +47,7 @@ export default function CertificateTemplate({ data, totalScore }) {
           style={{
             width: '100%',
             justifyItems: 'center',
+            marginTop: "-22px",
           }}
         >
           <h1
@@ -70,7 +71,7 @@ export default function CertificateTemplate({ data, totalScore }) {
             display: 'flex',
             justifyContent: 'space-between',
             alignItems: 'center',
-            marginTop: '20px',
+            // marginTop: '20px',
             paddingBottom: '15px',
           }}
         >
@@ -92,7 +93,8 @@ export default function CertificateTemplate({ data, totalScore }) {
                 alt="KRG Logo"
                 className="logo logo-side"
                 style={{
-                  height: 'auto',
+                  // height: 'auto',
+                  height: "98px",
                   width: '115px',
                 }}
               />
@@ -118,7 +120,7 @@ export default function CertificateTemplate({ data, totalScore }) {
                 alt="SFPZK Logo"
                 className="logo logo-main"
                 style={{
-                  height: 'auto',
+                  height: '155px',
                   width: '155px',
                   marginTop: '-15px',
                 }}
@@ -145,7 +147,7 @@ export default function CertificateTemplate({ data, totalScore }) {
                 alt="IKLF Logo"
                 className="logo logo-side"
                 style={{
-                  height: 'auto',
+                  height: '113px',
                   width: '115px',
                 }}
               />
@@ -167,7 +169,7 @@ export default function CertificateTemplate({ data, totalScore }) {
             className="institution-branch"
             style={{
               display: 'block',
-              marginTop: '5px',
+              marginTop: "-15px",
               fontSize: '28px',
             }}
           >
@@ -179,7 +181,7 @@ export default function CertificateTemplate({ data, totalScore }) {
       <section
         className="student-info"
         style={{
-          marginBottom: '20px',
+          // marginBottom: '20px',
           paddingBottom: '10px',
           borderBottom: '1px solid #000',
           fontSize: '20px',
@@ -208,7 +210,7 @@ export default function CertificateTemplate({ data, totalScore }) {
           className="student-details-right"
           style={{
             float: 'right',
-            marginTop: '-35px',
+            marginTop: '-60px',
           }}
         >
           <strong id="student-birthdate" style={{
@@ -250,6 +252,8 @@ export default function CertificateTemplate({ data, totalScore }) {
               minHeight: '24px',
               padding: '5px 0',
               borderBottom: '1px dotted #999',
+              fontSize: "24px"
+
             }}
           >
             <span className="subject-name">Xwendin</span>
@@ -285,6 +289,7 @@ export default function CertificateTemplate({ data, totalScore }) {
               minHeight: '24px',
               padding: '5px 0',
               borderBottom: '1px dotted #999',
+              fontSize: "24px"
             }}
           >
             <span className="subject-name">Nivîsandin</span>
@@ -386,8 +391,9 @@ export default function CertificateTemplate({ data, totalScore }) {
           display: 'flex',
           justifyContent: 'space-around',
           alignItems: 'flex-end',
-          height: '18rem',
-          fontSite: "22px"
+          // height: '18rem',
+          fontSize: "22px",
+          marginTop: '30px',
         }}
       >
         <div className="stamp-container">
@@ -423,7 +429,7 @@ export default function CertificateTemplate({ data, totalScore }) {
           <p
             className="proxy-text"
             style={{
-              margin: '5px 0 0',
+              // margin: '5px 0 0',
             }}
           >
             bi navê
@@ -432,7 +438,7 @@ export default function CertificateTemplate({ data, totalScore }) {
           <div
             className="signature-line"
             style={{
-              marginTop: '5px',
+              // marginTop: '5px',
               borderBottom: '1px solid #000',
             }}
           >
