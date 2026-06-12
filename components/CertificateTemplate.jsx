@@ -75,84 +75,115 @@ export default function CertificateTemplate({ data, vekitOrMijar, totalScore, sh
             paddingBottom: '15px',
           }}
         >
-          <div
-            className="header-left"
-            style={{
-              width: '30%',
-            }}
-          >
-            <div
-              className="logo-wrapper logo-wrapper-left"
-              style={{
-                display: 'flex',
-                justifyContent: 'flex-start',
-              }}
-            >
-              <img
-                src="krg-logo.png"
-                alt="KRG Logo"
-                className="logo logo-side"
+          {branchName === 'Ewropayê' ? (
+            <>
+              <div
+                className="header-left"
                 style={{
-                  // height: 'auto',
-                  height: "98px",
-                  width: '115px',
+                  width: '30%',
                 }}
-              />
-            </div>
-          </div>
+              >
+                <div
+                  className="logo-wrapper logo-wrapper-left"
+                  style={{
+                    display: 'flex',
+                    justifyContent: 'flex-start',
+                  }}
+                >
+                  <img
+                    src="krg-logo.png"
+                    alt="KRG Logo"
+                    className="logo logo-side"
+                    style={{
+                      // height: 'auto',
+                      height: "98px",
+                      width: '115px',
+                    }}
+                  />
+                </div>
+              </div>
 
-          <div
-            className="header-column"
-            style={{
-              width: '100%',
-              justifyItems: 'center',
-            }}
-          >
-            <div
-              className="logo-wrapper logo-wrapper-center"
-              style={{
-                display: 'flex',
-                justifyContent: 'center',
-              }}
-            >
-              <img
-                src="sfpzk-logo.png"
-                alt="SFPZK Logo"
-                className="logo logo-main"
+              <div
+                className="header-column"
                 style={{
-                  height: '155px',
-                  width: '155px',
-                  marginTop: '-15px',
+                  width: '100%',
+                  justifyItems: 'center',
                 }}
-              />
-            </div>
-          </div>
+              >
+                <div
+                  className="logo-wrapper logo-wrapper-center"
+                  style={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                  }}
+                >
+                  <img
+                    src="sfpzk-logo.png"
+                    alt="SFPZK Logo"
+                    className="logo logo-main"
+                    style={{
+                      height: '155px',
+                      width: '155px',
+                      marginTop: '-15px',
+                    }}
+                  />
+                </div>
+              </div>
 
-          <div
-            className="header-right"
-            style={{
-              width: '30%',
-              textAlign: 'right',
-            }}
-          >
+              <div
+                className="header-right"
+                style={{
+                  width: '30%',
+                  textAlign: 'right',
+                }}
+              >
+                <div
+                  className="logo-wrapper logo-wrapper-right"
+                  style={{
+                    display: 'flex',
+                    justifyContent: 'flex-end',
+                  }}
+                >
+                  <img
+                    src="iklf-logo.png"
+                    alt="IKLF Logo"
+                    className="logo logo-side"
+                    style={{
+                      height: '113px',
+                      width: '115px',
+                    }}
+                  />
+                </div>
+              </div>
+            </>
+          ) : (
             <div
-              className="logo-wrapper logo-wrapper-right"
+              className="header-column"
               style={{
-                display: 'flex',
-                justifyContent: 'flex-end',
+                width: '100%',
+                justifyItems: 'center',
               }}
             >
-              <img
-                src="iklf-logo.png"
-                alt="IKLF Logo"
-                className="logo logo-side"
+              <div
+                className="logo-wrapper logo-wrapper-center"
                 style={{
-                  height: '113px',
-                  width: '115px',
+                  display: 'flex',
+                  justifyContent: 'center',
                 }}
-              />
+              >
+                <img
+                  src="sfpzk-logo.png"
+                  alt="SFPZK Logo"
+                  className="logo logo-main"
+                  style={{
+                    height: '155px',
+                    width: '155px',
+                    marginTop: '-15px',
+                  }}
+                />
+              </div>
             </div>
-          </div>
+          )}
         </div>
 
         <div
@@ -399,8 +430,8 @@ export default function CertificateTemplate({ data, vekitOrMijar, totalScore, sh
       >
         <div className="stamp-container">
           <img
-            src="stamp.jpg"
-            alt="SFPZK Stamp"
+            src={branchName === 'Ewropayê' ? 'stamp.jpg' : 'stamp-basur.jpg'}
+            alt={branchName === 'Ewropayê' ? 'SFPZK Stamp' : 'SFPZK Basur Stamp'}
             className="stamp-image"
             style={{
               width: '165px',
