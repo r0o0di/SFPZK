@@ -13,13 +13,17 @@ import {
 import { Button } from '@/components/ui/button';
 import { Loader2Icon, Download } from "lucide-react";
 import { toast } from "sonner";
+import { useAuthState } from '@/lib/useAuth';
 import { db } from '@/lib/firebase';
 import { setDoc, doc } from 'firebase/firestore';
+
 
 // Import your custom template component
 import CertificateTemplate from '@/components/CertificateTemplate';
 
+
 export default function CertificateForm() {
+    const { user } = useAuthState();
     const [generating, setGenerating] = useState(false);
     const templateRef = useRef(null);
 
@@ -205,8 +209,10 @@ export default function CertificateForm() {
             // ignore storage errors
         }
 
+
         // Save certificate data to Firestore for archival
         try {
+
             const rawId = `${form.certificateDate}_${form.studentLevel.replace("Yekem", '1').replace("Duyem", '2').replace("Sêyem", '3')}_${form.studentName}`;
             const docId = rawId.replace(/\s+/g, '_').replace(/\//g, '-');
             const payload = {
@@ -222,6 +228,7 @@ export default function CertificateForm() {
                 certificateLocation: form.certificateLocation,
                 certificateDate: form.certificateDate,
                 teacherName: form.teacherName,
+                createdBy: user.email
             };
 
             if (showReading) payload.gradeReading = form.gradeReading;
