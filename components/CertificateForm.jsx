@@ -13,6 +13,8 @@ import {
 import { Button } from '@/components/ui/button';
 import { Loader2Icon, Download } from "lucide-react";
 import { toast } from "sonner";
+import { db } from '@/lib/firebase';
+import { setDoc, doc } from 'firebase/firestore';
 
 // Import your custom template component
 import CertificateTemplate from '@/components/CertificateTemplate';
@@ -203,6 +205,33 @@ export default function CertificateForm() {
             // ignore storage errors
         }
 
+        // Save certificate data to Firestore for archival
+        try {
+            const rawId = `${form.certificateDate}_${form.studentLevel.replace("Yekem", '1').replace("Duyem", '2').replace("Sêyem", '3')}_${form.studentName}`;
+            const docId = rawId.replace(/\s+/g, '_').replace(/\//g, '-');
+            const payload = {
+                branchName: form.branchName,
+                studentLevel: form.studentLevel,
+                studentName: form.studentName,
+                studentNumber: form.studentNumber,
+                studentBirthdate: form.studentBirthdate,
+                studentBirthplace: form.studentBirthplace,
+                gradeWriting: form.gradeWriting,
+                gradeVekitORMijar: form.gradeVekitMijar,
+                totalScore,
+                certificateLocation: form.certificateLocation,
+                certificateDate: form.certificateDate,
+                teacherName: form.teacherName,
+            };
+
+            if (showReading) payload.gradeReading = form.gradeReading;
+
+            await setDoc(doc(db, 'certificates', docId), payload);
+        } catch (err) {
+            console.error('Failed to save certificate to DB:', err);
+            toast.error('Di qeydkirina fêrnameyê de xeletî çêbû — ji kerema xwe dubare bikin.');
+        }
+
         setGenerating(true);
 
         // 1. Safely inject form data into the hidden HTML Template elements via ID matching
@@ -285,7 +314,7 @@ export default function CertificateForm() {
                 </header>
 
                 <form onSubmit={handleGeneratePDF} className="grid gap-5">
-                    <h2 className="mt-[-10px] mb-[-10px] text-sm font-semibold text-slate-400 uppercase tracking-wider">Sazi</h2>
+                    <h2 className="mt-[-10px] mb-[-10px] text-sm font-semibold text-slate-400 uppercase tracking-wider">Sazî</h2>
 
                     {/* Branch and Level */}
                     <div className="grid sm:grid-cols-2 gap-4">
