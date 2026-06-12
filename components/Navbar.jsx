@@ -26,9 +26,9 @@ export default function Navbar() {
   const allLinks = [
     ...links,
     ...(isAdmin
-      ? [{ href: '/admin', label: 'Nû' },
-      { href: '/fêrname', label: 'Fêrname' },
-
+      ? [
+        { href: '/admin', label: 'Nû' },
+        { href: '/f%C3%AArname', label: 'Fêrname' },
       ]
       : []),
   ]
@@ -55,8 +55,8 @@ export default function Navbar() {
               />
 
               <span className={`hidden sm:block text-gray-100 font-semibold transition-all duration-300 ${isHome
-                  ? 'text-yellow-200'
-                  : 'hover:text-yellow-200'
+                ? 'text-yellow-200'
+                : 'hover:text-yellow-200'
                 }`}>
                 SFPZK
               </span>
@@ -77,8 +77,8 @@ export default function Navbar() {
                         href={href}
                         prefetch
                         className={`px-4 py-1 rounded-full text-sm font-medium transition-all duration-300 ${isActive
-                            ? 'bg-yellow-200 text-gray-900 shadow-lg'
-                            : 'text-gray-200 hover:text-yellow-200 hover:bg-gray-700/70'
+                          ? 'bg-yellow-200 text-gray-900 shadow-lg'
+                          : 'text-gray-200 hover:text-yellow-200 hover:bg-gray-700/70'
                           }`}
                       >
                         {label}
@@ -106,8 +106,8 @@ export default function Navbar() {
           {/* Mobile Menu */}
           <div
             className={`md:hidden overflow-hidden transition-all duration-300 ${mobileOpen
-                ? 'max-h-96 opacity-100'
-                : 'max-h-0 opacity-0'
+              ? 'max-h-96 opacity-100'
+              : 'max-h-0 opacity-0'
               }`}
           >
             <div className="border-t border-gray-700/50 px-4 py-4 space-y-2">
@@ -121,8 +121,8 @@ export default function Navbar() {
                       href={href}
                       prefetch
                       className={`block rounded-xl px-4 py-3 transition-all ${isActive
-                          ? 'bg-yellow-200 text-gray-900 font-medium'
-                          : 'text-gray-200 hover:bg-gray-800'
+                        ? 'bg-yellow-200 text-gray-900 font-medium'
+                        : 'text-gray-200 hover:bg-gray-800'
                         }`}
                     >
                       {label}

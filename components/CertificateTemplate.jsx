@@ -1,5 +1,5 @@
 import React from 'react';
-export default function CertificateTemplate({ data, totalScore }) {
+export default function CertificateTemplate({ data, vekitOrMijar, totalScore, showReading = true }) {
   const {
     branchName,
     studentLevel,
@@ -184,7 +184,7 @@ export default function CertificateTemplate({ data, totalScore }) {
           // marginBottom: '20px',
           paddingBottom: '10px',
           borderBottom: '1px solid #000',
-          fontSize: '20px',
+          fontSize: '21px',
         }}
       >
         <p
@@ -210,7 +210,7 @@ export default function CertificateTemplate({ data, totalScore }) {
           className="student-details-right"
           style={{
             float: 'right',
-            marginTop: '-60px',
+            marginTop: '-63px',
           }}
         >
           <strong id="student-birthdate" style={{
@@ -226,12 +226,12 @@ export default function CertificateTemplate({ data, totalScore }) {
         <h3
           className="section-title"
           style={{
-            margin: '15px 0 8px',
-            fontSize: '30px',
+            margin: '40px 0 -5px',
+            fontSize: '25px',
             fontWeight: 900,
           }}
         >
-          Pile
+          Pilên Ezmûnê
         </h3>
 
         <div
@@ -243,42 +243,43 @@ export default function CertificateTemplate({ data, totalScore }) {
             marginBottom: '20px',
           }}
         >
-          <div
-            className="subject-row"
-            style={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              minHeight: '24px',
-              padding: '5px 0',
-              borderBottom: '1px dotted #999',
-              fontSize: "24px"
-
-            }}
-          >
-            <span className="subject-name">Xwendin</span>
-
-            <span
-              className="grade-box"
+          {showReading && (
+            <div
+              className="subject-row"
               style={{
-                minWidth: '25px',
-                padding: '2px 8px',
-                textAlign: 'center',
-                fontWeight: 'bold',
-                border: '1px solid #000',
-                background: '#fafafa',
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                minHeight: '24px',
+                padding: '5px 0',
+                borderBottom: '1px dotted #999',
+                fontSize: "23px"
               }}
             >
-              <span id="grade-reading">{gradeReading}</span>{' '}
+              <span className="subject-name">Xwendin</span>
+
               <span
-                id="grade-reading-max"
-                className="grade-max"
-                style={{ fontWeight: 100 }}
+                className="grade-box"
+                style={{
+                  minWidth: '25px',
+                  padding: '2px 8px',
+                  textAlign: 'center',
+                  fontWeight: 'bold',
+                  border: '1px solid #000',
+                  background: '#fafafa',
+                }}
               >
-                / {gradeReadingMax}
+                <span id="grade-reading">{gradeReading}</span>{' / '}
+                <span
+                  id="grade-reading-max"
+                  className="grade-max"
+                  style={{ fontWeight: 100 }}
+                >
+                  {gradeReadingMax}
+                </span>
               </span>
-            </span>
-          </div>
+            </div>
+          )}
 
           <div
             className="subject-row"
@@ -289,7 +290,7 @@ export default function CertificateTemplate({ data, totalScore }) {
               minHeight: '24px',
               padding: '5px 0',
               borderBottom: '1px dotted #999',
-              fontSize: "24px"
+              fontSize: "23px"
             }}
           >
             <span className="subject-name">Nivîsandin</span>
@@ -305,13 +306,13 @@ export default function CertificateTemplate({ data, totalScore }) {
                 background: '#fafafa',
               }}
             >
-              <span id="grade-writing">{gradeWriting}</span>{' '}
+              <span id="grade-writing">{gradeWriting}</span>{' / '}
               <span
                 id="grade-writing-max"
                 className="grade-max"
                 style={{ fontWeight: 100 }}
               >
-                / {gradeWritingMax}
+                {gradeWritingMax}
               </span>
             </span>
           </div>
@@ -325,10 +326,10 @@ export default function CertificateTemplate({ data, totalScore }) {
               minHeight: '24px',
               padding: '5px 0',
               borderBottom: '1px dotted #999',
-              fontSize: "24px"
+              fontSize: "23px"
             }}
           >
-            <span className="subject-name">Vekît / Mijar</span>
+            <span className="subject-name">{vekitOrMijar}</span>
 
             <span
               className="grade-box"
@@ -341,13 +342,13 @@ export default function CertificateTemplate({ data, totalScore }) {
                 background: '#fafafa',
               }}
             >
-              <span id="grade-vekit-mijar">{gradeVekitMijar}</span>{' '}
+              <span id="grade-vekit-mijar">{gradeVekitMijar}</span>{' / '}
               <span
                 id="grade-vekit-mijar-max"
                 className="grade-max"
                 style={{ fontWeight: 100 }}
               >
-                / {gradeVekitMijarMax}
+                {gradeVekitMijarMax}
               </span>
             </span>
           </div>
@@ -363,7 +364,7 @@ export default function CertificateTemplate({ data, totalScore }) {
               borderBottom: '1px dotted #999',
               gap: '2rem',
               marginTop: '5px',
-              fontSize: '28px',
+              fontSize: '25px',
             }}
           >
             <span className="subject-name">Tevahî</span>
@@ -393,7 +394,7 @@ export default function CertificateTemplate({ data, totalScore }) {
           alignItems: 'flex-end',
           // height: '18rem',
           fontSize: "22px",
-          marginTop: '30px',
+          marginTop: '62px',
         }}
       >
         <div className="stamp-container">

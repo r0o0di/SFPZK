@@ -21,6 +21,34 @@ export default function CertificateForm() {
     const [generating, setGenerating] = useState(false);
     const templateRef = useRef(null);
 
+    // Grading configuration per student level (ast)
+    const AST_CONFIG = {
+        Yekem: {
+            showReading: true,
+            readingMax: 20,
+            writingMax: 60,
+            vekitMax: 20,
+            vekitOrMijar: 'Vekît',
+        },
+        Duyem: {
+            showReading: false,
+            readingMax: 0,
+            writingMax: 80,
+            vekitMax: 20,
+            vekitOrMijar: 'Mijar',
+        },
+        'Sêyem': {
+            showReading: false,
+            readingMax: 0,
+            writingMax: 80,
+            vekitMax: 20,
+            vekitOrMijar: 'Mijar',
+        },
+    };
+
+    const [vekitOrMijar, setVekitOrMijar] = useState('Vekît');
+    const [showReading, setShowReading] = useState(true);
+
     const getTodayDate = () => {
         const today = new Date();
         const day = String(today.getDate()).padStart(2, "0");
@@ -36,11 +64,11 @@ export default function CertificateForm() {
         studentBirthdate: "",
         studentBirthplace: "",
         gradeReading: "",
-        gradeReadingMax: "/ 20", // Defaulting max values, change as needed
+        gradeReadingMax: "20", // Defaulting max values (numbers only)
         gradeWriting: "",
-        gradeWritingMax: "/ 20",
+        gradeWritingMax: "60",
         gradeVekitMijar: "",
-        gradeVekitMijarMax: "/ 60",
+        gradeVekitMijarMax: "20",
         certificateLocation: "",
         certificateDate: getTodayDate(),
         teacherName: "",
@@ -94,13 +122,58 @@ export default function CertificateForm() {
         }
     }, []);
 
+    useEffect(() => {
+        // when studentLevel initially loaded from prefs, apply config
+        const cfg = AST_CONFIG[form.studentLevel];
+        if (cfg) {
+            setVekitOrMijar(cfg.vekitOrMijar);
+            setShowReading(!!cfg.showReading);
+            setForm((prev) => ({
+                ...prev,
+                gradeReadingMax: cfg.readingMax ? String(cfg.readingMax) : '',
+                gradeWritingMax: String(cfg.writingMax),
+                gradeVekitMijarMax: String(cfg.vekitMax),
+                gradeReading: cfg.showReading ? prev.gradeReading : '',
+            }));
+        }
+    }, [form.studentLevel]);
+
     const handleChange = e => {
-        const updatedForm = { ...form, [e.target.name]: e.target.value };
+        let { name, value } = e.target;
+        if (["gradeReading", "gradeWriting", "gradeVekitMijar"].includes(name)) {
+            const cfg = AST_CONFIG[form.studentLevel] || AST_CONFIG['Yekem'];
+            const max = name === 'gradeReading' ? (cfg.readingMax || 0) : name === 'gradeWriting' ? (cfg.writingMax || 0) : (cfg.vekitMax || 0);
+            // allow empty, otherwise clamp numeric values
+            if (value === '') {
+                // keep empty
+            } else {
+                const num = Number(value);
+                if (Number.isNaN(num)) value = '';
+                else if (max && num > max) value = String(max);
+                else value = String(Math.max(0, Math.floor(num)));
+            }
+        }
+
+        const updatedForm = { ...form, [name]: value };
         setForm(updatedForm);
     };
 
+    const handleLevelChange = (val) => {
+        const cfg = AST_CONFIG[val] || {};
+        setVekitOrMijar(cfg.vekitOrMijar || 'Vekît');
+        setShowReading(!!cfg.showReading);
+        setForm((prev) => ({
+            ...prev,
+            studentLevel: val,
+            gradeReading: cfg.showReading ? prev.gradeReading : '',
+            gradeReadingMax: cfg.readingMax ? String(cfg.readingMax) : '',
+            gradeWritingMax: cfg.writingMax ? String(cfg.writingMax) : prev.gradeWritingMax,
+            gradeVekitMijarMax: cfg.vekitMax ? String(cfg.vekitMax) : prev.gradeVekitMijarMax,
+        }));
+    };
+
     // Automatically calculate total score
-    const totalScore = (Number(form.gradeReading) || 0) +
+    const totalScore = (showReading ? (Number(form.gradeReading) || 0) : 0) +
         (Number(form.gradeWriting) || 0) +
         (Number(form.gradeVekitMijar) || 0);
 
@@ -111,7 +184,7 @@ export default function CertificateForm() {
         form.studentNumber &&
         form.studentBirthdate &&
         form.studentBirthplace &&
-        form.gradeReading &&
+        (showReading ? form.gradeReading : true) &&
         form.gradeWriting &&
         form.gradeVekitMijar &&
         form.certificateLocation &&
@@ -152,7 +225,7 @@ export default function CertificateForm() {
             setField("#grade-writing-max", form.gradeWritingMax);
             setField("#grade-vekit-mijar", formatGradeValue(form.gradeVekitMijar));
             setField("#grade-vekit-mijar-max", form.gradeVekitMijarMax);
-            setField("#grade-total", totalScore);
+            setField("#grade-total", formatGradeValue(totalScore));
             setField("#certificate-location", form.certificateLocation);
             setField("#certificate-date", form.certificateDate);
             setField("#teacher-name", form.teacherName);
@@ -191,7 +264,7 @@ export default function CertificateForm() {
             pdf.addImage(imgData, 'JPEG', 0, 0, 210, 297);
 
             // 8. Download the finished document
-            const fileName = `Fêrnama_${form.studentName.replace(/\s+/g, '_')}.pdf`;
+            const fileName = `Ast_${form.studentLevel.replace("Yekem", '1').replace("Duyem", '2').replace("Sêyem", '3')}_${form.studentName.replace(/\s+/g, '_')}.pdf`;
             pdf.save(fileName);
 
             toast.success("Fêrname bi serkeftî hat amadekirin!");
@@ -212,6 +285,7 @@ export default function CertificateForm() {
                 </header>
 
                 <form onSubmit={handleGeneratePDF} className="grid gap-5">
+                    <h2 className="mt-[-10px] mb-[-10px] text-sm font-semibold text-slate-400 uppercase tracking-wider">Sazi</h2>
 
                     {/* Branch and Level */}
                     <div className="grid sm:grid-cols-2 gap-4">
@@ -232,7 +306,7 @@ export default function CertificateForm() {
 
                         <div className="grid gap-2">
                             <Label htmlFor="studentLevel">Ast</Label>
-                            <Select value={form.studentLevel} onValueChange={(val) => handleChange({ target: { name: "studentLevel", value: val } })}>
+                            <Select value={form.studentLevel} onValueChange={(val) => handleLevelChange(val)}>
                                 <SelectTrigger id="studentLevel" className="w-full cursor-pointer">
                                     <SelectValue placeholder="Asta ..." />
                                 </SelectTrigger>
@@ -248,6 +322,8 @@ export default function CertificateForm() {
                     </div>
 
                     <hr className="border-slate-700 my-2" />
+                    <h2 className="mt-[-10px] mb-[-10px] text-sm font-semibold text-slate-400 uppercase tracking-wider">Xwendekar</h2>
+
                     {/* Student Info */}
                     <div className="grid sm:grid-cols-2 gap-4">
                         <div className="grid gap-2">
@@ -273,32 +349,61 @@ export default function CertificateForm() {
                     </div>
 
                     <hr className="border-slate-700 my-2" />
-                    <h2 className="text-sm font-semibold text-slate-400 uppercase tracking-wider">Pilên Ezmûnê</h2>
+                    <h2 className="mt-[-10px] mb-[-10px] text-sm font-semibold text-slate-400 uppercase tracking-wider">Pilên Ezmûnê</h2>
 
                     {/* Grades Grid */}
                     <div className="grid grid-cols-3 gap-4">
                         <div className="grid gap-2">
                             <Label htmlFor="gradeReading">Xwendin</Label>
-                            <Input type="number" id="gradeReading" name="gradeReading" placeholder="05" value={form.gradeReading} onChange={handleChange} required />
+                            {showReading ? (
+                                <Input
+                                    type="number"
+                                    id="gradeReading"
+                                    name="gradeReading"
+                                    placeholder="05"
+                                    value={form.gradeReading}
+                                    onChange={handleChange}
+                                    max={AST_CONFIG[form.studentLevel]?.readingMax || AST_CONFIG['Yekem'].readingMax}
+                                    required
+                                />
+                            ) : (
+                                <div className="text-slate-400">-</div>
+                            )}
                         </div>
                         <div className="grid gap-2">
                             <Label htmlFor="gradeWriting">Nivîsandin</Label>
-                            <Input type="number" id="gradeWriting" name="gradeWriting" placeholder="15" value={form.gradeWriting} onChange={handleChange} required />
+                            <Input
+                                type="number"
+                                id="gradeWriting"
+                                name="gradeWriting"
+                                placeholder="15"
+                                value={form.gradeWriting}
+                                onChange={handleChange}
+                                max={AST_CONFIG[form.studentLevel]?.writingMax || AST_CONFIG['Yekem'].writingMax}
+                                required
+                            />
                         </div>
                         <div className="grid gap-2">
-                            <Label htmlFor="gradeVekitMijar">Vekit / Mijar</Label>
-                            <Input type="number" id="gradeVekitMijar" name="gradeVekitMijar" placeholder="40" value={form.gradeVekitMijar} onChange={handleChange} required />
+                            <Label htmlFor="gradeVekitMijar">{vekitOrMijar}</Label>
+                            <Input
+                                type="number"
+                                id="gradeVekitMijar"
+                                name="gradeVekitMijar"
+                                placeholder="40"
+                                value={form.gradeVekitMijar}
+                                onChange={handleChange}
+                                max={AST_CONFIG[form.studentLevel]?.vekitMax || AST_CONFIG['Yekem'].vekitMax}
+                                required
+                            />
                         </div>
                     </div>
 
                     <hr className="border-slate-700 my-2" />
+                    <h2 className="mt-[-10px] mb-[-10px] text-sm font-semibold text-slate-400 uppercase tracking-wider">Mamoste</h2>
 
-                    {/* Meta Data */}
+
+                    {/* Mamoste */}
                     <div className="grid sm:grid-cols-3 gap-4">
-                        <div className="grid gap-2">
-                            <Label htmlFor="certificateLocation">Cihê Mamostê</Label>
-                            <Input type="text" id="certificateLocation" name="certificateLocation" placeholder="Bremen, Almanya" value={form.certificateLocation} onChange={handleChange} required />
-                        </div>
                         <div className="grid gap-2">
                             <Label htmlFor="certificateDate">Dîroka Fêrnamê</Label>
                             <Input type="text" id="certificateDate" name="certificateDate" placeholder="08.06.2026" value={form.certificateDate} onChange={handleChange} required />
@@ -306,6 +411,10 @@ export default function CertificateForm() {
                         <div className="grid gap-2">
                             <Label htmlFor="teacherName">Navê Mamostê</Label>
                             <Input type="text" id="teacherName" name="teacherName" placeholder="Baranê Cûmê" value={form.teacherName} onChange={handleChange} required />
+                        </div>
+                        <div className="grid gap-2">
+                            <Label htmlFor="certificateLocation">Cihê Mamostê</Label>
+                            <Input type="text" id="certificateLocation" name="certificateLocation" placeholder="Bremen, Almanya" value={form.certificateLocation} onChange={handleChange} required />
                         </div>
                     </div>
 
@@ -335,7 +444,7 @@ export default function CertificateForm() {
             {/* Visually hidden container optimized for html2canvas-pro */}
             <div style={{ position: "absolute", left: "-9999px", top: "-9999px" }}>
                 <div ref={templateRef} style={{ visibility: "hidden" }}>
-                    <CertificateTemplate data={form} totalScore={totalScore} />
+                    <CertificateTemplate data={form} vekitOrMijar={vekitOrMijar} totalScore={totalScore} showReading={showReading} />
                 </div>
             </div>
 
