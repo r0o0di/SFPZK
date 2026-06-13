@@ -5,6 +5,7 @@ import { setDoc, doc, Timestamp } from 'firebase/firestore';
 import { signInWithPopup, signOut } from 'firebase/auth';
 import { Loader2Icon } from 'lucide-react';
 import { useAuthState } from '@/lib/useAuth';
+import { saveToFirestore } from '@/lib/firestoreHelpers';
 
 export default function FormPage() {
   const { user, authLoading } = useAuthState();
@@ -29,7 +30,7 @@ export default function FormPage() {
   const handleFormSubmit = async (date, title, content, mediaLinks = []) => {
     try {
       const entryId = `${date}`;
-      await setDoc(doc(db, 'entries', entryId), {
+      const payload = {
         date,
         title,
         content,
@@ -39,10 +40,8 @@ export default function FormPage() {
           name: user.displayName,
           email: user.email,
         },
-      });
-      // router.push('/');
-      // router.refresh();
-      // location.reload();
+      };
+      await saveToFirestore('çalakî', entryId, payload);
     } catch (err) {
       console.error(err);
       if (err.code === 'permission-denied') {

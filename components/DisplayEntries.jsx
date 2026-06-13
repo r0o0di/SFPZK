@@ -62,7 +62,7 @@ export default function DisplayEntries() {
   }, []);
 
   async function fetchEntries() {
-    const ref = collection(db, 'entries');
+    const ref = collection(db, 'çalakî');
     const q = query(ref, orderBy('date'));
     const snap = await getDocs(q);
     setEntries(snap.docs.map(d => ({ id: d.id, ...d.data() })));
@@ -93,7 +93,7 @@ export default function DisplayEntries() {
       }
     }
 
-    await deleteDoc(doc(db, 'entries', id));
+    await deleteDoc(doc(db, 'çalakî', id));
     setEntries(prev => prev.filter(e => e.id !== id));
   };
 
@@ -148,7 +148,7 @@ export default function DisplayEntries() {
 
     let prevHistory = [];
     try {
-      const all = await getDocs(query(collection(db, 'entries'), orderBy('date', 'desc')));
+      const all = await getDocs(query(collection(db, 'çalakî'), orderBy('date', 'desc')));
       const oldDoc = all.docs.find(d => d.id === editingId);
       if (oldDoc && oldDoc.data().history) prevHistory = oldDoc.data().history;
     } catch (err) {
@@ -160,7 +160,7 @@ export default function DisplayEntries() {
       { editedAt: Timestamp.now(), editor: user?.email || 'unknown' }
     ];
 
-    await setDoc(doc(db, 'entries', newId), {
+    await setDoc(doc(db, 'çalakî', newId), {
       date,
       title,
       content,
@@ -173,7 +173,7 @@ export default function DisplayEntries() {
       history: newHistory
     });
 
-    if (newId !== editingId) await deleteDoc(doc(db, 'entries', editingId));
+    if (newId !== editingId) await deleteDoc(doc(db, 'çalakî', editingId));
 
     resetEditingState();
     fetchEntries();

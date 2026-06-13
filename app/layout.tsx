@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+// @ts-ignore: Cannot find module or type declarations for side-effect import of './globals.css'.
 import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -30,7 +31,7 @@ export default function RootLayout({
   return (
     <html lang="ku">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased dark bg-gray-900`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased dark bg-gray-900 selection:bg-primary selection:text-primary-foreground`}
       >
         <Navbar />
         {children}

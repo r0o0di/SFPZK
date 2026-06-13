@@ -14,6 +14,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from '@/components/ui/button';
 import { Loader2Icon, BookOpen } from "lucide-react";
 import { toast } from "sonner";
+import { generateCourseDocId, saveToFirestore } from '@/lib/firestoreHelpers';
 
 
 export default function CourseForm() {
@@ -61,12 +62,31 @@ export default function CourseForm() {
     // === end limit ===
 
     setSubmitted(true);
-    const fetchForm = await fetch('/api/send-course-form', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(form),
-    }).then(async (res) => {
-      if (!res.ok) throw new Error('Failed to send');
+
+    const id = generateCourseDocId(form.option, form.name);
+    const payload = {
+      name: form.name,
+      age: form.age,
+      email: form.email,
+      phone: form.phone,
+      option: form.option,
+    };
+
+    if (form.note) {
+      payload.note = form.note;
+    }
+
+    try {
+      // Save to Firestore for archive
+      await saveToFirestore('ferbun', id, payload);
+      
+      // Send email via API
+      await fetch('/api/send-course-form', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(form),
+      });
+
       setForm({
         name: '',
         age: '',
@@ -75,15 +95,13 @@ export default function CourseForm() {
         option: '',
         note: '',
       });
-      return res;
-    });
-    setSubmitted(false);
-
-    toast.promise(fetchForm, {
-      loading: '',
-      success: 'Hat şandin.',
-      error: 'Failed to send. Please try again.',
-    });
+      toast.success('Hat şandin.');
+    } catch (error) {
+      console.error(error);
+      toast.error('Failed to save application. Please try again.');
+    } finally {
+      setSubmitted(false);
+    }
   };
 
 

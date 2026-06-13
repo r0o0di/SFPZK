@@ -14,8 +14,7 @@ import { Button } from '@/components/ui/button';
 import { Loader2Icon, Download } from "lucide-react";
 import { toast } from "sonner";
 import { useAuthState } from '@/lib/useAuth';
-import { db } from '@/lib/firebase';
-import { setDoc, doc } from 'firebase/firestore';
+import { generateCertificateDocId, saveToFirestore } from '@/lib/firestoreHelpers';
 
 
 // Import your custom template component
@@ -213,8 +212,7 @@ export default function CertificateForm() {
         // Save certificate data to Firestore for archival
         try {
 
-            const rawId = `${form.certificateDate}_${form.studentLevel.replace("Yekem", '1').replace("Duyem", '2').replace("Sêyem", '3')}_${form.studentName}`;
-            const docId = rawId.replace(/\s+/g, '_').replace(/\//g, '-');
+            const docId = generateCertificateDocId(form.certificateDate, form.studentLevel, form.studentName);
             const payload = {
                 branchName: form.branchName,
                 studentLevel: form.studentLevel,
@@ -233,7 +231,7 @@ export default function CertificateForm() {
 
             if (showReading) payload.gradeReading = form.gradeReading;
 
-            await setDoc(doc(db, 'certificates', docId), payload);
+            await saveToFirestore('fêrname', docId, payload);
         } catch (err) {
             console.error('Failed to save certificate to DB:', err);
             toast.error('Di qeydkirina fêrnameyê de xeletî çêbû — ji kerema xwe dubare bikin.');
