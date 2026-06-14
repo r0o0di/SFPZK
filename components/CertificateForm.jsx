@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
@@ -16,15 +16,9 @@ import { toast } from "sonner";
 import { useAuthState } from '@/lib/useAuth';
 import { generateCertificateDocId, saveToFirestore } from '@/lib/firestoreHelpers';
 
-
-// Import your custom template component
-import CertificateTemplate from '@/components/CertificateTemplate';
-
-
 export default function CertificateForm() {
     const { user } = useAuthState();
     const [generating, setGenerating] = useState(false);
-    const templateRef = useRef(null);
 
     // Grading configuration per student level (ast)
     const AST_CONFIG = {
@@ -239,72 +233,40 @@ export default function CertificateForm() {
 
         setGenerating(true);
 
-        // 1. Safely inject form data into the hidden HTML Template elements via ID matching
-        const element = templateRef.current;
-        if (element) {
-            const setField = (id, value) => {
-                const el = element.querySelector(id);
-                if (el) el.innerText = value;
-            };
-
-            setField("#branch-name", form.branchName);
-            setField("#student-level", form.studentLevel);
-            setField("#student-name", form.studentName);
-            setField("#student-number", form.studentNumber);
-            setField("#student-birthdate", form.studentBirthdate);
-            setField("#student-birthplace", form.studentBirthplace);
-            setField("#grade-reading", formatGradeValue(form.gradeReading));
-            setField("#grade-reading-max", form.gradeReadingMax);
-            setField("#grade-writing", formatGradeValue(form.gradeWriting));
-            setField("#grade-writing-max", form.gradeWritingMax);
-            setField("#grade-vekit-mijar", formatGradeValue(form.gradeVekitMijar));
-            setField("#grade-vekit-mijar-max", form.gradeVekitMijarMax);
-            setField("#grade-total", formatGradeValue(totalScore));
-            setField("#certificate-location", form.certificateLocation);
-            setField("#certificate-date", form.certificateDate);
-            setField("#teacher-name", form.teacherName);
-        }
-
         try {
-            // 2. Dynamically import libraries to keep Next.js happy
-            const html2canvasPro = (await import('html2canvas-pro')).default;
-            const { jsPDF } = await import('jspdf');
-
-            // 3. Temporarily show the template element so the canvas engine can read it properly
-            element.style.visibility = "visible";
-
-            // 4. Render the HTML element to a canvas using the Pro library (supports oklch!)
-            const canvas = await html2canvasPro(element, {
-                scale: 2, // Keeps text pixel-perfect and sharp
-                useCORS: true, // Allows loading external logo/stamp images if needed
-                logging: false,
-                backgroundColor: null // Keeps background transparent if needed, or matches your CSS
+            const response = await fetch('/api/generate-certificate-pdf', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    form,
+                    showReading,
+                    vekitOrMijar,
+                }),
             });
 
-            // 5. Hide the template element again right after rendering is done
-            element.style.visibility = "hidden";
+            if (!response.ok) {
+                const errorBody = await response.json().catch(() => null);
+                const message = errorBody?.error || 'PDF çêkirin nikaribû.';
+                throw new Error(message);
+            }
 
-            // 6. Convert canvas to image data
-            const imgData = canvas.toDataURL('image/jpeg', 1.0);
-
-            // 7. Create a native A4 portrait PDF file via jsPDF
-            const pdf = new jsPDF({
-                orientation: 'portrait',
-                unit: 'mm',
-                format: 'a4'
-            });
-
-            // A4 dimensions in portrait: 210mm x 297mm
-            pdf.addImage(imgData, 'JPEG', 0, 0, 210, 297);
-
-            // 8. Download the finished document
+            const blob = await response.blob();
             const fileName = `Ast_${form.studentLevel.replace("Yekem", '1').replace("Duyem", '2').replace("Sêyem", '3')}_${form.studentName.replace(/\s+/g, '_')}.pdf`;
-            pdf.save(fileName);
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = fileName;
+            document.body.appendChild(link);
+            link.click();
+            link.remove();
+            URL.revokeObjectURL(url);
 
-            toast.success("Fêrname bi serkeftî hat amadekirin!");
+            toast.success('Fêrname bi serkeftî hat amadekirin!');
         } catch (error) {
-            console.error("PDF generation failed:", error);
-            toast.error("Şaşiyek çêbû di dema çêkirina PDFê de.");
+            console.error('PDF generation failed:', error);
+            toast.error('Şaşiyek çêbû di dema çêkirina PDFê de.');
         } finally {
             setGenerating(false);
         }
@@ -474,15 +436,7 @@ export default function CertificateForm() {
                     </div>
                 </form>
             </div>
-
-            {/* Visually hidden container optimized for html2canvas-pro */}
-            <div style={{ position: "absolute", left: "-9999px", top: "-9999px" }}>
-                <div ref={templateRef} style={{ visibility: "hidden" }}>
-                    <CertificateTemplate data={form} vekitOrMijar={vekitOrMijar} totalScore={totalScore} showReading={showReading} />
-                </div>
-            </div>
-
         </div>
     );
 }
-// 
+ 

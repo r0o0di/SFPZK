@@ -2,68 +2,51 @@
 <html lang="ku">
 
 <head>
-    <meta charset="UTF-8">
-    <title>‎</title>
-
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fêrname</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Times+New+Roman&family=Source+Serif+4:ital,wght@0,300;0,400;0,600;0,700;1,400&display=swap');
-
-        :root {
-            --border-color: #000;
-            --font-family: 'Times New Roman', Times, serif;
-        }
-
         body {
             margin: 0;
-            display: flex;
-            justify-content: center;
-            font-family: var(--font-family);
-            background-color: #f0f0f0;
+            padding: 0;
+            background: #fff;
+            font-family: 'Times New Roman', Times, serif;
+            color: #000;
+
         }
 
         .certificate {
-                        padding: 20px;
-
-            position: relative;
-            display: flex;
-            flex-direction: column;
-            box-sizing: border-box;
             width: 210mm;
             min-height: 297mm;
-            padding: 20mm 15mm;
-            background: #fff;
-            box-shadow: 0 4px 40px rgba(0, 0, 0, 0.22);
-        }
-
-        /* Header */
-
-        .certificate-title-wrapper {
+            padding: 15mm;
+            box-sizing: border-box;
             display: flex;
-            justify-content: center;
-        }
+            flex-direction: column;
+            gap: 15px;
+            outline: 1px solid red;
 
-        .header-column {
-            width: 100%;
-            justify-items: center;
+            /* Optional: for visual debugging of the certificate area */
         }
 
         .certificate-title {
             margin: 0;
-            font-size: 50px; /* 40 */
+            font-size: 50px;
             font-weight: 500;
             letter-spacing: 1px;
         }
 
-        .header {
+        .header-row {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-top: 20px;
             padding-bottom: 15px;
         }
 
-        .header-left,
-        .header-right {
+        .header-row.single-logo {
+            justify-content: center;
+        }
+
+        .header-side {
             width: 30%;
         }
 
@@ -71,86 +54,56 @@
             text-align: right;
         }
 
-        /* Logos */
-
-        .logo-wrapper {
-            display: flex;
-        }
-
-        .logo-wrapper-left {
-            justify-content: flex-start;
-        }
-
-        .logo-wrapper-center {
-            justify-content: center;
-        }
-
-        .logo-wrapper-right {
-            justify-content: flex-end;
-        }
-
-        .logo {
+        .logo-side {
+            width: 115px;
             height: auto;
         }
 
         .logo-main {
             width: 155px;
+            height: auto;
             margin-top: -15px;
         }
-
-        .logo-side {
-            width: 115px;
-        }
-
-        /* Institution */
 
         .institution-info {
             margin-top: -10px;
             text-align: center;
-            font-size: 30px; /* 20 */
+            font-size: 30px;
         }
 
         .institution-branch {
             display: block;
-            margin-top: 5px;
+            margin-top: -5px;
             font-size: 28px;
         }
 
-        /* Student info */
-
         .student-info {
-            margin-bottom: 20px;
             padding-bottom: 10px;
             border-bottom: 1px solid #000;
-            font-size: 20px;
-        }
-
-        .student-info p {
-            margin: 5px 0;
+            font-size: 21px;
         }
 
         .level-text {
+            margin: 5px 0;
             text-align: center;
             font-size: 25px;
         }
 
-        .student-details-right {
-            float: right;
-            margin-top: -48px;
+        .student-info strong {
+            font-weight: 700;
         }
 
-        /* Grades */
-
-        .section-title {
-            margin: 15px 0 8px;
-            font-size: 30px;
+        .student-details-right {
+            float: right;
+            margin-top: -52px;
+            text-align: right;
         }
 
         .subjects-grid {
             display: grid;
-            grid-template-columns: 1fr;
             gap: 10px 25px;
             margin-bottom: 20px;
+            font-size: 23px;
         }
 
         .subject-row {
@@ -160,7 +113,6 @@
             min-height: 24px;
             padding: 5px 0;
             border-bottom: 1px dotted #999;
-            font-size: 24px;
         }
 
         .grade-box {
@@ -168,7 +120,7 @@
             padding: 2px 8px;
             text-align: center;
             font-weight: bold;
-            border: 1px solid var(--border-color);
+            border: 1px solid #000;
             background: #fafafa;
         }
 
@@ -176,27 +128,26 @@
             font-weight: 100;
         }
 
+
         .total-row {
             justify-content: center;
             gap: 2rem;
             margin-top: 5px;
-            font-size: 28px;
+            font-size: 25px;
         }
-
-        /* Signature */
 
         .signature-section {
             display: flex;
             justify-content: space-around;
             align-items: flex-end;
-            height: 100%;
             font-size: 22px;
+            margin-top: 62px;
         }
 
         .stamp-image {
-            width: 150px;
+            width: 165px;
             height: auto;
-            rotate: -25deg;
+            transform: rotate(-25deg);
         }
 
         .signature-container {
@@ -204,12 +155,7 @@
             text-align: center;
         }
 
-        .proxy-text {
-            margin: 5px 0 0;
-        }
-
         .signature-line {
-            margin-top: 5px;
             border-bottom: 1px solid #000;
         }
 
@@ -219,161 +165,80 @@
             font-style: italic;
         }
 
+        .proxy-text,
         .signature-title {
             margin: 5px 0 0;
         }
 
-        /* Print */
-
         @media print {
             body {
-                padding: 0;
-                background: #fff;
-            }
-
-            .certificate {
-                width: 100%;
-                height: 100%;
-                padding: 0;
-                box-shadow: none;
+                margin: 0;
             }
         }
     </style>
 </head>
 
 <body>
-
     <div class="certificate">
-
-        <div class="certificate-title-wrapper">
-            <div class="header-column">
+        <div style="display:flex; justify-content:center;">
+            <div style="width:100%; justify-items:center; margin-top:-22px; text-align:center;">
                 <h1 class="certificate-title">Fêrname</h1>
             </div>
         </div>
-
-        <header>
-
-            <div class="header">
-
-                <div class="header-left">
-                    <div class="logo-wrapper logo-wrapper-left">
-                        <img src="krg-logo.png" alt="KRG Logo" class="logo logo-side">
-                    </div>
-                </div>
-
-                <div class="header-column">
-                    <div class="logo-wrapper logo-wrapper-center">
-                        <img src="sfpzk-logo.png" alt="SFPZK Logo" class="logo logo-main">
-                    </div>
-                </div>
-
-                <div class="header-right">
-                    <div class="logo-wrapper logo-wrapper-right">
-                        <img src="iklf-logo.png" alt="IKLF Logo" class="logo logo-side">
-                    </div>
-                </div>
-
-            </div>
-
-            <div class="institution-info">
-                <span>Saziya Fêrkirin û Parastina Zimanê Kurdî</span>
-
-                <span class="institution-branch">
-                    Şaxa <strong id="branch-name">Ewropayê</strong>
-                </span>
-            </div>
-
-        </header>
-
+        <div class="header-row single-logo">
+            <img src="./sfpzk-logo.png" alt="SFPZK Logo" class="logo-main" />
+        </div>
+        <div class="institution-info">
+            <span>Saziya Fêrkirin û Parastina Zimanê Kurdî</span>
+            <span class="institution-branch">Şaxa <strong>Ewropa</strong></span>
+        </div>
         <section class="student-info">
-
-            <p class="level-text">
-                Asta
-                <strong id="student-level">yekemîn</strong>
-            </p>
-
-            <p>Ji bo</p>
-
-            <strong id="student-name">Rody Khello</strong><br>
-
-            Hejmar <strong id="student-number">335</strong><br>
-
+            <p class="level-text">Asta <strong>Yekem</strong></p>
+            <p style="margin:5px 0;">Ji bo</p>
+            <strong>Rody Khello</strong><br />
+            Hejmar <strong>355</strong><br />
             <div class="student-details-right">
-                <strong id="student-birthdate">24.08.2006</strong><br>
-                <strong id="student-birthplace">Heleb, Sûryê</strong>
+                <strong>24.08.2006</strong><br />
+                <strong>Heleb, Surye</strong>
             </div>
-
         </section>
-
         <main>
-
-            <h3 class="section-title">Pile</h3>
-
+            <h3 style="margin:40px 0 -5px; font-size:25px; font-weight:900;">Pilên Ezmûnê</h3>
             <div class="subjects-grid">
 
                 <div class="subject-row">
-                    <span class="subject-name">Xwendin</span>
-                    <span id="grade-reading" class="grade-box">
-                        19 <span id="grade-reading-max" class="grade-max">/ 20</span>
-                    </span>
+                    <span>Xwendin</span>
+                    <span class="grade-box"><span>22</span> / <span class="grade-max">22</span></span>
                 </div>
-
                 <div class="subject-row">
-                    <span class="subject-name">Nivîsandin</span>
-                    <span id="grade-writing" class="grade-box">
-                        20 <span id="grade-writing-max" class="grade-max">/ 20</span>
-                    </span>
+                    <span>Nivîsandin</span>
+                    <span class="grade-box">22 /22</span>
                 </div>
-
                 <div class="subject-row">
-                    <span class="subject-name">Vekît / Mijar</span>
-                    <span id="grade-vekit-mijar" class="grade-box">
-                        60 <span id="grade-vekit-mijar-max" class="grade-max">/ 60</span>
-                    </span>
+                    <span>${vekitOrMijar}</span>
+                    <span class="grade-box">22 /22</span>
                 </div>
-
                 <div class="subject-row total-row">
-                    <span class="subject-name">Tevahî</span>
-                    <span id="grade-total" class="grade-box">
-                        99 <span class="grade-max">/ 100</span>
-                    </span>
+                    <span>Tevahî</span>
+                    <span class="grade-box">${totalScore} <span style="font-weight:100;">/ 100</span></span>
                 </div>
-
             </div>
-
         </main>
-
         <section class="signature-section">
-
-            <div class="stamp-container">
-                <img src="stamp.jpg" alt="SFPZK Stamp" class="stamp-image">
+            <div>
+                <img src="${stampImage}" alt="stamp" class="stamp-image" />
             </div>
-
             <div class="signature-container">
-
-                <span>
-                    <strong id="certificate-location">Bremen, Almanya</strong>
-                </span>
-                <br>
-
-                <span>
-                    <strong id="certificate-date">06.08.2026</strong>
-                </span>
-
+                <span><strong>${form.certificateLocation}</strong></span><br />
+                <span><strong>${form.certificateDate}</strong></span>
                 <p class="proxy-text">bi navê</p>
-
                 <div class="signature-line">
-                    <span id="teacher-name" class="signature-name">Sevin Omer</span>
+                    <span class="signature-name">${form.teacherName}</span>
                 </div>
-
                 <p class="signature-title">(Mamoste)</p>
-
             </div>
-
         </section>
-
     </div>
-
 </body>
 
 </html>
