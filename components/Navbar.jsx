@@ -20,7 +20,7 @@ export default function Navbar() {
   const links = [
     { href: '/%C3%A7alak%C3%AE', label: 'Çalakî' },
     { href: '/f%C3%AArb%C3%BBn', label: 'Fêrbûn' },
-    { href: '/kontakt', label: 'Kontakt' },
+    { href: '/kontakt', label: 'Têklî' },
   ]
 
   const allLinks = [

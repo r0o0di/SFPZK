@@ -361,11 +361,11 @@ export default function CertificateForm() {
                     {/* Student Info */}
                     <div className="grid sm:grid-cols-2 gap-4">
                         <div className="grid gap-2">
-                            <Label htmlFor="studentName">Navê Xwendekarê</Label>
+                            <Label htmlFor="studentName">Navê Xwendekar</Label>
                             <Input type="text" id="studentName" name="studentName" placeholder="Sevîn Omer" value={form.studentName} onChange={handleChange} required />
                         </div>
                         <div className="grid gap-2">
-                            <Label htmlFor="studentNumber">Hejmara Xwendekarê</Label>
+                            <Label htmlFor="studentNumber">Hejmara Xwendekar</Label>
                             <Input type="number" id="studentNumber" name="studentNumber" placeholder="335" value={form.studentNumber} onChange={handleChange} required />
                         </div>
                     </div>
@@ -373,17 +373,17 @@ export default function CertificateForm() {
                     {/* Birth Info */}
                     <div className="grid sm:grid-cols-2 gap-4">
                         <div className="grid gap-2">
-                            <Label htmlFor="studentBirthdate">Dîroka Jidayikbûnê</Label>
+                            <Label htmlFor="studentBirthdate">Dîroka Jidayîkbûnê</Label>
                             <Input type="text" id="studentBirthdate" name="studentBirthdate" placeholder="24.08.2006" value={form.studentBirthdate} onChange={handleChange} required />
                         </div>
                         <div className="grid gap-2">
-                            <Label htmlFor="studentBirthplace">Cihê Jidayikbûnê</Label>
+                            <Label htmlFor="studentBirthplace">Cihê Jidayîkbûnê</Label>
                             <Input type="text" id="studentBirthplace" name="studentBirthplace" placeholder="Heleb, Sûryê" value={form.studentBirthplace} onChange={handleChange} required />
                         </div>
                     </div>
 
                     <hr className="border-slate-700 my-2" />
-                    <h2 className="mt-[-10px] mb-[-10px] text-sm font-semibold text-slate-400 uppercase tracking-wider">Pilên Ezmûnê</h2>
+                    <h2 className="mt-[-10px] mb-[-10px] text-sm font-semibold text-slate-400 uppercase tracking-wider">Pileyên Ezmûnê</h2>
 
                     {/* Grades Grid */}
                     <div className="grid grid-cols-3 gap-4">
@@ -443,11 +443,11 @@ export default function CertificateForm() {
                             <Input type="text" id="certificateDate" name="certificateDate" placeholder="08.06.2026" value={form.certificateDate} onChange={handleChange} required />
                         </div>
                         <div className="grid gap-2">
-                            <Label htmlFor="teacherName">Navê Mamostê</Label>
+                            <Label htmlFor="teacherName">Navê Mamoste</Label>
                             <Input type="text" id="teacherName" name="teacherName" placeholder="Baranê Cûmê" value={form.teacherName} onChange={handleChange} required />
                         </div>
                         <div className="grid gap-2">
-                            <Label htmlFor="certificateLocation">Cihê Mamostê</Label>
+                            <Label htmlFor="certificateLocation">Cihê Mamoste</Label>
                             <Input type="text" id="certificateLocation" name="certificateLocation" placeholder="Bremen, Almanya" value={form.certificateLocation} onChange={handleChange} required />
                         </div>
                     </div>

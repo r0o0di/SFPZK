@@ -81,7 +81,7 @@ export default function KontaktForm() {
     <div className="min-h-screen bg-gradient-to-b from-slate-900 to-slate-800 flex items-center justify-center p-6">
       <div className="w-full max-w-2xl bg-slate-900/70 backdrop-blur-sm border border-slate-700 rounded-2xl shadow-xl p-8">
         <header className="flex items-center gap-4 mb-6">
-          <h1 className="text-2xl font-semibold text-yellow-200">Kontakt</h1>
+          <h1 className="text-2xl font-semibold text-yellow-200">Têklî</h1>
         </header>
 
         <form className="grid gap-4" onSubmit={handleSubmit}>

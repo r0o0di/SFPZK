@@ -245,7 +245,7 @@ export default function EntryForm({
       </div>
 
       <div className='grid gap-3 mb-4'>
-        <Label htmlFor={"content"}>Nivîstok</Label>
+        <Label htmlFor={"content"}>Nivîs</Label>
         <Textarea
           id={"content"}
           className="selection:bg-primary selection:text-primary-foreground"
