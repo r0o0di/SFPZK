@@ -31,7 +31,7 @@ export const generateDocId = (parts: string[], options?: { separator?: string; s
 export const saveToFirestore = async (
   collectionName: string,
   docId: string,
-  payload: Record<string, any>
+  payload: Record<string, unknown>
 ): Promise<void> => {
   try {
     await setDoc(doc(db, collectionName, docId), payload);
