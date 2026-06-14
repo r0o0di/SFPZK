@@ -1,12 +1,8 @@
 import { NextResponse } from 'next/server';
 import fs from 'fs/promises';
 import path from 'path';
-import { fileURLToPath } from 'url';
 import chromium from '@sparticuz/chromium';
 import { chromium as playwright } from 'playwright-core';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
 
 const loadDataUrl = async (filename) => {
     const filePath = path.join(process.cwd(), 'public', filename);
@@ -16,7 +12,7 @@ const loadDataUrl = async (filename) => {
 };
 
 const loadFontDataUrl = async (filename) => {
-    const filePath = path.join(__dirname, filename);
+    const filePath = path.join(process.cwd(), 'public', 'fonts', filename);
     const buffer = await fs.readFile(filePath);
     return `data:font/ttf;base64,${buffer.toString('base64')}`;
 };
