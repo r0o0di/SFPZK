@@ -73,7 +73,7 @@ const buildHtml = async ({ form, showReading, vekitOrMijar }) => {
       font-style: normal;
     }
     body { margin: 0; padding: 0; background: #fff; font-family: 'Times New Roman', Times, serif; color: #000; display: flex; flex-direction: column; }
-    .boldText { font-weight: letter-spacing: 1px; }
+    .boldText { letter-spacing: 1px; }
     .certificate { width: 210mm; min-height: 297mm; padding: 15mm; box-sizing: border-box; }
     .certificate-title { margin: 0; font-size: 50px; font-weight: 500; letter-spacing: 1px; }
     .header-row { display: flex; justify-content: space-between; align-items: center; padding-bottom: 15px; }
