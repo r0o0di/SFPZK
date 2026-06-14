@@ -52,36 +52,48 @@ export default function FormPage() {
 
   if (authLoading) {
     return (
-      <div className="min-h-screen bg-slate-950 text-slate-200 flex items-center justify-center p-8">
-        <div className=" p-8 text-center">
+      <div className="min-h-screen bg-gradient-to-b from-slate-900 to-slate-800 flex items-center justify-center p-6">
+        <div className="w-full max-w-xl rounded-3xl bg-slate-900/80 border border-slate-700 p-10 text-center">
           <Loader2Icon className="animate-spin inline size-10" />
         </div>
       </div>
     );
-  } else {
+  }
 
-    return (
-
-      <div className='mt-20'>
+  return (
+    <div className="min-h-screen bg-gradient-to-b from-slate-900 to-slate-800 flex items-center justify-center p-6">
+      <div className="w-full max-w-4xl">
         {!user ? (
-          <div className="mx-2">
-            <p>Ji bo ku tu bikaribî çalakiyan biweşînî û sererast bikî, xwe bi hesabê xwe yê Google-ê ve girêde</p>
-            <button className="bg-green-500 hover:bg-green-600 text-white py-2 px-4 rounded cursor-pointer" onClick={handleLogin}>Girêde</button>
+          <div className="grid gap-6 text-center">
+            <div className="rounded-3xl border border-slate-700 bg-slate-950/80 p-8 shadow-sm">
+              <h1 className="text-3xl font-semibold text-yellow-200 mb-4">Admin</h1>
+              <p className="text-slate-300 mb-6">
+                Ji bo ku tu bikaribî çalakiyan biweşînî û sererast bikî, xwe bi hesabê xwe yê Google-ê ve girêde.
+              </p>
+              <button className="inline-flex items-center justify-center rounded-2xl bg-green-500 px-6 py-3 text-sm font-semibold text-white transition hover:bg-green-600 cursor-pointer" onClick={handleLogin}>
+                Girêde
+              </button>
+            </div>
           </div>
         ) : (
-          <>
-            <p className=" mx-2">{user.displayName} ({user.email})</p>
-            <p className="mx-2">Ji hesabê xwe yê Google-ê derkeve:</p>
-            <button onClick={handleLogout} className="bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded cursor-pointer mx-2">
-              Derkeve
-            </button>
-            <div style={{ height: "90vh", alignContent: "center" }}>
-              <EntryForm onSubmit={handleFormSubmit} buttonText="Biweşîne" />
+          <div className="grid gap-6 mt-[3rem]">
+            <div className="rounded-3xl border border-slate-700 bg-slate-950/80 p-6 shadow-sm">
+              <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                <div>
+                  <p className="text-yellow-200 text-lg font-semibold">{user.displayName}</p>
+                  <p className="text-slate-300 text-sm">{user.email}</p>
+                </div>
+                <button className="rounded-2xl bg-red-500 px-5 py-2 text-sm font-semibold text-white transition hover:bg-red-600" onClick={handleLogout}>
+                  Derkeve
+                </button>
+              </div>
             </div>
-          </>
-        )}
 
+              <h1 className="text-3xl font-semibold text-center text-yellow-200 mt-4">Çalakîyeke Nû Biweşîne</h1>
+              <EntryForm onSubmit={handleFormSubmit} buttonText="Biweşîne" />
+          </div>
+        )}
       </div>
-    );
-  }
+    </div>
+  );
 }

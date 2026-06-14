@@ -67,7 +67,7 @@ export default function EntryForm({
       return false;
     });
 
-
+    // return found >= 0 ? `Photo ${found + 1}` : 'Photo';
   }
 
   function downloadUrlToStoragePath(url) {
@@ -219,7 +219,7 @@ export default function EntryForm({
 
 
   return (
-    <form className='min-w-fit max-w-[700px] w-[50vw] place-self-center border' onSubmit={handleSubmit} style={{ margin: '0', padding: 20, boxShadow: "white 0px 0px 200px 2px", borderRadius: "2rem" }}>
+    <form className='w-full max-w-4xl border border-slate-700 bg-slate-950/90 shadow-[0_0_120px_rgba(255,255,255,0.05)] rounded-[2rem] p-8 grid gap-4' onSubmit={handleSubmit}>
       {onCancel && (
         <div className='text-right mb-[-32px]'>
           <Button onClick={onCancel} className=" rounded-sm select-none cursor-pointer text-white bg-transparent hover:bg-transparent w-12 h-12" type="button">
