@@ -165,11 +165,12 @@ export default function DisplayEntries() {
       title,
       content,
       media,
-      createdAt: Timestamp.now(),
-      author: {
-        name: user?.displayName || 'unknown',
-        email: user?.email || 'unknown'
-      },
+      // origianl author and creation date stay the same
+      // createdAt: Timestamp.now(),
+      // author: {
+      //   name: user?.displayName || 'unknown',
+      //   email: user?.email || 'unknown'
+      // }, 
       history: newHistory
     });
 
