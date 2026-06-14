@@ -1,7 +1,8 @@
 import { NextResponse } from 'next/server';
 import fs from 'fs/promises';
 import path from 'path';
-import { chromium as playwright } from 'playwright-chromium';
+import chromium from '@sparticuz/chromium';
+import { chromium as playwright } from 'playwright-core';
 
 const loadDataUrl = async (filename) => {
     const filePath = path.join(process.cwd(), 'public', filename);
@@ -110,7 +111,7 @@ const buildHtml = async ({ form, showReading, vekitOrMijar }) => {
       </div>
     </section>
     <main class="grades">
-      <h3 style="margin:40px 0 -5px; font-size:25px; font-weight:900; margin-bottom: 5px;">Pilên Ezmûnê</h3>
+      <h3 style="margin:40px 0 -5px; font-size:25px; font-weight:900;">Pilên Ezmûnê</h3>
       <div class="subjects-grid">
         ${readingRow}
         <div class="subject-row">
@@ -155,7 +156,11 @@ export async function POST(req) {
         }
 
         const html = await buildHtml({ form, showReading, vekitOrMijar });
-        const browser = await playwright.launch({ headless: true });
+        const browser = await playwright.launch({
+    args: chromium.args,
+    executablePath: await chromium.executablePath(),
+    headless: true,
+});
         const page = await browser.newPage();
         await page.setContent(html, { waitUntil: 'networkidle' });
         const pdfBuffer = await page.pdf({ format: 'A4', printBackground: true, margin: { top: 0, right: 0, bottom: 0, left: 0 } });
