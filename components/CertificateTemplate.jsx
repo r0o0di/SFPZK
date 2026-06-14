@@ -200,7 +200,7 @@ export default function CertificateTemplate({ data, vekitOrMijar, totalScore, sh
             className="institution-branch"
             style={{
               display: 'block',
-              marginTop: "-15px",
+              marginTop: "-10px",
               fontSize: '28px',
             }}
           >
@@ -272,6 +272,7 @@ export default function CertificateTemplate({ data, vekitOrMijar, totalScore, sh
             gridTemplateColumns: '1fr',
             gap: '10px 25px',
             marginBottom: '20px',
+            fontSize: '23px',
           }}
         >
           {showReading && (
@@ -284,7 +285,7 @@ export default function CertificateTemplate({ data, vekitOrMijar, totalScore, sh
                 minHeight: '24px',
                 padding: '5px 0',
                 borderBottom: '1px dotted #999',
-                fontSize: "23px"
+
               }}
             >
               <span className="subject-name">Xwendin</span>
@@ -321,7 +322,6 @@ export default function CertificateTemplate({ data, vekitOrMijar, totalScore, sh
               minHeight: '24px',
               padding: '5px 0',
               borderBottom: '1px dotted #999',
-              fontSize: "23px"
             }}
           >
             <span className="subject-name">Nivîsandin</span>
@@ -357,7 +357,6 @@ export default function CertificateTemplate({ data, vekitOrMijar, totalScore, sh
               minHeight: '24px',
               padding: '5px 0',
               borderBottom: '1px dotted #999',
-              fontSize: "23px"
             }}
           >
             <span className="subject-name">{vekitOrMijar}</span>

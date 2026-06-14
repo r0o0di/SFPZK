@@ -63,7 +63,7 @@ export default function DisplayEntries() {
 
   async function fetchEntries() {
     const ref = collection(db, 'çalakî');
-    const q = query(ref, orderBy('date'));
+    const q = query(ref, orderBy('date', 'asc'));
     const snap = await getDocs(q);
     setEntries(snap.docs.map(d => ({ id: d.id, ...d.data() })));
   }
@@ -76,7 +76,7 @@ export default function DisplayEntries() {
 
   const handleDelete = async (id) => {
     if (!isAdmin) return;
-    const confirmed = window.confirm('Möchtest du diesen Beitrag wirklich löschen?');
+    const confirmed = window.confirm('Tu bi rastî dixwazî vê postê rakî?');
     if (!confirmed) return;
 
     const entry = entries.find(e => e.id === id);
@@ -148,7 +148,7 @@ export default function DisplayEntries() {
 
     let prevHistory = [];
     try {
-      const all = await getDocs(query(collection(db, 'çalakî'), orderBy('date', 'desc')));
+      const all = await getDocs(query(collection(db, 'çalakî'), orderBy('date', 'asc')));
       const oldDoc = all.docs.find(d => d.id === editingId);
       if (oldDoc && oldDoc.data().history) prevHistory = oldDoc.data().history;
     } catch (err) {
