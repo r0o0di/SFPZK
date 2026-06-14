@@ -5,6 +5,7 @@ import EntryForm from '@/components/EntryForm';
 import Share from '@/components/Share';
 import TranslateMenu from './TranslateMenu';
 import MediaGallery from './MediaGallery';
+import { formatDateForDisplay } from '@/lib/utils';
 
 export default function EntryCard({
   entry,
@@ -55,7 +56,7 @@ export default function EntryCard({
           <div className="flex items-start justify-between gap-4">
             <div className="flex-1">
               <h2 className="text-xl font-semibold text-gray-100">{entry.title}</h2>
-              <div className="text-sm text-gray-400 mt-1 mr-2 inline">{entry.date}</div>
+              <div className="text-sm text-gray-400 mt-1 mr-2 inline">{formatDateForDisplay(entry.date)}</div>
               {entry.translatedContent && (
                 <button
                   onClick={() => onResetTranslation(entry.id)}

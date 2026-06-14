@@ -5,6 +5,7 @@ import { ChevronDownIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { Label } from "@/components/ui/label";
+import { formatDateForDisplay } from '@/lib/utils';
 import {
   Popover,
   PopoverContent,
@@ -27,10 +28,7 @@ export function DatePicker({ date, onChange }) {
             className="w-30 cursor-pointer justify-between font-normal"
             type="button"
           >
-            {date ? (() => {
-              const [day, month, year] = date.split("-");
-              return `${day}-${month}-${year}`;
-            })() : "- -  - - - - - -"}
+            {date ? formatDateForDisplay(date) : "- -  - - - - - -"}
 
             <ChevronDownIcon />
           </Button>
@@ -45,7 +43,7 @@ export function DatePicker({ date, onChange }) {
                 const day = String(selected.getDate()).padStart(2, "0");
                 const month = String(selected.getMonth() + 1).padStart(2, "0");
                 const year = selected.getFullYear();
-                const formatted = `${day}-${month}-${year}`;
+                const formatted = `${year}-${month}-${day}`;
                 onChange(formatted);
               }
               setOpen(false);

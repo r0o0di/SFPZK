@@ -10,6 +10,7 @@ import {
 import { db, auth } from '@/lib/firebase';
 import {
   collection,
+  getDoc,
   getDocs,
   orderBy,
   query,
@@ -18,6 +19,7 @@ import {
   setDoc,
   Timestamp
 } from 'firebase/firestore';
+import { normalizeDateForStorage } from '@/lib/utils';
 import { storage } from '@/lib/firebase';
 import { ref as storageRef, deleteObject } from 'firebase/storage';
 import { Button } from '@/components/ui/button';
@@ -63,9 +65,16 @@ export default function DisplayEntries() {
 
   async function fetchEntries() {
     const ref = collection(db, 'çalakî');
-    const q = query(ref, orderBy('date', 'asc'));
+    const q = query(ref, orderBy('date', 'desc'));
     const snap = await getDocs(q);
-    setEntries(snap.docs.map(d => ({ id: d.id, ...d.data() })));
+    setEntries(snap.docs.map(d => {
+      const data = d.data();
+      return {
+        id: d.id,
+        ...data,
+        date: normalizeDateForStorage(data.date),
+      };
+    }));
   }
 
   useEffect(() => {
@@ -144,13 +153,18 @@ export default function DisplayEntries() {
 
   const handleEditSubmit = async (date, title, content, media) => {
     if (!isAdmin || !editingId) return;
-    const newId = `${date}`;
+    const normalizedDate = normalizeDateForStorage(date);
+    const newId = `${normalizedDate}`;
 
     let prevHistory = [];
+    let originalAuthor = null;
+    let originalCreatedAt = null;
     try {
-      const all = await getDocs(query(collection(db, 'çalakî'), orderBy('date', 'asc')));
-      const oldDoc = all.docs.find(d => d.id === editingId);
-      if (oldDoc && oldDoc.data().history) prevHistory = oldDoc.data().history;
+      const oldDocSnapshot = await getDoc(doc(db, 'çalakî', editingId));
+      const oldData = oldDocSnapshot.exists() ? oldDocSnapshot.data() : null;
+      if (oldData?.history) prevHistory = oldData.history;
+      if (oldData?.author) originalAuthor = oldData.author;
+      if (oldData?.createdAt) originalCreatedAt = oldData.createdAt;
     } catch (err) {
       // ignore
     }
@@ -161,18 +175,14 @@ export default function DisplayEntries() {
     ];
 
     await setDoc(doc(db, 'çalakî', newId), {
-      date,
+      date: normalizedDate,
       title,
       content,
       media,
-      // origianl author and creation date stay the same
-      // createdAt: Timestamp.now(),
-      // author: {
-      //   name: user?.displayName || 'unknown',
-      //   email: user?.email || 'unknown'
-      // }, 
+      ...(originalCreatedAt ? { createdAt: originalCreatedAt } : {}),
+      ...(originalAuthor ? { author: originalAuthor } : {}),
       history: newHistory
-    });
+    }, { merge: true });
 
     if (newId !== editingId) await deleteDoc(doc(db, 'çalakî', editingId));
 

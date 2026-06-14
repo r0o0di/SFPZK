@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { db } from '@/lib/firebase';
 import { collection, getDocs, orderBy, query } from 'firebase/firestore';
+import { formatDateForDisplay, normalizeDateForStorage } from '@/lib/utils';
 
 export default function SearchEntries() {
   const [entries, setEntries] = useState([]);
@@ -29,7 +30,8 @@ export default function SearchEntries() {
       entries.filter(
         entry =>
           entry.title.toLowerCase().includes(q) ||
-          entry.date.toLowerCase().includes(q)
+          formatDateForDisplay(entry.date).toLowerCase().includes(q) ||
+          normalizeDateForStorage(entry.date).toLowerCase().includes(q)
       )
     );
   }, [queryText, entries]);
@@ -60,7 +62,7 @@ export default function SearchEntries() {
               onClick={() => handleResultClick(entry.id)}
             >
               <div style={{ color: "white" }}>{entry.title}</div>
-              <small style={{ color: '#666' }}>{entry.date}</small>
+              <small style={{ color: '#666' }}>{formatDateForDisplay(entry.date)}</small>
             </div>
           ))}
         </div>

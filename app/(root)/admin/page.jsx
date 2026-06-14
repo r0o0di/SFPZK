@@ -6,6 +6,7 @@ import { signInWithPopup, signOut } from 'firebase/auth';
 import { Loader2Icon } from 'lucide-react';
 import { useAuthState } from '@/lib/useAuth';
 import { saveToFirestore } from '@/lib/firestoreHelpers';
+import { normalizeDateForStorage } from '@/lib/utils';
 
 export default function FormPage() {
   const { user, authLoading } = useAuthState();
@@ -29,9 +30,9 @@ export default function FormPage() {
 
   const handleFormSubmit = async (date, title, content, mediaLinks = []) => {
     try {
-      const entryId = `${date}`;
+      const entryId = `${normalizeDateForStorage(date)}`;
       const payload = {
-        date,
+        date: normalizeDateForStorage(date),
         title,
         content,
         media: mediaLinks,

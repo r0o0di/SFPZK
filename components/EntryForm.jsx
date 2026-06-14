@@ -11,6 +11,7 @@ import { Check, Save, Trash2, X } from 'lucide-react';
 import { toast } from "sonner";
 import { storage } from '@/lib/firebase';
 import { ref, uploadBytesResumable, getDownloadURL, deleteObject } from 'firebase/storage';
+import { normalizeDateForStorage } from '@/lib/utils';
 
 
 export default function EntryForm({
@@ -22,14 +23,14 @@ export default function EntryForm({
   buttonText = 'Save Entry',
   onCancel,
 }) {
-  const [date, setDate] = useState(initialDate);
+  const [date, setDate] = useState(normalizeDateForStorage(initialDate));
   const [title, setTitle] = useState(initialTitle);
   const [content, setContent] = useState(initialContent);
   const [mediaLinks, setMediaLinks] = useState(initialMedia);
   const [newMedia, setNewMedia] = useState('');
 
   useEffect(() => {
-    setDate(initialDate);
+    setDate(normalizeDateForStorage(initialDate));
     setTitle(initialTitle);
     setContent(initialContent);
     setMediaLinks(initialMedia || []);
@@ -197,7 +198,7 @@ export default function EntryForm({
       }
 
       // 4) Call parent's onSubmit with finalUrls (parent will write to Firestore)
-      return onSubmit(date, title, content, finalUrls);
+      return onSubmit(normalizeDateForStorage(date), title, content, finalUrls);
     })();
 
     toast.promise(savePromise, {
