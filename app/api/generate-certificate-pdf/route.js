@@ -1,14 +1,24 @@
 import { NextResponse } from 'next/server';
 import fs from 'fs/promises';
 import path from 'path';
+import { fileURLToPath } from 'url';
 import chromium from '@sparticuz/chromium';
 import { chromium as playwright } from 'playwright-core';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const loadDataUrl = async (filename) => {
     const filePath = path.join(process.cwd(), 'public', filename);
     const buffer = await fs.readFile(filePath);
     const mime = filename.endsWith('.png') ? 'image/png' : 'image/jpeg';
     return `data:${mime};base64,${buffer.toString('base64')}`;
+};
+
+const loadFontDataUrl = async (filename) => {
+    const filePath = path.join(__dirname, filename);
+    const buffer = await fs.readFile(filePath);
+    return `data:font/ttf;base64,${buffer.toString('base64')}`;
 };
 
 const formatGradeValue = (value) => {
@@ -51,6 +61,8 @@ const buildHtml = async ({ form, showReading, vekitOrMijar }) => {
     </div>
   ` : '';
 
+    const timesNewRomanFont = await loadFontDataUrl('Times New Roman.ttf');
+
     return `<!DOCTYPE html>
 <html lang="ku">
 <head>
@@ -58,6 +70,12 @@ const buildHtml = async ({ form, showReading, vekitOrMijar }) => {
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Fêrname</title>
   <style>
+    @font-face {
+      font-family: 'Times New Roman';
+      src: url('${timesNewRomanFont}') format('truetype');
+      font-weight: normal;
+      font-style: normal;
+    }
     body { margin: 0; padding: 0; background: #fff; font-family: 'Times New Roman', Times, serif; color: #000; display: flex; flex-direction: column; }
     .certificate { width: 210mm; min-height: 297mm; padding: 15mm; box-sizing: border-box; }
     .certificate-title { margin: 0; font-size: 50px; font-weight: 500; letter-spacing: 1px; }
