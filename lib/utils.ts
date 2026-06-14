@@ -7,7 +7,7 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 
-export const adminList = ['rodikhello2000@gmail.com', "sfpzk.s@gmail.com"];
+export const adminList = ['rodikhello2000@gmail.com', "sfpzk.s@gmail.com", "kulishikho@gmail.com"];
 
 const Utilities = {
   validateEmail(email: string) {

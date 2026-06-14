@@ -26,24 +26,24 @@ export default function HomePage() {
         {/* SAZIYA ME */}
         <section>
           <h3 className="text-3xl font-semibold text-red-300 mb-4">
-            Saziyê Me
+            Saziya Me
           </h3>
           <p className="text-lg text-gray-300 leading-relaxed max-w-3xl mx-auto">
             Ji ber giringî û pêwîstiya zimanê kurdî, ku hebûna gelê Kurd bi hebûna wî ve girêdayî ye.
             Çend zimanhez, welatparêz û xemxurên zimanê kurdî li hev kirin ku saziyek ji bo
-            fêrkirin û parastina zimanê kurdî damezrînin.
+            fêrkirin û parastina zimanê kurdî damezirînin.
           </p>
         </section>
 
-        {/* DAMEZRANDIN */}
+        {/* DAMEZiRANDIN */}
         <section>
           <h3 className="text-3xl font-semibold text-red-300 mb-4">
-            Damezrandin
+            Damezirandin
           </h3>
           <p className="text-lg text-gray-300 leading-relaxed max-w-3xl mx-auto">
-            Di sala 2006an de li bajarê Helebê, sazî bi beşdarbûna mamosteyan zimanperwer hate damezrandin.
-            Piştî damezrandinê, şaxên saziyê li hemû deverên kurdnîşîn û li bajarên din ên Sûriyê
-            (wek Şam, Reqa, Helebê) hatin damezrandin.
+            Di sala 2006an de li bajarê Helebê, sazî bi beşdarbûna mamosteyên zimanperwer hate damezirandin.
+            Piştî damezirandinê, şaxên saziyê li hemû deverên kurdnişîn û li bajarên din ên Sûriyê
+            (wek Şam, Qamîşlo, Helebê) hatin damezirandin.
           </p>
         </section>
 
@@ -53,11 +53,11 @@ export default function HomePage() {
             Şaxa Ewropayê
           </h3>
           <p className="text-lg text-gray-300 leading-relaxed max-w-3xl mx-auto">
-            Piştî krîzeya Sûriyê û koçkirina bi sed hezaran ji gelê me yên Rojavayê Kurdistanê,
+            Piştî krîzeya Sûriyê û koçberkirina bi sed hezaran ji gelê me yê Rojavayê Kurdistanê berve Ewropayê,
             hin mamosteyên ku berê di saziyê de kar dikirin, xwestin ku karê xwe berdewam bikin
-            û şaxekî saziyê li Ewropayê jî damezrînin.
-            Li 06.07.2019ê li bajarê Essen, şaxa Almanyayê hate damezrandin.
-            Di 19.08.2023ê de jî li Bremen navê wê hate guhertin bo “Şaxa Ewropayê”.
+            û şaxeke saziyê li Ewropayê jî damezirînin.
+            Li 06.07.2019an li bajarê Essen, şaxa Almanyayê hate damezirandin.
+            Di 19.08.2023an de jî li bajarê Bremen navê wê hate guhertin bo “Şaxa Ewropayê”.
           </p>
         </section>
 
@@ -70,14 +70,14 @@ export default function HomePage() {
             Li hemû deverên ku şaxên saziyê hene, kar li ser fêrkirin û parastina zimanê kurdî bi
             hez û xebat tê kirin. Bi hezaran xwendekar ji sê astên xwendinê derçûn û fêrnameyên xwe
             wergirtin. Alfabeya mamoste Mihemed Emîn Bozarslan hate bikaranîn û çend pirtûkên
-            fêrkî hatin çap kirin û belav kirin.
+            fêrkirinê hatin çap kirin û belav kirin.
           </p>
         </section>
 
         {/* PIRTÛK Û FÊRNAMÊ */}
         <section className="overflow-hidden">
           <h3 className="text-3xl font-semibold text-red-300 mb-8">
-            Pirtûk û Fêrnamê
+            Pirtûk û Fêrname
           </h3>
 
           <div className="relative w-full overflow-hidden">
@@ -135,12 +135,12 @@ export default function HomePage() {
             <li>Piştgiriya axaftin û peywandina bi zimanê dayikê</li>
             <li>Hezikirina zimanê kurdî bi hemû pêkhateyên civaka Kurdî, nemaze jî nifşa nû</li>
             <li>Fêrkirin û xwendin bi zimanê kurdî, ji bo parastin û pêşxistina zimanê kurdî, li hemî deverên kurdnişîn û deverên din ên ku Kurd lê dijîn</li>
-            <li>Hewldan bo fermîkirina zimanê kurdî li diyaspora û dibistanan</li>
+            <li>Hewildan bo fermîkirina zimanê kurdî li diyaspora û dibistanan</li>
           </ul>
         </section>
 
         {/* PIŞTEVANIYA YEKÎTÎ */}
-        <section>
+        {/* <section>
           <h3 className="text-3xl font-semibold text-red-300 mb-4">
             Piştevaniya Yekîtî
           </h3>
@@ -150,7 +150,7 @@ export default function HomePage() {
             û hemû kesên zimanhez û yên ku dixwazin fêrî zimanê kurdî bibin, çi Kurd bin û çi jî ji neteweyên din,
             bi dilgermî pêşwazî dike.
           </p>
-        </section>
+        </section> */}
 
       </main>
     </div>
