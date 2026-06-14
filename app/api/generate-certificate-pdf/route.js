@@ -73,6 +73,7 @@ const buildHtml = async ({ form, showReading, vekitOrMijar }) => {
       font-style: normal;
     }
     body { margin: 0; padding: 0; background: #fff; font-family: 'Times New Roman', Times, serif; color: #000; display: flex; flex-direction: column; }
+    .boldText { font-weight: letter-spacing: 1px; }
     .certificate { width: 210mm; min-height: 297mm; padding: 15mm; box-sizing: border-box; }
     .certificate-title { margin: 0; font-size: 50px; font-weight: 500; letter-spacing: 1px; }
     .header-row { display: flex; justify-content: space-between; align-items: center; padding-bottom: 15px; }
@@ -112,20 +113,20 @@ const buildHtml = async ({ form, showReading, vekitOrMijar }) => {
     ${headerHtml}
     <div class="institution-info">
       <span>Saziya Fêrkirin û Parastina Zimanê Kurdî</span>
-      <span class="institution-branch">Şaxa <strong>${form.branchName}</strong></span>
+      <span class="institution-branch">Şaxa <strong class="boldText">${form.branchName}</strong></span>
     </div>
     <section class="student-info">
-      <p class="level-text">Asta <strong>${form.studentLevel}</strong></p>
+      <p class="level-text">Asta <strong class="boldText">${form.studentLevel}</strong></p>
       <p style="margin:5px 0;">Ji bo</p>
-      <strong>${form.studentName}</strong><br />
-      Hejmar <strong>${form.studentNumber}</strong><br />
+      <strong class="boldText">${form.studentName}</strong><br />
+      Hejmar <strong class="boldText">${form.studentNumber}</strong><br />
       <div class="student-details-right">
-        <strong>${form.studentBirthdate}</strong><br />
-        <strong>${form.studentBirthplace}</strong>
+        <strong class="boldText">${form.studentBirthdate}</strong><br />
+        <strong class="boldText">${form.studentBirthplace}</strong>
       </div>
     </section>
     <main class="grades">
-      <h3 style="margin:40px 0 -5px; font-size:25px; font-weight:900;">Pilên Ezmûnê</h3>
+      <h3 class="boldText" style="margin:40px 0 -5px; font-size:25px; font-weight:900;">Pileyên Ezmûnê</h3>
       <div class="subjects-grid">
         ${readingRow}
         <div class="subject-row">
@@ -147,8 +148,8 @@ const buildHtml = async ({ form, showReading, vekitOrMijar }) => {
         <img src="${stampImage}" alt="stamp" class="stamp-image" />
       </div>
       <div class="signature-container">
-        <span><strong>${form.certificateLocation}</strong></span><br />
-        <span><strong>${form.certificateDate}</strong></span>
+        <span><strong  class="boldText">${form.certificateLocation}</strong></span><br />
+        <span><strong class="boldText">${form.certificateDate}</strong></span>
         <p class="proxy-text">bi navê</p>
         <div class="signature-line">
           <span class="signature-name">${form.teacherName}</span>
