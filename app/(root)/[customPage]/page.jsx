@@ -8,6 +8,7 @@ import { notFound } from 'next/navigation';
 import DisplayEntries from '@/components/DisplayEntries';
 import CourseForm from '@/components/CourseForm';
 import CertificateForm from '@/components/CertificateForm';
+import KontaktForm from '@/components/KontaktForm';
 import { useAdminState } from '@/lib/useAuth';
 import { Loader2Icon } from 'lucide-react';
 
@@ -31,6 +32,11 @@ export default function customPage({ params }) {
     return <CourseForm />;
   }
 
+
+
+  if (param === 'têklî') {
+    return <KontaktForm />;
+  }
 
 
   if (param === 'fêrname') {
