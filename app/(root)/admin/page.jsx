@@ -61,7 +61,7 @@ export default function FormPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-900 to-slate-800 flex items-center justify-center p-6">
+    <div className="min-h-screen bg-gradient-to-b from-slate-900 to-slate-800 flex items-center justify-center py-[1.5rem] px-[.5rem]">
       <div className="w-full max-w-4xl">
         {!user ? (
           <div className="grid gap-6 text-center">
@@ -83,7 +83,7 @@ export default function FormPage() {
                   <p className="text-yellow-200 text-lg font-semibold">{user.displayName}</p>
                   <p className="text-slate-300 text-sm">{user.email}</p>
                 </div>
-                <button className="rounded-2xl bg-red-500 px-5 py-2 text-sm font-semibold text-white transition hover:bg-red-600" onClick={handleLogout}>
+                <button className="rounded-2xl bg-red-500 px-5 py-2 text-sm font-semibold text-white transition hover:bg-red-600 cursor-pointer" onClick={handleLogout}>
                   Derkeve
                 </button>
               </div>
