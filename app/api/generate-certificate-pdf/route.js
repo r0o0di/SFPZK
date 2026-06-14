@@ -126,7 +126,7 @@ const buildHtml = async ({ form, showReading, vekitOrMijar }) => {
       </div>
     </section>
     <main class="grades">
-      <h3 class="boldText" style="margin:40px 0 -5px; font-size:25px; font-weight:900;">Pileyên Ezmûnê</h3>
+      <h3 class="boldText" style="margin:40px 0 -5px; margin-bottom: 5px; font-size:25px; font-weight: 900;">Pileyên Ezmûnê</h3>
       <div class="subjects-grid">
         ${readingRow}
         <div class="subject-row">
