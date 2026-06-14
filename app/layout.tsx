@@ -18,7 +18,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "SFPZK - Şaxa Ewropa",
+  title: "SFPZK",
   description: "SFPZK - Şaxa Ewropa",
 };
 
