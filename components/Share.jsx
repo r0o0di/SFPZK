@@ -1,5 +1,6 @@
 "use client"
 import { useState } from "react"
+import { toast } from "sonner"
 import {
   FacebookShareButton,
   FacebookIcon,
@@ -17,7 +18,7 @@ import {
   DialogContent,
   DialogTitle,
 } from "@/components/ui/dialog"
-import { Share2, Copy } from "lucide-react"
+import { Share2, Copy, CopyCheck } from "lucide-react"
 
 
 export default function Share({ id }) {
@@ -30,6 +31,11 @@ export default function Share({ id }) {
     navigator.clipboard.writeText(shareUrl);
 
     setCopied(true);
+    toast(
+      <div className="flex items-center gap-2">
+        <CopyCheck size={20} /> Lînk kopî bû 
+      </div>
+    );
 
     setTimeout(() => {
       setCopied(false);
@@ -77,7 +83,7 @@ export default function Share({ id }) {
 
           <div
             onClick={handleClick}
-            className={`text-gray-300 text-sm p-3 rounded-lg select-none break-all cursor-pointer transition-colors duration-200 ${copied
+            className={`text-gray-300 text-sm p-3 rounded-lg select-none break-all cursor-pointer transition-colors duration-200 active:bg-gray-600 ${copied
               ? "bg-gray-800"
               : "bg-gray-800 hover:bg-gray-700"
               }`}
