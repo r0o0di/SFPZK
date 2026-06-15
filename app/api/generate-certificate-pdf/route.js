@@ -53,7 +53,7 @@ const buildHtml = async ({ form, showReading, vekitOrMijar }) => {
     const readingRow = showReading ? `
     <div class="subject-row">
       <span>Xwendin</span>
-      <span class="grade-box"><span>${formatGradeValue(form.gradeReading)}</span> / <span class="grade-max">${form.gradeReadingMax}</span></span>
+      <span class="grade-box"><span>${formatGradeValue(form.gradeReading)}</span><span class="grade-max"> / ${form.gradeReadingMax}</span></span>
     </div>
   ` : '';
 
@@ -131,11 +131,11 @@ const buildHtml = async ({ form, showReading, vekitOrMijar }) => {
         ${readingRow}
         <div class="subject-row">
           <span>Nivîsandin</span>
-          <span class="grade-box"><span>${formatGradeValue(form.gradeWriting)}</span> / <span class="grade-max">${form.gradeWritingMax}</span></span>
+          <span class="grade-box"><span>${formatGradeValue(form.gradeWriting)}</span><span class="grade-max"> / ${form.gradeWritingMax}</span></span>
         </div>
         <div class="subject-row">
           <span>${vekitOrMijar}</span>
-          <span class="grade-box"><span>${formatGradeValue(form.gradeVekitMijar)}</span> / <span class="grade-max">${form.gradeVekitMijarMax}</span></span>
+          <span class="grade-box"><span>${formatGradeValue(form.gradeVekitMijar)}</span><span class="grade-max"> / ${form.gradeVekitMijarMax}</span></span>
         </div>
         <div class="subject-row total-row">
           <span>Tevahî</span>
