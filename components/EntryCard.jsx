@@ -38,7 +38,7 @@ export default function EntryCard({
   const textTooLong = (entry.content || '').length > 420;
 
   return (
-    <article className="relative bg-gray-800 rounded-2xl shadow-none border border-gray-700 p-6 mb-8 transition-shadow hover:shadow-md">
+    <article id={formatDateForDisplay(entry.date)} className="relative bg-gray-800 rounded-2xl shadow-none border border-gray-700 p-6 mb-8 transition-shadow hover:shadow-md">
       {isEditing ? (
         <div className="bg-gray-800 rounded-lg p-4 -mx-4">
           <EntryForm
@@ -114,7 +114,7 @@ export default function EntryCard({
                   }}
                 />
 
-                <Share id={entry.id} />
+                <Share id={formatDateForDisplay(entry.date)} />
 
                 {isAdmin && (
                   <button
