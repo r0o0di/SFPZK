@@ -1,3 +1,4 @@
+// warten
 "use client";
 import EntryCard from '@/components/EntryCard';
 import { useAdminState } from '@/lib/useAuth';
@@ -23,6 +24,7 @@ import { normalizeDateForStorage } from '@/lib/utils';
 import { storage } from '@/lib/firebase';
 import { ref as storageRef, deleteObject } from 'firebase/storage';
 import { Button } from '@/components/ui/button';
+import { Loader2Icon } from 'lucide-react';
 import { getStoragePathFromUrl } from '@/lib/storageHelpers';
 import { loadTranslationFromCache, saveTranslationToCache } from '@/lib/translationCache';
 
@@ -82,25 +84,25 @@ export default function DisplayEntries() {
   }, []);
 
   // Scroll to hash after entries load (for shared links with #id)
-useEffect(() => {
-  if (!entries.length) return;
+  useEffect(() => {
+    if (!entries.length) return;
 
-  const hash = window.location.hash;
-  if (!hash) return;
+    const hash = window.location.hash;
+    if (!hash) return;
 
-  const id = decodeURIComponent(hash.slice(1));
+    const id = decodeURIComponent(hash.slice(1));
 
-  const target = document.getElementById(id);
+    const target = document.getElementById(id);
 
-  if (target) {
-    setTimeout(() => {
-      target.scrollIntoView({
-        behavior: "smooth",
-        block: "start",
-      });
-    }, 100);
-  }
-}, [entries]);
+    if (target) {
+      setTimeout(() => {
+        target.scrollIntoView({
+          behavior: "smooth",
+          block: "start",
+        });
+      }, 100);
+    }
+  }, [entries]);
 
   // const isAdmin = adminList.includes(user?.email);
 
@@ -272,7 +274,9 @@ useEffect(() => {
         <h1 className="text-3xl font-semibold text-center mb-8 text-yellow-200">Çalakî</h1>
 
         {entries.length === 0 && (
-          <p className="text-center text-gray-400">Ein Moment warten...</p>
+          <div className="text-center">
+            <Loader2Icon className="text-center animate-spin inline size-10" />
+          </div>
         )}
 
         {entries.map(entry => (
