@@ -81,6 +81,27 @@ export default function DisplayEntries() {
     fetchEntries();
   }, []);
 
+  // Scroll to hash after entries load (for shared links with #id)
+useEffect(() => {
+  if (!entries.length) return;
+
+  const hash = window.location.hash;
+  if (!hash) return;
+
+  const id = decodeURIComponent(hash.slice(1));
+
+  const target = document.getElementById(id);
+
+  if (target) {
+    setTimeout(() => {
+      target.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+    }, 100);
+  }
+}, [entries]);
+
   // const isAdmin = adminList.includes(user?.email);
 
   const handleDelete = async (id) => {
