@@ -150,11 +150,10 @@ const buildHtml = async ({ form, showReading, vekitOrMijar }) => {
       <div class="signature-container">
         <span><strong  class="boldText">${form.certificateLocation}</strong></span><br />
         <span><strong class="boldText">${form.certificateDate}</strong></span>
-        <p class="proxy-text">bi navê</p>
+        <p class="proxy-text">Bi navê mamoste</p>
         <div class="signature-line">
           <span class="signature-name">${form.teacherName}</span>
         </div>
-        <p class="signature-title">(Mamoste)</p>
       </div>
     </section>
   </div>

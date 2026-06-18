@@ -463,7 +463,7 @@ export default function CertificateTemplate({ data, vekitOrMijar, totalScore, sh
               // margin: '5px 0 0',
             }}
           >
-            bi navê
+            Bi navê mamoste
           </p>
 
           <div
@@ -486,14 +486,14 @@ export default function CertificateTemplate({ data, vekitOrMijar, totalScore, sh
             </span>
           </div>
 
-          <p
+          {/* <p
             className="signature-title"
             style={{
               margin: '5px 0 0',
             }}
           >
-            (Mamoste)
-          </p>
+
+          </p> */}
         </div>
       </section>
     </div>
