@@ -154,6 +154,7 @@ const buildHtml = async ({ form, showReading, vekitOrMijar }) => {
         <div class="signature-line">
           <span class="signature-name">${form.teacherName}</span>
         </div>
+        <p class="signature-title"></p>
       </div>
     </section>
   </div>
