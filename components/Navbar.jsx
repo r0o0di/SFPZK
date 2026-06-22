@@ -96,9 +96,9 @@ export default function Navbar() {
               aria-label="Menu"
             >
               {mobileOpen ? (
-                <X size={20} className="transition-transform duration-300 ease-out" />
+                <X size={26} className="transition-transform duration-300 ease-out" />
               ) : (
-                <Menu size={20} className="transition-transform duration-300 ease-out" />
+                <Menu size={26} className="transition-transform duration-300 ease-out" />
               )}
             </button>
           </div>

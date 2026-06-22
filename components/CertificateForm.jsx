@@ -283,7 +283,6 @@ export default function CertificateForm() {
             };
 
             if (showReading) payload.gradeReading = form.gradeReading;
-            await saveToFirestore('fêrname', docId, payload);
 
             // CLEAR FORM: Triggers auto-increment logic gracefully because form.studentName becomes falsey
             setForm(prev => ({
@@ -334,7 +333,7 @@ export default function CertificateForm() {
             link.click();
             link.remove();
             URL.revokeObjectURL(url);
-
+            await saveToFirestore('fêrname', docId, payload);
             toast.success('Fêrname bi serkeftî hat amadekirin!');
 
         } catch (error) {
