@@ -11,14 +11,17 @@ import {
     SelectValue,
 } from "@/components/ui/select";
 import { Button } from '@/components/ui/button';
-import { Loader2Icon, Download } from "lucide-react";
+import { Loader2Icon, Download, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { useAuthState } from '@/lib/useAuth';
 import { generateCertificateDocId, saveToFirestore } from '@/lib/firestoreHelpers';
+import { collection, getFirestore, onSnapshot, doc, deleteDoc } from 'firebase/firestore';
 
 export default function CertificateForm() {
     const { user } = useAuthState();
     const [generating, setGenerating] = useState(false);
+    const [certificates, setCertificates] = useState([]);
+    const [loadingArchive, setLoadingArchive] = useState(true);
 
     // Grading configuration per student level (ast)
     const AST_CONFIG = {
@@ -108,6 +111,48 @@ export default function CertificateForm() {
         }
     };
 
+    // Fetch archive data in real-time and sort numerically by studentNumber (newest/highest first)
+    useEffect(() => {
+        const db = getFirestore();
+        const unsubscribe = onSnapshot(collection(db, 'fêrname'), (snapshot) => {
+            const certData = snapshot.docs.map(doc => ({
+                id: doc.id,
+                ...doc.data()
+            }));
+
+            // Sort numerically descending (highest/newest number first)
+            certData.sort((a, b) => {
+                const numA = parseInt(a.studentNumber, 10) || 0;
+                const numB = parseInt(b.studentNumber, 10) || 0;
+                return numB - numA;
+            });
+
+            setCertificates(certData);
+            setLoadingArchive(false);
+        }, (error) => {
+            console.error("Error loading archive records:", error);
+            setLoadingArchive(false);
+        });
+
+        return () => unsubscribe();
+    }, []);
+
+    // NEW EFFECT: Automatically fetch the largest studentNumber + 1 and fill it if the field is empty
+    useEffect(() => {
+        if (certificates.length > 0 && !form.studentName) {
+            // We use form.studentName as a proxy to know if a user started creating a new record.
+            // If the field is currently empty, we auto-increment.
+            const highestNumber = parseInt(certificates[0].studentNumber, 10);
+            if (!isNaN(highestNumber)) {
+                setForm(prev => ({
+                    ...prev,
+                    studentNumber: String(highestNumber + 1)
+                }));
+            }
+        }
+    }, [certificates, form.studentName]); // Added form.studentName to dependency array to react to resets cleanly
+
+
     useEffect(() => {
         const saved = loadTeacherPreferences();
         if (saved) {
@@ -171,6 +216,19 @@ export default function CertificateForm() {
         }));
     };
 
+    const handleDeleteCertificate = async (id) => {
+        if (!window.confirm("Tu bi rastî dixwazî vê fêrnamê rakî?")) return;
+
+        try {
+            const db = getFirestore();
+            await deleteDoc(doc(db, 'fêrname', id));
+            toast.success('Fêrname bi serkeftî hat rakirin!');
+        } catch (err) {
+            console.error('Failed to delete record:', err);
+            toast.error('Di rakirina fêrnameyê de Şaşitîyek çêbû.');
+        }
+    };
+
     // Automatically calculate total score
     const totalScore = (showReading ? (Number(form.gradeReading) || 0) : 0) +
         (Number(form.gradeWriting) || 0) +
@@ -195,23 +253,24 @@ export default function CertificateForm() {
         e.preventDefault();
         if (!isFormReady) return;
 
-        // save teacher preferences once when the teacher clicks download
+        // Save teacher preferences once when the teacher clicks download
         try {
             saveTeacherPreferences(form);
         } catch (err) {
             // ignore storage errors
         }
 
+        // Store current form state snapshots to reliably use for API call after UI resets
+        const submittedForm = { ...form };
 
         // Save certificate data to Firestore for archival
         try {
-
             const docId = generateCertificateDocId(form.certificateDate, form.studentLevel, form.studentName);
             const payload = {
                 branchName: form.branchName,
                 studentLevel: form.studentLevel,
                 studentName: form.studentName,
-                studentNumber: form.studentNumber,
+                studentNumber: Number(form.studentNumber),
                 studentBirthdate: form.studentBirthdate,
                 studentBirthplace: form.studentBirthplace,
                 gradeWriting: form.gradeWriting,
@@ -224,11 +283,24 @@ export default function CertificateForm() {
             };
 
             if (showReading) payload.gradeReading = form.gradeReading;
-
             await saveToFirestore('fêrname', docId, payload);
+
+            // CLEAR FORM: Triggers auto-increment logic gracefully because form.studentName becomes falsey
+            setForm(prev => ({
+                ...prev,
+                studentName: "",
+                studentNumber: "",
+                studentBirthdate: "",
+                studentBirthplace: "",
+                gradeReading: "",
+                gradeWriting: "",
+                gradeVekitMijar: "",
+            }));
+
         } catch (err) {
             console.error('Failed to save certificate to DB:', err);
-            toast.error('Di qeydkirina fêrnameyê de xeletî çêbû — ji kerema xwe dubare bikin.');
+            toast.error('Di qeydkirina fêrnameyê de Şaşitîyek çêbû — ji kerema xwe dubare bikin.');
+            return; // Exit out if firestore save fails
         }
 
         setGenerating(true);
@@ -240,7 +312,7 @@ export default function CertificateForm() {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    form,
+                    form: submittedForm, // Use snapshot data since active form state is cleared
                     showReading,
                     vekitOrMijar,
                 }),
@@ -253,7 +325,7 @@ export default function CertificateForm() {
             }
 
             const blob = await response.blob();
-            const fileName = `Ast_${form.studentLevel.replace("Yekem", '1').replace("Duyem", '2').replace("Sêyem", '3')}_${form.studentName.replace(/\s+/g, '_')}.pdf`;
+            const fileName = `Ast_${submittedForm.studentLevel.replace("Yekem", '1').replace("Duyem", '2').replace("Sêyem", '3')}_${submittedForm.studentName.replace(/\s+/g, '_')}.pdf`;
             const url = URL.createObjectURL(blob);
             const link = document.createElement('a');
             link.href = url;
@@ -264,17 +336,18 @@ export default function CertificateForm() {
             URL.revokeObjectURL(url);
 
             toast.success('Fêrname bi serkeftî hat amadekirin!');
+
         } catch (error) {
             console.error('PDF generation failed:', error);
-            toast.error('Şaşiyek çêbû di dema çêkirina PDFê de.');
+            toast.error('Şaşitîyek çêbû di dema çêkirina PDFê de.');
         } finally {
             setGenerating(false);
         }
     };
 
     return (
-        <div className="min-h-screen bg-gradient-to-b from-slate-900 to-slate-800 flex items-center justify-center p-6 mt-[3rem]">
-            <div className="w-full max-w-3xl bg-slate-900/70 backdrop-blur-sm border border-slate-700 rounded-2xl shadow-xl p-8">
+        <div className="min-h-screen bg-gradient-to-b from-slate-900 to-slate-800 flex flex-col items-center justify-center p-6 mt-[3rem]">
+            <div className="w-full max-w-3xl bg-slate-900/70 backdrop-blur-sm border border-slate-700 rounded-2xl shadow-xl p-8 mb-6">
 
                 <header className="flex items-center gap-4 mb-6">
                     <h1 className="text-2xl font-semibold text-yellow-200">Forma Fêrnamê</h1>
@@ -397,7 +470,6 @@ export default function CertificateForm() {
                     <hr className="border-slate-700 my-2" />
                     <h2 className="mt-[-10px] mb-[-10px] text-sm font-semibold text-slate-400 uppercase tracking-wider">Mamoste</h2>
 
-
                     {/* Mamoste */}
                     <div className="grid sm:grid-cols-3 gap-4">
                         <div className="grid gap-2">
@@ -436,7 +508,42 @@ export default function CertificateForm() {
                     </div>
                 </form>
             </div>
+
+            {/* Archive List Below Form */}
+            <div className="w-full max-w-3xl bg-slate-900/70 backdrop-blur-sm border border-slate-700 rounded-2xl shadow-xl p-8">
+                <h2 className="text-xl font-semibold text-yellow-200 mb-4">Arşîva Fêrnameyan</h2>
+
+                {loadingArchive ? (
+                    <div className="flex items-center gap-2 text-slate-400">
+                        <Loader2Icon className="animate-spin size-4" />
+                    </div>
+                ) : certificates.length === 0 ? (
+                    <p className="text-slate-400 text-sm">Tu fêrname hîn nehatine qeydkirin.</p>
+                ) : (
+                    <div className="grid gap-3 max-h-[400px] overflow-y-auto pr-2 custom-scrollbar overscroll-contain">
+                        {certificates.map((cert) => (
+                            <div key={cert.id} className="flex items-center justify-between p-4 rounded-xl border border-slate-800 bg-slate-950/40 hover:bg-slate-950/80 transition-colors">
+                                <div className="grid gap-0.5">
+                                    <span className="font-medium text-slate-200 text-base">
+                                        {cert.studentNumber} - {cert.studentName}
+                                    </span>
+                                    <span className="text-xs text-slate-400">
+                                        Asta {cert.studentLevel} - {cert.certificateDate}
+                                    </span>
+                                </div>
+                                <Button
+                                    variant="ghost"
+                                    size="icon"
+                                    className="text-rose-400 hover:text-rose-500 hover:bg-rose-950/30 transition-colors cursor-pointer"
+                                    onClick={() => handleDeleteCertificate(cert.id)}
+                                >
+                                    <Trash2 className="size-5" />
+                                </Button>
+                            </div>
+                        ))}
+                    </div>
+                )}
+            </div>
         </div>
     );
 }
- 
