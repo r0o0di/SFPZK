@@ -95,7 +95,7 @@ const buildHtml = async ({ form, showReading, vekitOrMijar }) => {
     .grade-max { font-weight: 100; }
     .total-row { justify-content: center; gap: 2rem; margin-top: 5px; font-size: 25px; }
     .signature-section { display: flex; justify-content: space-around; align-items: flex-end; font-size: 22px; margin-top: 80px; }
-    .stamp-image { width: 165px; height: auto; transform: rotate(-25deg); }
+    .stamp-image { width: 165px; height: auto; transform: rotate(-25deg); position: relative; top: 20px; }
     .signature-container { width: 300px; text-align: center; }
     .signature-line { border-bottom: 1px solid #000; }
     .signature-name { font-family: 'Courier New', monospace; font-size: 28px; font-style: italic; }
