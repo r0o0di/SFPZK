@@ -14,7 +14,7 @@ export default function HomePage() {
           <h2 className="text-4xl md:text-5xl font-bold text-green-300 mb-4">
             S F P Z K
           </h2>
-          <p className="text-gray-300 text-lg max-w-2xl">
+          <p className="text-gray-300 text-lg max-w-2xl mb-[75px]">
             Saziya Fêrkirin û Parastina Zimanê Kurdî
           </p>
         </div>

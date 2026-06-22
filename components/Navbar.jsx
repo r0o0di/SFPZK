@@ -92,13 +92,13 @@ export default function Navbar() {
             {/* Mobile Button */}
             <button
               onClick={() => setMobileOpen(v => !v)}
-              className="md:hidden p-2 rounded-lg text-gray-200 hover:bg-gray-800 transition cursor-pointer"
+              className={`md:hidden p-2 rounded-lg text-gray-200 hover:bg-gray-800 transition-all duration-300 cursor-pointer transform ${mobileOpen ? 'scale-110 rotate-90' : 'scale-100 rotate-0'}`}
               aria-label="Menu"
             >
               {mobileOpen ? (
-                <X size={22} />
+                <X size={26} className="transition-transform duration-300 ease-out" />
               ) : (
-                <Menu size={22} />
+                <Menu size={26} className="transition-transform duration-300 ease-out" />
               )}
             </button>
           </div>

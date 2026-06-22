@@ -28,7 +28,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="ku">
+    <html lang="ku" className={`scrollbar-gutter-stable overflow-y-auto`}>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased dark bg-gray-900 selection:bg-primary selection:text-primary-foreground`}
       >
