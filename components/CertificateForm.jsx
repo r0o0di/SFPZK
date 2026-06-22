@@ -265,24 +265,25 @@ export default function CertificateForm() {
 
         // Save certificate data to Firestore for archival
         try {
-            // const docId = generateCertificateDocId(form.certificateDate, form.studentLevel, form.studentName);
-            // const payload = {
-            //     branchName: form.branchName,
-            //     studentLevel: form.studentLevel,
-            //     studentName: form.studentName,
-            //     studentNumber: Number(form.studentNumber),
-            //     studentBirthdate: form.studentBirthdate,
-            //     studentBirthplace: form.studentBirthplace,
-            //     gradeWriting: form.gradeWriting,
-            //     gradeVekitORMijar: form.gradeVekitMijar,
-            //     totalScore,
-            //     certificateLocation: form.certificateLocation,
-            //     certificateDate: form.certificateDate,
-            //     teacherName: form.teacherName,
-            //     createdBy: user.email
-            // };
+            const docId = generateCertificateDocId(form.certificateDate, form.studentLevel, form.studentName);
+            const payload = {
+                branchName: form.branchName,
+                studentLevel: form.studentLevel,
+                studentName: form.studentName,
+                studentNumber: Number(form.studentNumber),
+                studentBirthdate: form.studentBirthdate,
+                studentBirthplace: form.studentBirthplace,
+                gradeWriting: form.gradeWriting,
+                gradeVekitORMijar: form.gradeVekitMijar,
+                totalScore,
+                certificateLocation: form.certificateLocation,
+                certificateDate: form.certificateDate,
+                teacherName: form.teacherName,
+                createdBy: user.email
+            };
 
-            // if (showReading) payload.gradeReading = form.gradeReading;
+            if (showReading) payload.gradeReading = form.gradeReading;
+            await saveToFirestore('fêrname', docId, payload);
 
             // CLEAR FORM: Triggers auto-increment logic gracefully because form.studentName becomes falsey
             setForm(prev => ({
@@ -334,27 +335,6 @@ export default function CertificateForm() {
             link.remove();
             URL.revokeObjectURL(url);
 
-
-
-                        const docId = generateCertificateDocId(form.certificateDate, form.studentLevel, form.studentName);
-            const payload = {
-                branchName: form.branchName,
-                studentLevel: form.studentLevel,
-                studentName: form.studentName,
-                studentNumber: Number(form.studentNumber),
-                studentBirthdate: form.studentBirthdate,
-                studentBirthplace: form.studentBirthplace,
-                gradeWriting: form.gradeWriting,
-                gradeVekitORMijar: form.gradeVekitMijar,
-                totalScore,
-                certificateLocation: form.certificateLocation,
-                certificateDate: form.certificateDate,
-                teacherName: form.teacherName,
-                createdBy: user.email
-            };
-
-            if (showReading) payload.gradeReading = form.gradeReading;
-            await saveToFirestore('fêrname', docId, payload);
             toast.success('Fêrname bi serkeftî hat amadekirin!');
 
         } catch (error) {
