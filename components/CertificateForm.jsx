@@ -509,6 +509,8 @@ export default function CertificateForm() {
                 </form>
             </div>
 
+
+
             {/* Archive List Below Form */}
             <div className="w-full max-w-3xl bg-slate-900/70 backdrop-blur-sm border border-slate-700 rounded-2xl shadow-xl p-8">
                 <h2 className="text-xl font-semibold text-yellow-200 mb-4">Arşîva Fêrnameyan</h2>
@@ -520,17 +522,27 @@ export default function CertificateForm() {
                 ) : certificates.length === 0 ? (
                     <p className="text-slate-400 text-sm">Tu fêrname hîn nehatine qeydkirin.</p>
                 ) : (
-                    <div className="grid gap-3 max-h-[400px] overflow-y-auto pr-2 custom-scrollbar overscroll-contain">
+                    <div className="grid gap-3 max-h-[400px] overflow-y-auto pr-2 pt-2 custom-scrollbar overscroll-contain">
                         {certificates.map((cert) => (
-                            <div key={cert.id} className="flex items-center justify-between p-4 rounded-xl border border-slate-800 bg-slate-950/40 hover:bg-slate-950/80 transition-colors">
+                            <div
+                                key={cert.id}
+                                className="relative flex items-center justify-between p-4 pt-5 rounded-xl border border-slate-700 bg-slate-950/40 hover:bg-slate-950/80 transition-colors"
+                            >
+                                {/* Floating date */}
+                                <span className="absolute -top-2.5 left-4 px-2 text-[11px] text-slate-400 bg-slate-900/70">
+                                    {cert.certificateDate}
+                                </span>
+
                                 <div className="grid gap-0.5">
                                     <span className="font-medium text-slate-200 text-base">
                                         {cert.studentNumber} - {cert.studentName}
                                     </span>
+
                                     <span className="text-xs text-slate-400">
-                                        Asta {cert.studentLevel} - {cert.certificateDate}
+                                        Asta {cert.studentLevel} - {cert.teacherName}
                                     </span>
                                 </div>
+
                                 <Button
                                     variant="ghost"
                                     size="icon"
