@@ -37,6 +37,18 @@ export default function EntryCard({
 
   const textTooLong = (entry.content || '').length > 420;
 
+  
+  const handleContentClick = (id, textTooLong) => {
+  if (!textTooLong) return;
+
+  const selection = window.getSelection();
+  if (selection && selection.toString().length > 0) {
+    return;
+  }
+
+  onToggleExpand(id);
+};
+
   return (
     <article id={formatDateForDisplay(entry.date)} className="scroll-mt-[70px] relative bg-gray-800 rounded-2xl shadow-none border border-gray-700 p-6 mb-8 transition-shadow hover:shadow-md">
       {isEditing ? (
@@ -90,9 +102,8 @@ export default function EntryCard({
               </button>
 
               <div
-                className={`absolute right-0 mt-2 w-36 bg-gray-800 border border-gray-700 rounded-lg shadow-lg z-30 origin-top-right transition-all duration-250 ${
-                  menuOpen ? 'opacity-100 scale-100 pointer-events-auto' : 'opacity-0 scale-95 pointer-events-none'
-                }`}
+                className={`absolute right-0 mt-2 w-36 bg-gray-800 border border-gray-700 rounded-lg shadow-lg z-30 origin-top-right transition-all duration-250 ${menuOpen ? 'opacity-100 scale-100 pointer-events-auto' : 'opacity-0 scale-95 pointer-events-none'
+                  }`}
               >
                 {isAdmin && (
                   <button
@@ -130,8 +141,8 @@ export default function EntryCard({
 
           <div className="mt-4">
             <div className="relative">
-              <div
-                className={`text-gray-200 leading-relaxed whitespace-pre-wrap ${!isExpanded && textTooLong ? 'overflow-hidden' : ''}`}
+              <div onClick={() => handleContentClick(entry.id, textTooLong)}
+                className={`text-gray-200 leading-relaxed whitespace-pre-wrap ${!isExpanded && textTooLong ? 'overflow-hidden' : ''} cursor-pointer`}
                 style={!isExpanded && textTooLong ? { maxHeight: '6.2em' } : {}}
               >
                 <p>
