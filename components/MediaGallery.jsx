@@ -1,18 +1,19 @@
 "use client";
-import { useEffect, useState } from 'react';
-import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
+import { useEffect, useRef, useState } from "react";
+import { Dialog, DialogContent, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import MediaRenderer from './MediaRenderer';
 
 export default function MediaGallery({ media }) {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [imageLoaded, setImageLoaded] = useState(false);
+  const thumbnailRefs = useRef([]);
 
   useEffect(() => {
     function handleKey(e) {
       if (!isDialogOpen) return;
-      if (e.key === 'ArrowRight') setCurrentIndex((prev) => (prev + 1) % media.length);
-      else if (e.key === 'ArrowLeft') setCurrentIndex((prev) => (prev - 1 + media.length) % media.length);
+      if (e.key === 'ArrowRight') setCurrentIndex((prev) => (prev + 1) % media.length), setImageLoaded(false);
+      else if (e.key === 'ArrowLeft') setCurrentIndex((prev) => (prev - 1 + media.length) % media.length), setImageLoaded(false);
     }
 
     document.addEventListener('keydown', handleKey);
@@ -53,6 +54,18 @@ export default function MediaGallery({ media }) {
       img.onerror = null;
     };
   }, [currentIndex, media]);
+
+
+  useEffect(() => {
+    if (!isDialogOpen) return;
+
+    thumbnailRefs.current[currentIndex]?.scrollIntoView({
+      behavior: "smooth",
+      inline: "center",
+      block: "nearest",
+    });
+  }, [currentIndex, isDialogOpen]);
+
 
   if (!media || media.length === 0) return null;
 
@@ -107,36 +120,84 @@ export default function MediaGallery({ media }) {
       </div>
 
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-        <DialogContent className="bg-transparent border-none">
+        <DialogContent aria-describedby={undefined} className="bg-transparent border-none max-w-[95vw] w-full">
           <DialogTitle className="sr-only">Media Gallery</DialogTitle>
-          <div className="relative w-full h-full flex flex-col items-center justify-center">
-            <div className="w-full h-full overflow-hidden rounded-lg shadow-lg relative">
+
+          <div className="w-full max-h-[90vh] flex flex-col items-center gap-4 overflow-hidden">
+
+            {/* Main image */}
+            <div className="relative w-full max-h-[70vh] flex items-center justify-center overflow-hidden rounded-lg shadow-lg bg-gray-900">
               {!imageLoaded && (
                 <>
                   <div className="absolute inset-0 bg-gray-900 z-20" />
                   <div className="absolute inset-0 bg-gray-700/60 animate-pulse z-30" />
                 </>
               )}
-              {media.length > 0 && <MediaRenderer link={media[currentIndex]} onLoad={() => setImageLoaded(true)} />}
+
+              <MediaRenderer
+                link={media[currentIndex]}
+                onLoad={() => setImageLoaded(true)}
+              />
             </div>
 
-            <div className="mt-3 text-white text-sm font-medium">
+
+            {/* Counter */}
+            <div className="text-white text-sm font-medium">
               {currentIndex + 1} / {media.length}
             </div>
 
+
+            {/* Thumbnails */}
+            {media.length > 1 && (
+              <div className="gallery-scroll w-full overflow-x-auto bg-gray-700 rounded ">
+                <div className="flex gap-2 px-2 py-2">
+                  {media.map((link, idx) => (
+                    <button
+                      key={idx}
+                      ref={(el) => {
+                        thumbnailRefs.current[idx] = el;
+                      }}
+                      onClick={() => {
+                        setCurrentIndex(idx);
+                        setImageLoaded(false);
+                      }}
+                      className={`gallery-thumbnails flex-shrink-0 w-15 h-15 rounded-lg overflow-hidden transition-all duration-200
+                         ${idx === currentIndex
+                          ? "scale-[1.2] "
+                          : "opacity-70 hover:opacity-100"
+                        }
+                      `}
+                    >
+                      <MediaRenderer link={link} onLoad={() => null} />
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Previous button */}
             {media.length > 1 && (
               <button
-                onClick={() => setCurrentIndex((prev) => (prev - 1 + media.length) % media.length)}
-                className="text-[2rem] absolute left-[-1.75rem] text-white/80 hover:text-white p-2 bg-black/40 rounded-full cursor-pointer"
+                onClick={() =>
+                  setCurrentIndex(
+                    (prev) => (prev - 1 + media.length) % media.length
+                  )
+                }
+                className="text-[2rem] absolute left-[-.5rem] top-[32%] -translate-y-1/2 text-white/80 hover:text-white p-2 bg-black/40 rounded-full cursor-pointer"
               >
                 ‹
               </button>
             )}
 
+            {/* Next button */}
             {media.length > 1 && (
               <button
-                onClick={() => setCurrentIndex((prev) => (prev + 1) % media.length)}
-                className="text-[2rem] absolute right-[-1.75rem] text-white/80 hover:text-white p-2 bg-black/40 rounded-full cursor-pointer"
+                onClick={() =>
+                  setCurrentIndex(
+                    (prev) => (prev + 1) % media.length
+                  )
+                }
+                className="text-[2rem] absolute right-[-.5rem] top-[32%] -translate-y-1/2 text-white/80 hover:text-white p-2 bg-black/40 rounded-full cursor-pointer"
               >
                 ›
               </button>
