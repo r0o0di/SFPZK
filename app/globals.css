@@ -159,9 +159,15 @@ height: 30px;
   animation: scroll-smooth 60s linear infinite;
 }
 
+.animate-scroll-smooth.founders {
+  animation: scroll-smooth 200s linear infinite;
+}
+
 .animate-scroll-smooth:hover {
   animation-play-state: paused;
 }
+
+
 
 
 

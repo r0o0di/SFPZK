@@ -40,11 +40,70 @@ export default function HomePage() {
           <h3 className="text-3xl font-semibold text-red-300 mb-4">
             Damezirandin
           </h3>
+           <div className="relative w-full overflow-hidden mb-2">
+            <div className="founders flex animate-scroll-smooth gap-6">
+              {[
+                { id: 1, name: "M. Kemal Hennan", deceased: true },
+                { id: 2, name: "Dr. Mihemed Ebdo Elî", deceased: false },
+                { id: 3, name: "M. Merwan Berekat", deceased: false },
+                { id: 4, name: "M. Mihemed Şêx Birîmce", deceased: true },
+                { id: 5, name: "M. Kemal Ebdalo", deceased: false },
+                { id: 6, name: "M. Kaziklî Kemal", deceased: false },
+                { id: 7, name: "M. Mihemed Qere Hesen", deceased: false },
+                { id: 8, name: "M. Nûşîn Bêcirmanî", deceased: false },
+                { id: 9, name: "M. Diljar Seyda", deceased: true },
+                { id: 10, name: "M. Osman Mihemed", deceased: true },
+                { id: 11, name: "Salih Osman", deceased: false },
+                { id: 12, name: "Ehmed bavê Omîd", deceased: false },
+                { id: 13, name: "Mustafa Elaş", deceased: true },
+              ].flatMap((item, i, arr) => [item, ...arr]) // duplicate for smooth loop
+                .map((item, i) => (
+                  <div
+                    key={i}
+                    className={`relative flex-shrink-0 bg-gray-800 rounded-md shadow-md transition-all hover:scale-[1.02]`}
+                  >
+                    {item.deceased && (
+                      <>
+                        <div className="absolute top-0 left-0 w-16 h-16 overflow-hidden rounded-tl-xl">
+                          <div className="absolute -left-8 top-4 w-24 rotate-[-45deg] border-t-7 border-black" />
+                        </div>
+
+                        <div className="absolute top-2 left-2 text-xs text-gray-400">
+                          🕊
+                        </div>
+                      </>
+                    )}
+
+                    <div className="flex h-full flex-col items-center justify-center px-7 text-center">
+                      <span className="text-sm text-gray-500 ">
+
+                        #{item.id}
+                      </span>
+                      <h4
+                        className={`mb-2 text-xl font-semibold leading-snug ${item.deceased ? "text-gray-300" : "text-gray-100"
+                          }`}
+                      >
+                        {item.name}
+                      </h4>
+
+
+                    </div>
+                  </div>
+                ))}
+            </div>
+
+            <div className="pointer-events-none absolute top-0 left-0 h-full w-24 bg-gradient-to-r from-gray-900 to-transparent" />
+            <div className="pointer-events-none absolute top-0 right-0 h-full w-24 bg-gradient-to-l from-gray-900 to-transparent" />
+          </div>
+
           <p className="text-lg text-gray-300 leading-relaxed max-w-3xl mx-auto">
-            Di sala 2006an de li bajarê Helebê, sazî bi beşdarbûna mamosteyên zimanperwer hate damezirandin.
+            Di sala 2006an de li bajarê Helebê, sazî bi beşdarbûna 13 mamosteyên zimanperwer hate damezirandin.
             Piştî damezirandinê, şaxên saziyê li hemû deverên kurdnişîn û li bajarên din ên Sûriyê
             (wek Şam, Qamîşlo, Helebê) hatin damezirandin.
           </p>
+
+         
+
         </section>
 
         {/* ŞAXA EWROPAYÊ */}
