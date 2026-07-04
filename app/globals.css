@@ -160,7 +160,7 @@ height: 30px;
 }
 
 .animate-scroll-smooth.founders {
-  animation: scroll-smooth 200s linear infinite;
+  animation: scroll-smooth 25s linear infinite;
 }
 
 .animate-scroll-smooth:hover {
