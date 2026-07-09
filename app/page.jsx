@@ -1,21 +1,45 @@
 export default function HomePage() {
   const founders = [
-  { id: 1, name: "M. Kemal Hennan", deceased: true },
-  { id: 2, name: "Dr. Mihemed Ebdo Elî", deceased: false },
-  { id: 3, name: "M. Merwan Berekat", deceased: false },
-  { id: 4, name: "M. Mihemed Şêx Birîmce", deceased: true },
-  { id: 5, name: "M. Kemal Ebdalo", deceased: false },
-  { id: 6, name: "M. Kaziklî Kemal", deceased: false },
-  { id: 7, name: "M. Mihemed Qere Hesen", deceased: false },
-  { id: 8, name: "M. Nûşîn Bêcirmanî", deceased: false },
-  { id: 9, name: "M. Diljar Seyda", deceased: true },
-  { id: 10, name: "M. Osman Mihemed", deceased: true },
-  { id: 11, name: "Salih Osman", deceased: false },
-  { id: 12, name: "Ehmed bavê Omîd", deceased: false },
-  { id: 13, name: "Mustafa Elaş", deceased: true },
-];
+    { id: 1, name: "M. Kemal Hennan", deceased: true },
+    { id: 2, name: "Dr. Mihemed Ebdo Elî", deceased: false },
+    { id: 3, name: "M. Merwan Berekat", deceased: false },
+    { id: 4, name: "M. Mihemed Şêx Birîmce", deceased: true },
+    { id: 5, name: "M. Kemal Ebdalo", deceased: false },
+    { id: 6, name: "M. Kaziklî Kemal", deceased: false },
+    { id: 7, name: "M. Mihemed Qere Hesen", deceased: false },
+    { id: 8, name: "M. Nûşîn Bêcirmanî", deceased: false },
+    { id: 9, name: "M. Diljar Seyda", deceased: true },
+    { id: 10, name: "M. Osman Mihemed", deceased: true },
+    { id: 11, name: "Salih Osman", deceased: false },
+    { id: 12, name: "Ehmed bavê Omîd", deceased: false },
+    { id: 13, name: "Mustafa Elaş", deceased: true },
+  ];
+  const scrollingFounders = [...founders, ...founders];
 
-const scrollingFounders = [...founders, ...founders];
+
+  const books = [
+    {
+      title: 'Zimanê Kurdî Fêr Dibim',
+      desc: 'M. Merwan Berekat (çapkirî & PDF)',
+    },
+    {
+      title: 'Rêzimana Kurdî',
+      desc: 'Endez. Memê Alan, Dr. Mihemed Ebdo Elî, Kamîran Bêkes (niha nayê bikaranîn)',
+    },
+    {
+      title: 'Nasîna Zimanê Kurdî',
+      desc: 'Dr. Mihemed Ebdo Elî (çapkirî & PDF)',
+    },
+    {
+      title: 'Ji Bingehên Rêzimana Kurdî',
+      desc: 'Dr. Mihemed Ebdo Elî (çapkirî & PDF)',
+    },
+    {
+      title: 'Bingehên Fêrkirina Rêzimana Zimanê Kurdî, ji bo Qonaxa 1em',
+      desc: 'M. Dilovanê Deştê',
+    },
+  ];
+  const scrollingBooks = [...books, ...books];
 
   return (
     <div className="min-h-screen text-gray-100 flex flex-col">
@@ -61,7 +85,7 @@ const scrollingFounders = [...founders, ...founders];
           <div className="relative w-full overflow-hidden mb-2">
             <div className="founders flex animate-scroll-smooth gap-6">
               {
-               scrollingFounders.map((item, i) => (
+                scrollingFounders.map((item, i) => (
                   <div
                     key={i}
                     className={`relative flex-shrink-0 bg-gray-800  shadow-md transition-all hover:scale-[1.02]`}
@@ -144,34 +168,13 @@ const scrollingFounders = [...founders, ...founders];
         {/* PIRTÛK Û FÊRNAMÊ */}
         <section className="overflow-hidden">
           <h3 className="text-3xl font-semibold text-red-300 mb-8">
-            Pirtûk û Fêrname
+            Pirtûk
           </h3>
 
           <div className="relative w-full overflow-hidden">
             <div className="flex animate-scroll-smooth gap-6">
-              {[
-                {
-                  title: 'Zimanê Kurdî Fêr Dibim',
-                  desc: 'M. Merwan Berekat (çapkirî & PDF)',
-                },
-                {
-                  title: 'Rêzimana Kurdî',
-                  desc: 'Endez. Memê Alan, Dr. Mihemed Ebdo Elî, Kamîran Bêkes (niha nayê bikaranîn)',
-                },
-                {
-                  title: 'Nasîna Zimanê Kurdî',
-                  desc: 'Dr. Mihemed Ebdo Elî (çapkirî & PDF)',
-                },
-                {
-                  title: 'Ji Bingehên Rêzimana Kurdî',
-                  desc: 'Dr. Mihemed Ebdo Elî (çapkirî & PDF)',
-                },
-                {
-                  title: 'Bingehên Fêrkirina Rêzimana Zimanê Kurdî, ji bo Qonaxa 1em',
-                  desc: 'M. Dilovanê Deştê',
-                },
-              ].flatMap((item, i, arr) => [item, ...arr]) // duplicate for smooth loop
-                .map((item, i) => (
+              {
+                scrollingBooks.map((item, i) => (
                   <div
                     key={i}
                     className="flex-shrink-0 min-w-[18rem] max-w-[20rem] bg-gray-800 border border-gray-700 rounded-xl p-6 text-center shadow-md hover:shadow-lg hover:scale-[1.02] transition-all"

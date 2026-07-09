@@ -156,7 +156,7 @@ height: 30px;
 .animate-scroll-smooth {
   display: flex;
   width: max-content;
-  animation: scroll-smooth 60s linear infinite;
+  animation: scroll-smooth 15s linear infinite;
 }
 
 .animate-scroll-smooth.founders {
