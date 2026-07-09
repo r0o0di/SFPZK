@@ -198,7 +198,7 @@ const scrollingFounders = [...founders, ...founders];
           <h3 className="text-3xl font-semibold text-red-300 mb-4">
             Armancên Me
           </h3>
-          <ul className="text-lg text-gray-300 leading-relaxed max-w-3xl mx-auto text-left list-disc list-inside space-y-1">
+          <ul className="text-lg text-gray-300 leading-relaxed max-w-3xl mx-auto text-left list-disc list-outside min-[900px]:pl-0 pl-6 space-y-1">
             <li>Piştgiriya axaftin û peywandina bi zimanê dayikê</li>
             <li>Hezikirina zimanê kurdî bi hemû pêkhateyên civaka Kurdî, nemaze jî nifşa nû</li>
             <li>Fêrkirin û xwendin bi zimanê kurdî, ji bo parastin û pêşxistina zimanê kurdî, li hemî deverên kurdnişîn û deverên din ên ku Kurd lê dijîn</li>
