@@ -1,3 +1,5 @@
+import { gsap, ScrollTrigger } from "@/lib/gsap";
+
 export default function HomePage() {
   const founders = [
     { id: 1, name: "M. Kemal Hennan", deceased: true },
@@ -9,8 +11,8 @@ export default function HomePage() {
     { id: 7, name: "M. Mihemed Qere Hesen", deceased: false },
     { id: 8, name: "M. Nûşîn Bêcirmanî", deceased: false },
     { id: 9, name: "M. Diljar Seyda", deceased: true },
-    { id: 10, name: "M. Osman Mihemed", deceased: true },
-    { id: 11, name: "Salih Osman", deceased: false },
+    { id: 10, name: "M. Osman Mihemed", deceased: false },
+    { id: 11, name: "Salih Osman", deceased: true },
     { id: 12, name: "Ehmed bavê Omîd", deceased: false },
     { id: 13, name: "Mustafa Elaş", deceased: true },
   ];
