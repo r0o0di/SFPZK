@@ -21,7 +21,8 @@ export default function customPage({ params }) {
     return (
       <>
         {/* <SearchEntries /> */}
-        <div style={{ padding: 20, paddingTop: 60 }}>
+        <div className="py-8 px-2">
+
           <DisplayEntries />
         </div>
       </>

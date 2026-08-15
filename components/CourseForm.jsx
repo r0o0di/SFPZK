@@ -106,8 +106,8 @@ export default function CourseForm() {
 
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-900 to-slate-800 flex items-center justify-center p-6 mt-[3rem]">
-      <div className="w-full max-w-2xl bg-slate-900/70 backdrop-blur-sm border border-slate-700 rounded-2xl shadow-xl p-8">
+    <div className="min-h-screen bg-gradient-to-b from-slate-900 to-slate-800 flex items-center justify-center p-2 mt-[3rem]">
+      <div className="w-full max-w-4xl bg-slate-900/70 backdrop-blur-sm border border-slate-700 rounded-2xl shadow-xl p-6">
         <header className=" items-center gap-4 mb-6">
           <h1 className="text-2xl font-semibold text-yellow-200">Fêrbûna zimanê Kurdî</h1>
           <p className="text-gray-300">Fêrî zimanê Kurdî bibe! Vê formê ji me re bişîne, û emê bi te re têkiliyê bikin.</p>
@@ -115,7 +115,7 @@ export default function CourseForm() {
 
         <form onSubmit={handleSubmit} className="grid gap-4">
           {/* Name and Age */}
-          <div className="grid sm:grid-cols-2 gap-4">
+          <div className="grid xs:grid-cols-2 gap-4">
             <div className="grid gap-2">
               <Label htmlFor="name">Nav</Label>
               <Input type="text" id="name" name="name" placeholder="Sevîn Omer" value={form.name} onChange={handleChange} required />
@@ -134,7 +134,7 @@ export default function CourseForm() {
           </div>
 
           {/* Phone and Ast */}
-          <div className="grid sm:grid-cols-2 gap-4 items-end">
+          <div className="grid xs:grid-cols-2 gap-4 items-end">
             <div className="grid gap-2">
               <Label htmlFor="phone">Jimara Telefonê</Label>
               <Input type="tel" id="phone" name="phone" placeholder="+4912345678900" value={form.phone} onChange={handleChange} required />

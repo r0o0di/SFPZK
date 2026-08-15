@@ -22,6 +22,7 @@ export default function CertificateForm() {
     const [generating, setGenerating] = useState(false);
     const [certificates, setCertificates] = useState([]);
     const [loadingArchive, setLoadingArchive] = useState(true);
+    const [downloadingCertId, setDownloadingCertId] = useState(null);
 
     // Grading configuration per student level (ast)
     const AST_CONFIG = {
@@ -229,6 +230,77 @@ export default function CertificateForm() {
         }
     };
 
+    const triggerCertificateDownload = async ({ formData, showReadingValue, vekitLabel }) => {
+        const response = await fetch('/api/generate-certificate-pdf', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                form: formData,
+                showReading: showReadingValue,
+                vekitOrMijar: vekitLabel,
+            }),
+        });
+
+        if (!response.ok) {
+            const errorBody = await response.json().catch(() => null);
+            const message = errorBody?.error || 'PDF daxistin nikaribû.';
+            throw new Error(message);
+        }
+
+        const blob = await response.blob();
+        const fileName = `Ast_${formData.studentLevel.replace("Yekem", '1').replace("Duyem", '2').replace("Sêyem", '3')}_${formData.studentName.replace(/\s+/g, '_')}.pdf`;
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = fileName;
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        URL.revokeObjectURL(url);
+    };
+
+    const handleDownloadCertificate = async (cert) => {
+        if (!cert) return;
+
+        const cfg = AST_CONFIG[cert.studentLevel] || AST_CONFIG['Yekem'];
+        const showReadingArchive = !!cfg.showReading && cert.gradeReading !== undefined && cert.gradeReading !== null && cert.gradeReading !== '';
+        const archiveForm = {
+            branchName: cert.branchName || '',
+            studentLevel: cert.studentLevel || '',
+            studentName: cert.studentName || '',
+            studentNumber: String(cert.studentNumber ?? ''),
+            studentBirthdate: cert.studentBirthdate || '',
+            studentBirthplace: cert.studentBirthplace || '',
+            gradeReading: cert.gradeReading ?? '',
+            gradeReadingMax: String(cfg.readingMax || 20),
+            gradeWriting: cert.gradeWriting ?? '',
+            gradeWritingMax: String(cfg.writingMax || 60),
+            gradeVekitMijar: cert.gradeVekitORMijar ?? cert.gradeVekitMijar ?? '',
+            gradeVekitMijarMax: String(cfg.vekitMax || 20),
+            certificateLocation: cert.certificateLocation || '',
+            certificateDate: cert.certificateDate || getTodayDate(),
+            teacherName: cert.teacherName || '',
+        };
+
+        setDownloadingCertId(cert.id);
+
+        try {
+            await triggerCertificateDownload({
+                formData: archiveForm,
+                showReadingValue: showReadingArchive,
+                vekitLabel: cfg.vekitOrMijar || 'Vekît',
+            });
+            toast.success('Fêrname bi serkeftî hat daxistin!');
+        } catch (error) {
+            console.error('Archive PDF download failed:', error);
+            toast.error('Di daxistina fêrnameyê de Şaşitîyek çêbû.');
+        } finally {
+            setDownloadingCertId(null);
+        }
+    };
+
     // Automatically calculate total score
     const totalScore = (showReading ? (Number(form.gradeReading) || 0) : 0) +
         (Number(form.gradeWriting) || 0) +
@@ -306,37 +378,12 @@ export default function CertificateForm() {
         setGenerating(true);
 
         try {
-            const response = await fetch('/api/generate-certificate-pdf', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    form: submittedForm, // Use snapshot data since active form state is cleared
-                    showReading,
-                    vekitOrMijar,
-                }),
+            await triggerCertificateDownload({
+                formData: submittedForm,
+                showReadingValue: showReading,
+                vekitLabel: vekitOrMijar,
             });
-
-            if (!response.ok) {
-                const errorBody = await response.json().catch(() => null);
-                const message = errorBody?.error || 'PDF çêkirin nikaribû.';
-                throw new Error(message);
-            }
-
-            const blob = await response.blob();
-            const fileName = `Ast_${submittedForm.studentLevel.replace("Yekem", '1').replace("Duyem", '2').replace("Sêyem", '3')}_${submittedForm.studentName.replace(/\s+/g, '_')}.pdf`;
-            const url = URL.createObjectURL(blob);
-            const link = document.createElement('a');
-            link.href = url;
-            link.download = fileName;
-            document.body.appendChild(link);
-            link.click();
-            link.remove();
-            URL.revokeObjectURL(url);
-
             toast.success('Fêrname bi serkeftî hat amadekirin!');
-
         } catch (error) {
             console.error('PDF generation failed:', error);
             toast.error('Şaşitîyek çêbû di dema çêkirina PDFê de.');
@@ -346,8 +393,8 @@ export default function CertificateForm() {
     };
 
     return (
-        <div className="min-h-screen bg-gradient-to-b from-slate-900 to-slate-800 flex flex-col items-center justify-center p-6 mt-[3rem]">
-            <div className="w-full max-w-3xl bg-slate-900/70 backdrop-blur-sm border border-slate-700 rounded-2xl shadow-xl p-8 mb-6">
+        <div className="min-h-screen bg-gradient-to-b from-slate-900 to-slate-800 flex flex-col items-center justify-center p-2 mt-[4rem]">
+            <div className="w-full max-w-4xl bg-slate-900/70 backdrop-blur-sm border border-slate-700 rounded-2xl shadow-xl p-6 mb-6">
 
                 <header className="flex items-center gap-4 mb-6">
                     <h1 className="text-2xl font-semibold text-yellow-200">Forma Fêrnamê</h1>
@@ -357,7 +404,7 @@ export default function CertificateForm() {
                     <h2 className="mt-[-10px] mb-[-10px] text-sm font-semibold text-slate-400 uppercase tracking-wider">Sazî</h2>
 
                     {/* Branch and Level */}
-                    <div className="grid sm:grid-cols-2 gap-4">
+                    <div className="grid xs:grid-cols-2 gap-4">
                         <div className="grid gap-2">
                             <Label htmlFor="branchName">Şax</Label>
                             <Select value={form.branchName} onValueChange={(val) => handleChange({ target: { name: "branchName", value: val } })}>
@@ -394,7 +441,7 @@ export default function CertificateForm() {
                     <h2 className="mt-[-10px] mb-[-10px] text-sm font-semibold text-slate-400 uppercase tracking-wider">Xwendekar</h2>
 
                     {/* Student Info */}
-                    <div className="grid sm:grid-cols-2 gap-4">
+                    <div className="grid xs:grid-cols-2 gap-4">
                         <div className="grid gap-2">
                             <Label htmlFor="studentName">Navê Xwendekar</Label>
                             <Input type="text" id="studentName" name="studentName" placeholder="Sevîn Omer" value={form.studentName} onChange={handleChange} required />
@@ -406,7 +453,7 @@ export default function CertificateForm() {
                     </div>
 
                     {/* Birth Info */}
-                    <div className="grid sm:grid-cols-2 gap-4">
+                    <div className="grid xs:grid-cols-2 gap-4">
                         <div className="grid gap-2">
                             <Label htmlFor="studentBirthdate">Dîroka Jidayîkbûnê</Label>
                             <Input type="text" id="studentBirthdate" name="studentBirthdate" placeholder="24.08.2006" value={form.studentBirthdate} onChange={handleChange} required />
@@ -471,11 +518,7 @@ export default function CertificateForm() {
                     <h2 className="mt-[-10px] mb-[-10px] text-sm font-semibold text-slate-400 uppercase tracking-wider">Mamoste</h2>
 
                     {/* Mamoste */}
-                    <div className="grid sm:grid-cols-3 gap-4">
-                        <div className="grid gap-2">
-                            <Label htmlFor="certificateDate">Dîroka Fêrnamê</Label>
-                            <Input type="text" id="certificateDate" name="certificateDate" placeholder="08.06.2026" value={form.certificateDate} onChange={handleChange} required />
-                        </div>
+                    <div className="grid  xs:grid-cols-2 gap-4">
                         <div className="grid gap-2">
                             <Label htmlFor="teacherName">Navê Mamoste</Label>
                             <Input type="text" id="teacherName" name="teacherName" placeholder="Baranê Cûmê" value={form.teacherName} onChange={handleChange} required />
@@ -485,6 +528,12 @@ export default function CertificateForm() {
                             <Input type="text" id="certificateLocation" name="certificateLocation" placeholder="Bremen, Almanya" value={form.certificateLocation} onChange={handleChange} required />
                         </div>
                     </div>
+
+
+                        <div className="grid gap-2">
+                            <Label htmlFor="certificateDate">Dîroka Fêrnamê</Label>
+                            <Input type="text" id="certificateDate" name="certificateDate" placeholder="08.06.2026" value={form.certificateDate} onChange={handleChange} required />
+                        </div>
 
                     {/* Submit Action */}
                     <div>
@@ -512,7 +561,7 @@ export default function CertificateForm() {
 
 
             {/* Archive List Below Form */}
-            <div className="w-full max-w-3xl bg-slate-900/70 backdrop-blur-sm border border-slate-700 rounded-2xl shadow-xl p-8">
+            <div className="w-full max-w-3xl bg-slate-900/70 backdrop-blur-sm border border-slate-700 rounded-2xl shadow-xl p-2">
                 <h2 className="text-xl font-semibold text-yellow-200 mb-4">Arşîva Fêrnameyan</h2>
 
                 {loadingArchive ? (
@@ -543,14 +592,32 @@ export default function CertificateForm() {
                                     </span>
                                 </div>
 
-                                <Button
-                                    variant="ghost"
-                                    size="icon"
-                                    className="text-rose-400 hover:text-rose-500 hover:bg-rose-950/30 transition-colors cursor-pointer"
-                                    onClick={() => handleDeleteCertificate(cert.id)}
-                                >
-                                    <Trash2 className="size-5" />
-                                </Button>
+                                <div className="flex items-center gap-2">
+                                    <Button
+                                        variant="ghost"
+                                        size="icon"
+                                        className="text-emerald-400 hover:text-emerald-500 hover:bg-emerald-950/30 transition-colors cursor-pointer"
+                                        onClick={() => handleDownloadCertificate(cert)}
+                                        disabled={downloadingCertId === cert.id}
+                                        title="Fêrnameyê daxîne"
+                                    >
+                                        {downloadingCertId === cert.id ? (
+                                            <Loader2Icon className="size-4 animate-spin" />
+                                        ) : (
+                                            <Download className="size-6" />
+                                        )}
+                                    </Button>
+
+                                    <Button
+                                        variant="ghost"
+                                        size="icon"
+                                        className="text-rose-400 hover:text-rose-500 hover:bg-rose-950/30 transition-colors cursor-pointer"
+                                        onClick={() => handleDeleteCertificate(cert.id)}
+                                        title="Fêrnameyê rake"
+                                    >
+                                        <Trash2 className="size-5" />
+                                    </Button>
+                                </div>
                             </div>
                         ))}
                     </div>

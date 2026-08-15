@@ -1,4 +1,3 @@
-// warten
 "use client";
 import EntryCard from '@/components/EntryCard';
 import { useAdminState } from '@/lib/useAuth';
@@ -24,9 +23,9 @@ import { normalizeDateForStorage } from '@/lib/utils';
 import { storage } from '@/lib/firebase';
 import { ref as storageRef, deleteObject } from 'firebase/storage';
 import { Button } from '@/components/ui/button';
-import { Loader2Icon } from 'lucide-react';
 import { getStoragePathFromUrl } from '@/lib/storageHelpers';
 import { loadTranslationFromCache, saveTranslationToCache } from '@/lib/translationCache';
+import EntriesSkeleton from '@/components/EntriesSkeleton';
 
 
 export default function DisplayEntries() {
@@ -274,9 +273,11 @@ export default function DisplayEntries() {
         <h1 className="text-3xl font-semibold text-center mb-8 text-yellow-200">Çalakî</h1>
 
         {entries.length === 0 && (
-          <div className="text-center">
-            <Loader2Icon className="text-center animate-spin inline size-10" />
-          </div>
+          <>
+          <EntriesSkeleton />
+          <EntriesSkeleton />
+          <EntriesSkeleton />
+          </>
         )}
 
         {entries.map(entry => (
