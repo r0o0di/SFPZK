@@ -602,7 +602,7 @@ export default function CertificateForm() {
                                         title="Fêrnameyê daxîne"
                                     >
                                         {downloadingCertId === cert.id ? (
-                                            <Loader2Icon className="size-4 animate-spin" />
+                                            <Loader2Icon className="size-6 animate-spin" />
                                         ) : (
                                             <Download className="size-6" />
                                         )}

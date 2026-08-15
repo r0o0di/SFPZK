@@ -74,7 +74,7 @@ export default function HomePage() {
           </h3>
           <p className="text-lg text-gray-300 leading-relaxed max-w-3xl mx-auto">
             Ji ber giringî û pêwîstiya zimanê kurdî, ku hebûna gelê Kurd bi hebûna wî ve girêdayî ye.
-            Çend zimanhez, welatparêz û xemxurên zimanê kurdî li hev kirin ku saziyek ji bo
+            Çend zimanhez, welatparêz û xemxurên zimanê kurdî li hev kirin ku saziyekê ji bo
             fêrkirin û parastina zimanê kurdî damezirînin.
           </p>
         </section>
@@ -150,7 +150,7 @@ export default function HomePage() {
             hin mamosteyên ku berê di saziyê de kar dikirin, xwestin ku karê xwe berdewam bikin
             û şaxeke saziyê li Ewropayê jî damezirînin.
             Li 06.07.2019an li bajarê Bochum, şaxa Almanyayê hate damezirandin.
-            Di 19.08.2023an de jî li bajarê Bremen navê wê hate guhertin bo “Şaxa Ewropayê”.
+            Di 19.08.2023an de jî li bajarê Bremen navê wê hate guhertin bû “Şaxa Ewropayê”.
           </p>
         </section>
 
@@ -205,7 +205,7 @@ export default function HomePage() {
           </h3>
           <ul className="text-lg text-gray-300 leading-relaxed max-w-3xl mx-auto text-left list-disc list-outside min-[900px]:pl-0 pl-6 space-y-1">
             <li>Piştgiriya axaftin û peywendiya bi zimanê dayikê</li>
-            <li>Hezikirina zimanê kurdî bi hemû pêkhateyên civaka Kurdî, nemaze jî nifşa nû</li>
+            <li>Hezikirina zimanê kurdî bi hemû pêkhateyên civaka Kurd, nemaze jî nifşa nû</li>
             <li>Fêrkirin û xwendin bi zimanê kurdî, ji bo parastin û pêşxistina zimanê kurdî, li hemî deverên kurdnişîn û deverên din ên ku Kurd lê dijîn</li>
             <li>Hewildan bo fermîkirina zimanê kurdî li diyaspora û dibistanan</li>
           </ul>

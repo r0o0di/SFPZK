@@ -54,7 +54,7 @@ export function formatDateForDisplay(dateString: string | null | undefined): str
   return value;
 }
 
-export const adminList = ['rodikhello2000@gmail.com', "sfpzk.s@gmail.com", "kulishikho@gmail.com"];
+export const adminList = ['rodikhello2000@gmail.com', "sfpzk.s@gmail.com", "kulishikho@gmail.com", "baranecume@gmail.com"];
 
 const Utilities = {
   validateEmail(email: string) {
