@@ -50,9 +50,9 @@ export default function EntryCard({
 };
 
   return (
-    <article id={formatDateForDisplay(entry.date)} className="scroll-mt-[70px] relative bg-gray-800 rounded-2xl shadow-none border border-gray-700 p-6 mb-8 transition-shadow hover:shadow-md">
+    <article id={formatDateForDisplay(entry.date)} className={`scroll-mt-[70px] relative bg-gray-800 rounded-2xl shadow-none border border-gray-700 mb-8 transition-shadow hover:shadow-md ${isEditing ? 'p-0' : 'p-6'}`}>
       {isEditing ? (
-        <div className="bg-gray-800 rounded-lg p-4 -mx-4">
+        <div className="bg-gray-800 rounded-lg p-0 -mx-0">
           <EntryForm
             initialDate={editData.date}
             initialTitle={editData.title}

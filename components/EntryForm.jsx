@@ -220,7 +220,7 @@ export default function EntryForm({
 
 
   return (
-    <form className='w-full max-w-4xl border border-slate-700 bg-slate-950/90 shadow-[0_0_120px_rgba(255,255,255,0.05)] rounded-[2rem] p-8 grid gap-4' onSubmit={handleSubmit}>
+    <form className='w-full max-w-4xl border border-slate-700 bg-slate-950/90 shadow-[0_0_120px_rgba(255,255,255,0.05)] rounded-[2rem] p-4 grid gap-4' onSubmit={handleSubmit}>
       {onCancel && (
         <div className='text-right mb-[-32px]'>
           <Button onClick={onCancel} className=" rounded-sm select-none cursor-pointer text-white bg-transparent hover:bg-transparent w-12 h-12" type="button">
