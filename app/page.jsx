@@ -1,4 +1,5 @@
 import { gsap, ScrollTrigger } from "@/lib/gsap";
+// ttt
 
 export default function HomePage() {
   const founders = [
