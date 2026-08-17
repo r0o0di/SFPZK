@@ -22,6 +22,10 @@ export const viewport: Viewport = {
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://sfpzk.vercel.app"),
+  
+  verification: {
+    google: "v3eH3ARM0nDCQRb5qwmMQ2m4BZ56Kv0NdWOvgEOuqyQ",
+  },
 
   title: "SFPZK",
 
