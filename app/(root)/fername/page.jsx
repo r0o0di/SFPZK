@@ -1,7 +1,7 @@
 "use client"
 
 import React from 'react';
-import CertificateTemplate from '@/components/CertificateTemplate';
+import CertificateTemplate from '@/components/certificates/CertificateTemplate';
 
 export default function Kontakt( ) {
   

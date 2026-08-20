@@ -1,10 +1,10 @@
 "use client";
 import { useEffect, useRef, useState } from 'react';
 import { SquarePen, Trash2, Languages, Loader2Icon, Expand, Shrink } from 'lucide-react';
-import EntryForm from '@/components/EntryForm';
-import Share from '@/components/Share';
+import EntryForm from '@/components/entries/EntryForm';
+import Share from '@/components/entries/Share';
 import TranslateMenu from './TranslateMenu';
-import MediaGallery from './MediaGallery';
+import MediaGallery from '@/components/media/MediaGallery';
 import { formatDateForDisplay } from '@/lib/utils';
 
 export default function EntryCard({

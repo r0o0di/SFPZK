@@ -5,10 +5,10 @@
 
 import React from 'react';
 import { notFound } from 'next/navigation';
-import DisplayEntries from '@/components/DisplayEntries';
-import CourseForm from '@/components/CourseForm';
-import CertificateForm from '@/components/CertificateForm';
-import KontaktForm from '@/components/KontaktForm';
+import DisplayEntries from '@/components/entries/DisplayEntries';
+import CourseForm from '@/components/forms/CourseForm';
+import CertificateForm from '@/components/certificates/CertificateForm';
+import KontaktForm from '@/components/forms/KontaktForm';
 import { useAdminState } from '@/lib/useAuth';
 import { Loader2Icon } from 'lucide-react';
 

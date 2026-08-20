@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from '@/components/ui/dialog';
-import MediaRenderer from './MediaRenderer';
+import MediaRenderer from '@/components/media/MediaRenderer';
 
 export default function MediaGallery({ media }) {
   const [isDialogOpen, setIsDialogOpen] = useState(false);

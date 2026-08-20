@@ -1,5 +1,5 @@
 'use client';
-import EntryForm from '@/components/EntryForm';
+import EntryForm from '@/components/entries/EntryForm';
 import { db, auth, provider } from '@/lib/firebase';
 import { setDoc, doc, Timestamp } from 'firebase/firestore';
 import { signInWithPopup, signOut } from 'firebase/auth';

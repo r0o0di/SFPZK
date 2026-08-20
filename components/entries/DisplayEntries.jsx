@@ -1,5 +1,5 @@
 "use client";
-import EntryCard from '@/components/EntryCard';
+import EntryCard from '@/components/entries/EntryCard';
 import { useAdminState } from '@/lib/useAuth';
 import { useEffect, useRef, useState } from 'react';
 import {
@@ -25,7 +25,7 @@ import { ref as storageRef, deleteObject } from 'firebase/storage';
 import { Button } from '@/components/ui/button';
 import { getStoragePathFromUrl } from '@/lib/storageHelpers';
 import { loadTranslationFromCache, saveTranslationToCache } from '@/lib/translationCache';
-import EntriesSkeleton from '@/components/EntriesSkeleton';
+import EntriesSkeleton from '@/components/entries/EntriesSkeleton';
 
 
 export default function DisplayEntries() {
