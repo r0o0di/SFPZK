@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
@@ -10,7 +10,7 @@ import {
     SelectValue,
 } from "@/components/ui/select";
 import { Button } from '@/components/ui/button';
-import { Loader2Icon, Download, Trash2 } from "lucide-react";
+import { Loader2Icon, Download, Trash2, SquarePen, MoreVertical, X } from "lucide-react";
 import { toast } from "sonner";
 import { useAuthState } from '@/lib/useAuth';
 import { generateCertificateDocId, saveToFirestore } from '@/lib/firestoreHelpers';
@@ -22,6 +22,10 @@ export default function CertificateForm() {
     const [certificates, setCertificates] = useState([]);
     const [loadingArchive, setLoadingArchive] = useState(true);
     const [downloadingCertId, setDownloadingCertId] = useState(null);
+    const [editingCertificateId, setEditingCertificateId] = useState(null);
+    const [editingCertificate, setEditingCertificate] = useState(null);
+    const [archiveMenuId, setArchiveMenuId] = useState(null);
+    const archiveMenuRef = useRef(null);
 
     // Grading configuration per student level (ast)
     const AST_CONFIG = {
@@ -179,6 +183,17 @@ export default function CertificateForm() {
         }
     }, [certificates, form.studentName]); // Added form.studentName to dependency array to react to resets cleanly
 
+    useEffect(() => {
+        const handleArchiveMenuClick = (event) => {
+            if (archiveMenuRef.current && !archiveMenuRef.current.contains(event.target)) {
+                setArchiveMenuId(null);
+            }
+        };
+
+        document.addEventListener('mousedown', handleArchiveMenuClick);
+        return () => document.removeEventListener('mousedown', handleArchiveMenuClick);
+    }, []);
+
 
     useEffect(() => {
         const cfg = AST_CONFIG[form.studentLevel];
@@ -258,6 +273,49 @@ export default function CertificateForm() {
             console.error('Failed to delete record:', err);
             toast.error('Di rakirina fêrnameyê de Şaşitîyek çêbû.');
         }
+    };
+
+    const handleEditCertificate = (cert) => {
+        const cfg = AST_CONFIG[cert.studentLevel] || AST_CONFIG.Yekem;
+
+        setEditingCertificateId(cert.id);
+        setEditingCertificate(cert);
+        setShowReading(cfg.showReading);
+        setVekitOrMijar(cfg.vekitOrMijar);
+        setForm({
+            branchName: cert.branchName || '',
+            studentLevel: cert.studentLevel || '',
+            studentName: cert.studentName || '',
+            studentNumber: String(cert.studentNumber ?? ''),
+            studentBirthdate: cert.studentBirthdate || '',
+            studentBirthplace: cert.studentBirthplace || '',
+            gradeReading: cert.gradeReading ?? '',
+            gradeReadingMax: String(cfg.readingMax || ''),
+            gradeWriting: cert.gradeWriting ?? '',
+            gradeWritingMax: String(cfg.writingMax || ''),
+            gradeVekitMijar: cert.gradeVekitORMijar ?? cert.gradeVekitMijar ?? '',
+            gradeVekitMijarMax: String(cfg.vekitMax || ''),
+            certificateLocation: cert.certificateLocation || '',
+            certificateDate: cert.certificateDate || getTodayDate(),
+            teacherName: cert.teacherName || '',
+        });
+        setArchiveMenuId(null);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
+
+    const cancelCertificateEdit = () => {
+        setEditingCertificateId(null);
+        setEditingCertificate(null);
+        setForm((prev) => ({
+            ...prev,
+            studentName: '',
+            studentNumber: '',
+            studentBirthdate: '',
+            studentBirthplace: '',
+            gradeReading: '',
+            gradeWriting: '',
+            gradeVekitMijar: '',
+        }));
     };
 
     const triggerCertificateDownload = async ({ formData, showReadingValue, vekitLabel }) => {
@@ -355,12 +413,12 @@ export default function CertificateForm() {
         e.preventDefault();
         if (!isFormReady) return;
 
-        // Store current form state snapshots to reliably use for API call after UI resets
+        const isEditing = Boolean(editingCertificateId);
         const submittedForm = { ...form };
 
         // Save certificate data to Firestore for archival
         try {
-            const docId = generateCertificateDocId(form.certificateDate, form.studentLevel, form.studentName);
+            const docId = editingCertificateId || generateCertificateDocId(form.certificateDate, form.studentLevel, form.studentName);
             const payload = {
                 branchName: form.branchName,
                 studentLevel: form.studentLevel,
@@ -374,23 +432,19 @@ export default function CertificateForm() {
                 certificateLocation: form.certificateLocation,
                 certificateDate: form.certificateDate,
                 teacherName: form.teacherName,
-                createdBy: user.email
+                createdBy: editingCertificate?.createdBy || user?.email || ''
             };
 
             if (showReading) payload.gradeReading = form.gradeReading;
             await saveToFirestore('fêrname', docId, payload);
 
-            // CLEAR FORM: Triggers auto-increment logic gracefully because form.studentName becomes falsey
-            setForm(prev => ({
-                ...prev,
-                studentName: "",
-                studentNumber: "",
-                studentBirthdate: "",
-                studentBirthplace: "",
-                gradeReading: "",
-                gradeWriting: "",
-                gradeVekitMijar: "",
-            }));
+            if (isEditing) {
+                cancelCertificateEdit();
+                toast.success('Agahiyên fêrnameyê bi serkeftî hatin nûkirin!');
+                return;
+            }
+
+            cancelCertificateEdit();
 
         } catch (err) {
             console.error('Failed to save certificate to DB:', err);
@@ -420,7 +474,21 @@ export default function CertificateForm() {
             <div className="w-full max-w-4xl bg-slate-900/70 backdrop-blur-sm border border-slate-700 rounded-2xl shadow-xl p-6 mb-6">
 
                 <header className="flex items-center gap-4 mb-6">
-                    <h1 className="text-2xl font-semibold text-yellow-200">Forma Fêrnamê</h1>
+                    <h1 className="text-2xl font-semibold text-yellow-200">
+                        {editingCertificateId ? 'Sererastkirina fêrnameyê' : 'Forma Fêrnamê'}
+                    </h1>
+                    {editingCertificateId && (
+                        <Button
+                            type="button"
+                            variant="ghost"
+                            size="icon"
+                            className="ml-auto text-slate-400 hover:text-slate-200 cursor-pointer"
+                            onClick={cancelCertificateEdit}
+                            title="Sererastkirin betal bike"
+                        >
+                            <X className="size-5" />
+                        </Button>
+                    )}
                 </header>
 
                 <form onSubmit={handleGeneratePDF} className="grid gap-5">
@@ -572,8 +640,17 @@ export default function CertificateForm() {
                                 </>
                             ) : (
                                 <>
-                                    <Download strokeWidth={2.5} className="h-auto size-6" />
-                                    Fêrnamê wek PDF daxîne
+                                    {editingCertificateId ? (
+                                        <>
+                                            <SquarePen strokeWidth={2.5} className="h-auto size-6" />
+                                            Agahiyan tomar bike
+                                        </>
+                                    ) : (
+                                        <>
+                                            <Download strokeWidth={2.5} className="h-auto size-6" />
+                                            Fêrnamê wek PDF daxîne
+                                        </>
+                                    )}
                                 </>
                             )}
                         </Button>
@@ -584,7 +661,7 @@ export default function CertificateForm() {
 
 
             {/* Archive List Below Form */}
-            <div className="w-full max-w-3xl bg-slate-900/70 backdrop-blur-sm border border-slate-700 rounded-2xl shadow-xl p-2">
+            <div ref={archiveMenuRef} className="w-full max-w-3xl bg-slate-900/70 backdrop-blur-sm border border-slate-700 rounded-2xl shadow-xl p-2">
                 <h2 className="text-xl font-semibold text-yellow-200 mb-4">Arşîva Fêrnameyan</h2>
 
                 {loadingArchive ? (
@@ -615,31 +692,48 @@ export default function CertificateForm() {
                                     </span>
                                 </div>
 
-                                <div className="flex items-center gap-2">
+                                <div className="relative" data-archive-menu>
                                     <Button
                                         variant="ghost"
                                         size="icon"
-                                        className="text-emerald-400 hover:text-emerald-500 hover:bg-emerald-950/30 transition-colors cursor-pointer"
-                                        onClick={() => handleDownloadCertificate(cert)}
-                                        disabled={downloadingCertId === cert.id}
-                                        title="Fêrnameyê daxîne"
+                                        className="text-slate-300 hover:text-slate-100 hover:bg-slate-800 transition-colors cursor-pointer"
+                                        onClick={() => setArchiveMenuId((currentId) => currentId === cert.id ? null : cert.id)}
+                                        aria-label="Vebijarkanên fêrnameyê vekin"
+                                        title="Vebijarkan"
                                     >
-                                        {downloadingCertId === cert.id ? (
-                                            <Loader2Icon className="size-6 animate-spin" />
-                                        ) : (
-                                            <Download className="size-6" />
-                                        )}
+                                        <MoreVertical className="size-5" />
                                     </Button>
 
-                                    <Button
-                                        variant="ghost"
-                                        size="icon"
-                                        className="text-rose-400 hover:text-rose-500 hover:bg-rose-950/30 transition-colors cursor-pointer"
-                                        onClick={() => handleDeleteCertificate(cert.id)}
-                                        title="Fêrnameyê rake"
-                                    >
-                                        <Trash2 className="size-5" />
-                                    </Button>
+                                    <div className={`absolute right-0 top-full mt-1 z-20 min-w-44 rounded-lg border border-slate-700 bg-slate-900 py-1 shadow-xl transition-all ${archiveMenuId === cert.id ? 'opacity-100 scale-100 pointer-events-auto' : 'opacity-0 scale-95 pointer-events-none'}`}>
+                                        <button
+                                            type="button"
+                                            className="flex w-full items-center gap-3 px-3 py-2 text-left text-sm text-slate-200 hover:bg-slate-800 cursor-pointer"
+                                            onClick={() => handleDownloadCertificate(cert).finally(() => setArchiveMenuId(null))}
+                                            disabled={downloadingCertId === cert.id}
+                                        >
+                                            {downloadingCertId === cert.id ? <Loader2Icon className="size-5 animate-spin" /> : <Download className="size-5" />}
+                                            Daxîne
+                                        </button>
+                                        <button
+                                            type="button"
+                                            className="flex w-full items-center gap-3 px-3 py-2 text-left text-sm text-slate-200 hover:bg-slate-800 cursor-pointer"
+                                            onClick={() => handleEditCertificate(cert)}
+                                        >
+                                            <SquarePen className="size-5" />
+                                            Sererastkirin
+                                        </button>
+                                        <button
+                                            type="button"
+                                            className="flex w-full items-center gap-3 px-3 py-2 text-left text-sm text-rose-400 hover:bg-slate-800 cursor-pointer"
+                                            onClick={() => {
+                                                setArchiveMenuId(null);
+                                                handleDeleteCertificate(cert.id);
+                                            }}
+                                        >
+                                            <Trash2 className="size-5" />
+                                            Rakin
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                         ))}
