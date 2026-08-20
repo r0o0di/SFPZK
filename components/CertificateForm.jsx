@@ -725,7 +725,7 @@ export default function CertificateForm() {
                                             disabled={downloadingCertId === cert.id}
                                         >
                                             {downloadingCertId === cert.id ? <Loader2Icon className="size-5 animate-spin" /> : <Download className="size-5" />}
-                                            Daxîne
+                                            PDF daxîne
                                         </button>
                                         <button
                                             type="button"
