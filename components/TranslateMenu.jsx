@@ -38,7 +38,7 @@ export default function TranslateMenu({ onTranslate, disabled = false }) {
         onClick={() => setIsOpen(!isOpen)}
       >
         <Languages strokeWidth={1.5} />
-        <span>Wergerandin</span>
+        <span>Wergerîne</span>
       </button>
 
       {/* Added check: Only render the menu if NOT disabled and isOpen is true */}

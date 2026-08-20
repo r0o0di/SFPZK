@@ -113,7 +113,7 @@ export default function EntryCard({
                     }}
                     className="flex gap-3 w-full text-left px-3 py-2 hover:bg-gray-700 transition text-sm cursor-pointer"
                   >
-                    <SquarePen size={20} strokeWidth={1.5} /> Sererastkirin
+                    <SquarePen size={20} strokeWidth={1.5} /> Sererast bike
                   </button>
                 )}
 
@@ -132,7 +132,7 @@ export default function EntryCard({
                     onClick={() => onDelete(entry.id)}
                     className="flex gap-3 w-full text-left px-3 py-2 hover:bg-gray-700 transition text-sm text-red-400 cursor-pointer"
                   >
-                    <Trash2 size={20} strokeWidth={1.5} /> Rakirin
+                    <Trash2 size={20} strokeWidth={1.5} /> Rake
                   </button>
                 )}
               </div>

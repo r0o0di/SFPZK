@@ -14,7 +14,7 @@ import { Loader2Icon, Download, Trash2, SquarePen, MoreVertical, X } from "lucid
 import { toast } from "sonner";
 import { useAuthState } from '@/lib/useAuth';
 import { generateCertificateDocId, saveToFirestore } from '@/lib/firestoreHelpers';
-import { collection, getFirestore, onSnapshot, doc, deleteDoc } from 'firebase/firestore';
+import { collection, getFirestore, onSnapshot, doc, deleteDoc, writeBatch } from 'firebase/firestore';
 
 export default function CertificateForm() {
     const { user } = useAuthState();
@@ -418,7 +418,7 @@ export default function CertificateForm() {
 
         // Save certificate data to Firestore for archival
         try {
-            const docId = editingCertificateId || generateCertificateDocId(form.certificateDate, form.studentLevel, form.studentName);
+            const docId = generateCertificateDocId(form.certificateDate, form.studentLevel, form.studentName);
             const payload = {
                 branchName: form.branchName,
                 studentLevel: form.studentLevel,
@@ -436,7 +436,20 @@ export default function CertificateForm() {
             };
 
             if (showReading) payload.gradeReading = form.gradeReading;
-            await saveToFirestore('fêrname', docId, payload);
+
+            if (isEditing) {
+                const db = getFirestore();
+                const batch = writeBatch(db);
+                batch.set(doc(db, 'fêrname', docId), payload);
+
+                if (editingCertificateId !== docId) {
+                    batch.delete(doc(db, 'fêrname', editingCertificateId));
+                }
+
+                await batch.commit();
+            } else {
+                await saveToFirestore('fêrname', docId, payload);
+            }
 
             if (isEditing) {
                 cancelCertificateEdit();
@@ -720,7 +733,7 @@ export default function CertificateForm() {
                                             onClick={() => handleEditCertificate(cert)}
                                         >
                                             <SquarePen className="size-5" />
-                                            Sererastkirin
+                                            Sererast bike
                                         </button>
                                         <button
                                             type="button"
@@ -731,7 +744,7 @@ export default function CertificateForm() {
                                             }}
                                         >
                                             <Trash2 className="size-5" />
-                                            Rakin
+                                            Rake
                                         </button>
                                     </div>
                                 </div>

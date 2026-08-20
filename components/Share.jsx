@@ -53,7 +53,7 @@ export default function Share({ id }) {
         {/*className="flex items-center gap-2 px-3 py-2 rounded-md bg-gray-800 hover:bg-gray-700 text-gray-200 hover:text-yellow-200 transition-all shadow-sm hover:shadow-md"
  */}
         <Share2 size={18} />
-        Parvekirin
+        Parve bike
       </button>
 
       {/* Dialog */}
