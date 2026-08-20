@@ -262,7 +262,7 @@ export default function EntryForm({
         onChange={(updatedMedia) => setMediaLinks(updatedMedia)}
       />
 
-      <div className="flex w-full items-end gap-2">
+      {/* <div className="flex w-full items-end gap-2">
         <div className="grid w-full gap-2">
           <Label htmlFor="media">Video / Post (Youtube / Facebook)</Label>
           <Input type="url" id="media" name="media" placeholder="https://youtu.be/CnoXR7dDo" value={newMedia} onChange={e => setNewMedia(e.target.value)} />
@@ -272,24 +272,24 @@ export default function EntryForm({
             <Check strokeWidth={3} size={28} className="size-"/>
           </Button>
         </div>
-      </div>
+      </div> */}
 
       {mediaLinks.map((link, idx) => {
         const type = getMediaType(link);
         const label = getMediaLabel(link, idx, mediaLinks);
         {/* only show delete button if NOT a photo */}
-        if (type !== "photo" ) return (
-          <div key={idx} className="mt-2 flex items-center gap-2">
-            <span>{label}</span>
-            <Button
-              className="select-none cursor-pointer bg-red-500 hover:bg-red-600"
-              type="button"
-              onClick={() => handleRemoveMedia(idx)}
-            >
-              <Trash2 />
-            </Button>
-          </div>
-        )
+        // if (type !== "photo" ) return (
+        //   <div key={idx} className="mt-2 flex items-center gap-2">
+        //     <span>{label}</span>
+        //     <Button
+        //       className="select-none cursor-pointer bg-red-500 hover:bg-red-600"
+        //       type="button"
+        //       onClick={() => handleRemoveMedia(idx)}
+        //     >
+        //       <Trash2 />
+        //     </Button>
+        //   </div>
+        // )
       })}
 
 

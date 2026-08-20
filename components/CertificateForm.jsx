@@ -6,7 +6,6 @@ import {
     SelectContent,
     SelectGroup,
     SelectItem,
-    SelectLabel,
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select";
@@ -59,58 +58,85 @@ export default function CertificateForm() {
         return `${day}.${month}.${today.getFullYear()}`;
     };
 
-    const [form, setForm] = useState({
-        branchName: "",
-        studentLevel: "",
-        studentName: "",
-        studentNumber: "",
-        studentBirthdate: "",
-        studentBirthplace: "",
-        gradeReading: "",
-        gradeReadingMax: "20", // Defaulting max values (numbers only)
-        gradeWriting: "",
-        gradeWritingMax: "60",
-        gradeVekitMijar: "",
-        gradeVekitMijarMax: "20",
-        certificateLocation: "",
-        certificateDate: getTodayDate(),
-        teacherName: "",
-    });
+    const SAVED_FORM_KEY = 'certificateFormPreferences';
+    const SAVED_FORM_DURATION = 48 * 60 * 60 * 1000;
 
-    const STORAGE_KEY = 'certificateTeacherPrefs';
-    const PREF_FIELDS = ['branchName', 'studentLevel', 'certificateLocation', 'teacherName'];
+    const getSavedPreferences = () => {
+        if (typeof window === 'undefined') {
+            return null;
+        }
 
-    const formatGradeValue = (value) => {
-        const normalized = String(value || '').trim();
-        return /^[0-9]$/.test(normalized) ? `0${normalized}` : normalized;
-    };
-
-    const saveTeacherPreferences = (newForm) => {
-        if (typeof window === 'undefined') return;
-        const payload = {
-            updatedAt: Date.now(),
-        };
-        PREF_FIELDS.forEach((key) => {
-            payload[key] = newForm[key] || '';
-        });
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
-    };
-
-    const loadTeacherPreferences = () => {
-        if (typeof window === 'undefined') return null;
-        const raw = localStorage.getItem(STORAGE_KEY);
-        if (!raw) return null;
         try {
-            const parsed = JSON.parse(raw);
-            if (!parsed?.updatedAt || Date.now() - parsed.updatedAt > 24 * 60 * 60 * 1000) {
-                localStorage.removeItem(STORAGE_KEY);
+            const saved = localStorage.getItem(SAVED_FORM_KEY);
+
+            if (!saved) {
                 return null;
             }
-            return parsed;
+
+            const parsed = JSON.parse(saved);
+
+            if (!parsed.expiresAt || Date.now() >= parsed.expiresAt) {
+                localStorage.removeItem(SAVED_FORM_KEY);
+                return null;
+            }
+
+            return {
+                branchName: parsed.branchName || '',
+                studentLevel: parsed.studentLevel || '',
+                teacherName: parsed.teacherName || '',
+                certificateLocation: parsed.certificateLocation || '',
+            };
         } catch (error) {
+            console.error('Failed to load certificate preferences:', error);
+            localStorage.removeItem(SAVED_FORM_KEY);
             return null;
         }
     };
+
+
+    const [form, setForm] = useState(() => {
+        const savedPreferences = getSavedPreferences();
+
+        return {
+            branchName: savedPreferences?.branchName || "",
+            studentLevel: savedPreferences?.studentLevel || "",
+            studentName: "",
+            studentNumber: "",
+            studentBirthdate: "",
+            studentBirthplace: "",
+            gradeReading: "",
+            gradeReadingMax: "20",
+            gradeWriting: "",
+            gradeWritingMax: "60",
+            gradeVekitMijar: "",
+            gradeVekitMijarMax: "20",
+            certificateLocation: savedPreferences?.certificateLocation || "",
+            certificateDate: getTodayDate(),
+            teacherName: savedPreferences?.teacherName || "",
+        };
+    });
+
+    useEffect(() => {
+        const preferences = {
+            branchName: form.branchName,
+            studentLevel: form.studentLevel,
+            teacherName: form.teacherName,
+            certificateLocation: form.certificateLocation,
+            expiresAt: Date.now() + SAVED_FORM_DURATION,
+        };
+
+        localStorage.setItem(
+            SAVED_FORM_KEY,
+            JSON.stringify(preferences)
+        );
+    }, [
+        form.branchName,
+        form.studentLevel,
+        form.teacherName,
+        form.certificateLocation,
+    ]);
+
+
 
     // Fetch archive data in real-time and sort numerically by studentNumber (newest/highest first)
     useEffect(() => {
@@ -155,20 +181,6 @@ export default function CertificateForm() {
 
 
     useEffect(() => {
-        const saved = loadTeacherPreferences();
-        if (saved) {
-            setForm((prev) => ({
-                ...prev,
-                branchName: saved.branchName || prev.branchName,
-                studentLevel: saved.studentLevel || prev.studentLevel,
-                certificateLocation: saved.certificateLocation || prev.certificateLocation,
-                teacherName: saved.teacherName || prev.teacherName,
-            }));
-        }
-    }, []);
-
-    useEffect(() => {
-        // when studentLevel initially loaded from prefs, apply config
         const cfg = AST_CONFIG[form.studentLevel];
         if (cfg) {
             setVekitOrMijar(cfg.vekitOrMijar);
@@ -185,35 +197,53 @@ export default function CertificateForm() {
 
     const handleChange = e => {
         let { name, value } = e.target;
+
         if (["gradeReading", "gradeWriting", "gradeVekitMijar"].includes(name)) {
             const cfg = AST_CONFIG[form.studentLevel] || AST_CONFIG['Yekem'];
-            const max = name === 'gradeReading' ? (cfg.readingMax || 0) : name === 'gradeWriting' ? (cfg.writingMax || 0) : (cfg.vekitMax || 0);
-            // allow empty, otherwise clamp numeric values
+            const max = name === 'gradeReading'
+                ? (cfg.readingMax || 0)
+                : name === 'gradeWriting'
+                    ? (cfg.writingMax || 0)
+                    : (cfg.vekitMax || 0);
+
             if (value === '') {
                 // keep empty
             } else {
                 const num = Number(value);
-                if (Number.isNaN(num)) value = '';
-                else if (max && num > max) value = String(max);
-                else value = String(Math.max(0, Math.floor(num)));
+
+                if (Number.isNaN(num)) {
+                    value = '';
+                } else if (max && num > max) {
+                    value = String(max);
+                } else {
+                    value = String(Math.max(0, Math.floor(num)));
+                }
             }
         }
 
-        const updatedForm = { ...form, [name]: value };
-        setForm(updatedForm);
+        setForm(prev => ({
+            ...prev,
+            [name]: value,
+        }));
     };
 
     const handleLevelChange = (val) => {
         const cfg = AST_CONFIG[val] || {};
+
         setVekitOrMijar(cfg.vekitOrMijar || 'Vekît');
         setShowReading(!!cfg.showReading);
-        setForm((prev) => ({
+
+        setForm(prev => ({
             ...prev,
             studentLevel: val,
             gradeReading: cfg.showReading ? prev.gradeReading : '',
             gradeReadingMax: cfg.readingMax ? String(cfg.readingMax) : '',
-            gradeWritingMax: cfg.writingMax ? String(cfg.writingMax) : prev.gradeWritingMax,
-            gradeVekitMijarMax: cfg.vekitMax ? String(cfg.vekitMax) : prev.gradeVekitMijarMax,
+            gradeWritingMax: cfg.writingMax
+                ? String(cfg.writingMax)
+                : prev.gradeWritingMax,
+            gradeVekitMijarMax: cfg.vekitMax
+                ? String(cfg.vekitMax)
+                : prev.gradeVekitMijarMax,
         }));
     };
 
@@ -324,13 +354,6 @@ export default function CertificateForm() {
     const handleGeneratePDF = async (e) => {
         e.preventDefault();
         if (!isFormReady) return;
-
-        // Save teacher preferences once when the teacher clicks download
-        try {
-            saveTeacherPreferences(form);
-        } catch (err) {
-            // ignore storage errors
-        }
 
         // Store current form state snapshots to reliably use for API call after UI resets
         const submittedForm = { ...form };
@@ -530,10 +553,10 @@ export default function CertificateForm() {
                     </div>
 
 
-                        <div className="grid gap-2">
-                            <Label htmlFor="certificateDate">Dîroka Fêrnamê</Label>
-                            <Input type="text" id="certificateDate" name="certificateDate" placeholder="08.06.2026" value={form.certificateDate} onChange={handleChange} required />
-                        </div>
+                    <div className="grid gap-2">
+                        <Label htmlFor="certificateDate">Dîroka Fêrnamê</Label>
+                        <Input type="text" id="certificateDate" name="certificateDate" placeholder="08.06.2026" value={form.certificateDate} onChange={handleChange} required />
+                    </div>
 
                     {/* Submit Action */}
                     <div>
