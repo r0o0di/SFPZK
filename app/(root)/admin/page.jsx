@@ -78,7 +78,12 @@ export default function FormPage() {
           </div>
         ) : (
           <div className="grid gap-6 mt-[3rem]">
-            <div className="rounded-3xl border border-slate-700 bg-slate-950/80 p-6 shadow-sm">
+
+            <h1 className="text-3xl font-semibold text-center text-yellow-200">Çalakîyeke Nû Biweşîne</h1>
+            <EntryForm onSubmit={handleFormSubmit} buttonText="Biweşîne" />
+
+
+            <div className="rounded-3xl border border-slate-700 bg-slate-950/80 p-6 mt-12 shadow-sm">
               <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                 <div>
                   <p className="text-yellow-200 text-lg font-semibold">{user.displayName}</p>
@@ -89,9 +94,6 @@ export default function FormPage() {
                 </button>
               </div>
             </div>
-
-              <h1 className="text-3xl font-semibold text-center text-yellow-200 mt-4">Çalakîyeke Nû Biweşîne</h1>
-              <EntryForm onSubmit={handleFormSubmit} buttonText="Biweşîne" />
           </div>
         )}
       </div>
