@@ -453,7 +453,7 @@ export default function CertificateForm() {
 
             if (isEditing) {
                 cancelCertificateEdit();
-                toast.success('Agahiyên fêrnameyê bi serkeftî hatin nûkirin!');
+                toast.success('Fêrnameyê hate sererastkirin!');
                 return;
             }
 
@@ -461,7 +461,7 @@ export default function CertificateForm() {
 
         } catch (err) {
             console.error('Failed to save certificate to DB:', err);
-            toast.error('Di qeydkirina fêrnameyê de Şaşitîyek çêbû — ji kerema xwe dubare bikin.');
+            toast.error('Di qeydkirina fêrnameyê de Şaşitîyek çêbû');
             return; // Exit out if firestore save fails
         }
 
@@ -488,7 +488,7 @@ export default function CertificateForm() {
 
                 <header className="flex items-center gap-4 mb-6">
                     <h1 className="text-2xl font-semibold text-yellow-200">
-                        {editingCertificateId ? 'Sererastkirina fêrnameyê' : 'Forma Fêrnamê'}
+                        {editingCertificateId ? 'Sererastkirina fêrnamê' : 'Forma Fêrnamê'}
                     </h1>
                     {editingCertificateId && (
                         <Button
@@ -656,7 +656,7 @@ export default function CertificateForm() {
                                     {editingCertificateId ? (
                                         <>
                                             <SquarePen strokeWidth={2.5} className="h-auto size-6" />
-                                            Agahiyan tomar bike
+                                            Sererast bike
                                         </>
                                     ) : (
                                         <>
