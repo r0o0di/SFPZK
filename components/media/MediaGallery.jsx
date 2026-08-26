@@ -1,5 +1,4 @@
 "use client";
-
 import { useEffect, useRef, useState } from "react";
 import {
   Dialog,
@@ -279,7 +278,7 @@ export default function MediaGallery({ media }) {
           <div
             className={`transition-all duration-300 ease-in-out ${isFullscreen
               ? "relative w-screen h-screen flex flex-col items-center justify-center overflow-hidden bg-black"
-              : "w-full max-h-[90vh] flex flex-col items-center gap-4 overflow-hidden"
+              : "w-full max-h-[90dvh] flex flex-col items-center gap-4 overflow-hidden"
               }`}
           >
             {/* Main media */}
