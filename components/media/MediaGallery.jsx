@@ -41,6 +41,11 @@ export default function MediaGallery({ media }) {
     function handlePopState() {
       if (isFullscreen) {
         setIsFullscreen(false);
+        return;
+      }
+
+      if (isDialogOpen) {
+        setIsDialogOpen(false);
       }
     }
 
@@ -49,8 +54,43 @@ export default function MediaGallery({ media }) {
     return () => {
       window.removeEventListener("popstate", handlePopState);
     };
-  }, [isFullscreen]);
+  }, [isDialogOpen, isFullscreen]);
 
+  const openGallery = (idx) => {
+    setCurrentIndex(idx);
+    setImageLoaded(false);
+    setIsDialogOpen(true);
+
+    window.history.pushState(
+      { mediaGallery: true },
+      ""
+    );
+  };
+
+  const closeGallery = () => {
+    if (isFullscreen) {
+      window.history.back();
+      return;
+    }
+
+    if (isDialogOpen) {
+      window.history.back();
+    }
+  };
+
+  const toggleFullscreen = () => {
+    if (isFullscreen) {
+      window.history.back();
+      return;
+    }
+
+    window.history.pushState(
+      { mediaGalleryFullscreen: true },
+      ""
+    );
+
+    setIsFullscreen(true);
+  };
   useEffect(() => {
     if (!isDialogOpen) return;
 
@@ -165,35 +205,6 @@ export default function MediaGallery({ media }) {
 
   const visible = media.slice(0, showCount);
 
-  const openGallery = (idx) => {
-    setCurrentIndex(idx);
-    setImageLoaded(false);
-    setIsDialogOpen(true);
-  };
-
-  const closeGallery = () => {
-    if (isFullscreen) {
-      window.history.back();
-      setIsFullscreen(false);
-    }
-
-    setIsDialogOpen(false);
-  };
-
-  const toggleFullscreen = () => {
-    if (isFullscreen) {
-      window.history.back();
-      return;
-    }
-
-    window.history.pushState(
-      { mediaGalleryFullscreen: true },
-      ""
-    );
-
-    setIsFullscreen(true);
-  };
-
   const showPrevious = () => {
     setCurrentIndex(
       (prev) => (prev - 1 + media.length) % media.length
@@ -254,34 +265,31 @@ export default function MediaGallery({ media }) {
           }
         }}
       >
-       <DialogContent
-  aria-describedby={undefined}
-  className={`transition-all duration-300 ease-in-out ${
-    isFullscreen
-      ? "is-full-screen fixed inset-0 top-0 left-0 translate-x-0 translate-y-0 w-screen h-screen max-w-none rounded-none border-none p-0 m-0"
-      : "bg-transparent border-none max-w-[95vw] w-full"
-  }`}
->
+        <DialogContent
+          aria-describedby={undefined}
+          className={`transition-all duration-300 ease-in-out ${isFullscreen
+            ? "is-full-screen fixed inset-0 top-0 left-0 translate-x-0 translate-y-0 w-screen h-screen max-w-none rounded-none border-none p-0 m-0"
+            : "bg-transparent border-none max-w-[95vw] w-full"
+            }`}
+        >
           <DialogTitle className="sr-only">
             Media Gallery
           </DialogTitle>
 
           <div
-  className={`transition-all duration-300 ease-in-out ${
-    isFullscreen
-      ? "relative w-screen h-screen flex flex-col items-center justify-center overflow-hidden bg-black"
-      : "w-full max-h-[90vh] flex flex-col items-center gap-4 overflow-hidden"
-  }`}
->
+            className={`transition-all duration-300 ease-in-out ${isFullscreen
+              ? "relative w-screen h-screen flex flex-col items-center justify-center overflow-hidden bg-black"
+              : "w-full max-h-[90vh] flex flex-col items-center gap-4 overflow-hidden"
+              }`}
+          >
             {/* Main media */}
 
             <div
-  className={`transition-all duration-300 ease-in-out relative w-full flex items-center justify-center overflow-hidden bg-gray-900 ${
-    isFullscreen
-      ? "h-full rounded-none shadow-none"
-      : "max-w-[900px] aspect-[5/4] rounded-lg shadow-lg"
-  }`}
->
+              className={`transition-all duration-300 ease-in-out relative w-full flex items-center justify-center overflow-hidden bg-gray-900 ${isFullscreen
+                ? "h-full rounded-none shadow-none"
+                : "max-w-[900px] aspect-[5/4] rounded-lg shadow-lg"
+                }`}
+            >
               {!imageLoaded && (
                 <>
                   <div className="absolute inset-0 bg-gray-900 z-20" />
