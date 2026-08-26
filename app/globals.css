@@ -180,6 +180,11 @@ height: 30px;
   scrollbar-color: rgb(107 114 128) rgb(31 41 55);
 }
 
+
+.is-full-screen .X-icon {
+  display: none;
+}
+
 /* Chrome, Edge, Safari */
 .gallery-scroll::-webkit-scrollbar {
   height: 8px;
