@@ -236,7 +236,6 @@ export default function MediaGallery({ media }) {
             onClick={() => openGallery(idx)}
           >
             <MediaRenderer
-            onClick={toggleFullscreen}
               link={link}
               onLoad={() => null}
               fit="cover"
@@ -382,7 +381,6 @@ export default function MediaGallery({ media }) {
                       `}
                     >
                       <MediaRenderer
-                      onClick={toggleFullscreen}
                         link={link}
                         onLoad={() => null}
                         fit="cover"
