@@ -81,7 +81,7 @@ export default function KontaktForm() {
     <div className="min-h-screen bg-gradient-to-b from-slate-900 to-slate-800 flex items-center justify-center p-2">
       <div className="w-full max-w-4xl bg-slate-900/70 backdrop-blur-sm border border-slate-700 rounded-2xl shadow-xl p-6">
         <header className="items-center gap-4 mb-6">
-          <h1 className="text-2xl font-semibold text-yellow-200">Têklî</h1>
+          <h1 className="text-2xl font-semibold text-yellow-200">Têkilî</h1>
           <p className="text-gray-300">Eger ti têbîn, pirs, pêşniyar yan jî peyamek te li ser mijarekî din heye, wê ji me re bişîne, û emê bi te re têkiliyê bikin.</p>
 
         </header>

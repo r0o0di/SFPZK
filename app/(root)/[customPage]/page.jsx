@@ -35,7 +35,7 @@ export default function customPage({ params }) {
 
 
 
-  if (param === 'têklî') {
+  if (param === 'têkilî') {
     return <KontaktForm />;
   }
 
