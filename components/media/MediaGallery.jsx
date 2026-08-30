@@ -225,7 +225,7 @@ export default function MediaGallery({ media }) {
       {/* Gallery preview */}
 
       <div
-        className={`grid ${gridClass} gap-1 my-2 rounded-lg overflow-hidden`}
+        className={`gallery-preview grid ${gridClass} gap-1 my-2 rounded-lg overflow-hidden`}
         style={{ aspectRatio: "16 / 9" }}
       >
         {visible.map((link, idx) => (
@@ -379,7 +379,7 @@ export default function MediaGallery({ media }) {
             </div>
 
 
-            
+
 
             {/* Thumbnails */}
 

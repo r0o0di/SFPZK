@@ -1,12 +1,34 @@
-﻿// this page uses dynamic routing 
-// because otherwise it would not be able to handle 
-// special characters like ç, î, ê in the URL
-// app/[customPage]/page.js (or your dynamic route file)
+﻿// app/[customPage]/page.js
 import { notFound } from 'next/navigation';
 import { db } from '@/lib/firebase';
-import { doc, getDoc } from 'firebase/firestore';
-import { normalizeDateForStorage } from '@/lib/utils'; // Import your date helper
+import { doc, getDoc, collection, query, where, getDocs } from 'firebase/firestore';
 import CustomPageClient from './CustomPageClient';
+
+// Helper to convert dd-mm-yyyy -> yyyy-mm-dd reliably
+function parseToDocId(rawId) {
+  if (!rawId) return '';
+  const parts = rawId.split('-');
+  if (parts.length === 3 && parts[0].length === 2 && parts[2].length === 4) {
+    return `${parts[2]}-${parts[1]}-${parts[0]}`;
+  }
+  return rawId;
+}
+
+// Helper to find the first image URL inside the media array
+function extractFirstImageUrl(mediaArray) {
+  if (!Array.isArray(mediaArray) || mediaArray.length === 0) return null;
+
+  for (const item of mediaArray) {
+    let url = typeof item === 'string' ? item : item?.storageUrl || item?.url || '';
+    
+    // Check if the item is an image file or direct storage upload
+    if (url && (/\.(jpe?g|png|gif|webp)(?:\?|$)/i.test(url) || url.includes('firebasestorage.googleapis.com'))) {
+      return url;
+    }
+  }
+
+  return null;
+}
 
 export async function generateMetadata({ params, searchParams }) {
   const { customPage } = await params;
@@ -42,28 +64,49 @@ export async function generateMetadata({ params, searchParams }) {
 
   let dynamicTitle = page.title;
   let dynamicDescription = page.description;
-  const pageUrl = `/çalakî${rawArticleId ? `?article=${encodeURIComponent(rawArticleId)}` : ''}`;
+  let dynamicImage = 'https://sfpzk.com/sfpzk-logo.png'; // Fallback default image
+  const pageUrl = `https://sfpzk.com/çalakî${rawArticleId ? `?article=${encodeURIComponent(rawArticleId)}` : ''}`;
 
   if (param === 'çalakî' && rawArticleId) {
     try {
-      // Convert "08-11-2025" -> "2025-11-08" to match your Firestore Document ID
-      const docId = normalizeDateForStorage(rawArticleId);
+      const formattedDocId = parseToDocId(rawArticleId); // e.g., "2025-11-08"
+      let articleData = null;
 
-      const docRef = doc(db, 'çalakî', docId);
+      // 1. Direct document lookup by target ID (yyyy-mm-dd)
+      const docRef = doc(db, 'çalakî', formattedDocId);
       const docSnap = await getDoc(docRef);
 
       if (docSnap.exists()) {
-        const articleData = docSnap.data();
+        articleData = docSnap.data();
+      } else {
+        // 2. Fallback query matching either date format in the date field
+        const q = query(
+          collection(db, 'çalakî'),
+          where('date', 'in', [formattedDocId, rawArticleId])
+        );
+        const querySnap = await getDocs(q);
+        if (!querySnap.empty) {
+          articleData = querySnap.docs[0].data();
+        }
+      }
 
+      if (articleData) {
         if (articleData.title) {
           dynamicTitle = `${articleData.title} | Çalakî - SFPZK`;
         }
-        
+
         if (articleData.content) {
+          // Flatten newlines and limit to ~160 characters for social cards
           const cleanText = articleData.content.replace(/\s+/g, ' ').trim();
-          dynamicDescription = cleanText.length > 160 
-            ? `${cleanText.substring(0, 157)}...` 
+          dynamicDescription = cleanText.length > 160
+            ? `${cleanText.substring(0, 157)}...`
             : cleanText;
+        }
+
+        // Extract image from article's media array
+        const foundImage = extractFirstImageUrl(articleData.media);
+        if (foundImage) {
+          dynamicImage = foundImage;
         }
       }
     } catch (error) {
@@ -86,10 +129,8 @@ export async function generateMetadata({ params, searchParams }) {
       siteName: 'SFPZK',
       images: [
         {
-          url: '/sfpzk-logo.png',
-          width: 1200,
-          height: 630,
-          alt: 'SFPZK',
+          url: dynamicImage,
+          alt: dynamicTitle,
         },
       ],
     },
@@ -97,7 +138,7 @@ export async function generateMetadata({ params, searchParams }) {
       card: 'summary_large_image',
       title: dynamicTitle,
       description: dynamicDescription,
-      images: ['/sfpzk-logo.png'],
+      images: [dynamicImage],
     },
   };
 }
