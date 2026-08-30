@@ -1,33 +1,35 @@
 ﻿// this page uses dynamic routing 
 // because otherwise it would not be able to handle 
 // special characters like ç, î, ê in the URL
+// app/[customPage]/page.js (or your dynamic route file)
 import { notFound } from 'next/navigation';
-import { Metadata } from 'next';
+import { db } from '@/lib/firebase'; // Or Firebase Admin Admin SDK if preferred
+import { doc, getDoc } from 'firebase/firestore';
 import CustomPageClient from './CustomPageClient';
 
-export async function generateMetadata({ params }) {
+export async function generateMetadata({ params, searchParams }) {
   const { customPage } = await params;
   const param = decodeURIComponent(customPage);
+  const resolvedSearchParams = await searchParams;
+  const articleId = resolvedSearchParams?.article;
 
-  const metadata = {
+  // Base page metadata defaults
+  const metadataMap = {
     'çalakî': {
       title: 'Çalakî | SFPZK',
       description: 'Çalakiyên SFPZK.',
       url: '/çalakî',
     },
-
     'fêrbûn': {
       title: 'Fêrbûn | SFPZK',
       description: 'Fêrbûna zimanê Kurdî - SFPZK.',
       url: '/fêrbûn',
     },
-
     'têkilî': {
       title: 'Têkilî | SFPZK',
       description: 'Bi SFPZK re têkilî bike.',
       url: '/têkilî',
     },
-
     'fêrname': {
       title: 'Fêrname | SFPZK',
       description: 'Fêrname ya SFPZK.',
@@ -35,24 +37,47 @@ export async function generateMetadata({ params }) {
     },
   };
 
-  const page = metadata[param];
+  const page = metadataMap[param];
+  if (!page) return {};
 
-  if (!page) {
-    return {};
+  let dynamicTitle = page.title;
+  let dynamicDescription = page.description;
+  let pageUrl = `${page.url}${articleId ? `?article=${encodeURIComponent(articleId)}` : ''}`;
+
+  // Fetch specific article data for dynamic social metadata
+  if (param === 'çalakî' && articleId) {
+    try {
+      const docRef = doc(db, 'çalakî', articleId);
+      const docSnap = await getDoc(docRef);
+
+      if (docSnap.exists()) {
+        const data = docSnap.data();
+        if (data.title) {
+          dynamicTitle = `${data.title} | Çalakî - SFPZK`;
+        }
+        if (data.content) {
+          // Truncate content for social description preview (~160 chars)
+          const cleanText = data.content.replace(/\s+/g, ' ').trim();
+          dynamicDescription = cleanText.length > 160 
+            ? `${cleanText.substring(0, 157)}...` 
+            : cleanText;
+        }
+      }
+    } catch (error) {
+      console.error('Error fetching article for metadata:', error);
+    }
   }
 
   return {
-    title: page.title,
-    description: page.description,
-
+    title: dynamicTitle,
+    description: dynamicDescription,
     alternates: {
-      canonical: page.url,
+      canonical: pageUrl,
     },
-
     openGraph: {
-      title: page.title,
-      description: page.description,
-      url: page.url,
+      title: dynamicTitle,
+      description: dynamicDescription,
+      url: pageUrl,
       type: 'website',
       locale: 'ku_IQ',
       siteName: 'SFPZK',
@@ -65,11 +90,10 @@ export async function generateMetadata({ params }) {
         },
       ],
     },
-
     twitter: {
       card: 'summary_large_image',
-      title: page.title,
-      description: page.description,
+      title: dynamicTitle,
+      description: dynamicDescription,
       images: ['/sfpzk-logo.png'],
     },
   };

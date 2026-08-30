@@ -26,6 +26,7 @@ import { Button } from '@/components/ui/button';
 import { getStoragePathFromUrl } from '@/lib/storageHelpers';
 import { loadTranslationFromCache, saveTranslationToCache } from '@/lib/translationCache';
 import EntriesSkeleton from '@/components/entries/EntriesSkeleton';
+import { useSearchParams } from 'next/navigation';
 
 
 export default function DisplayEntries() {
@@ -38,6 +39,8 @@ export default function DisplayEntries() {
   const historyPushRef = useRef(false);
   const editingIdRef = useRef(null);
   const ignorePopstateRef = useRef(false);
+  const searchParams = useSearchParams();
+  const targetArticleId = searchParams.get('article');
 
 
   useEffect(() => {
@@ -82,26 +85,22 @@ export default function DisplayEntries() {
     fetchEntries();
   }, []);
 
-  // Scroll to hash after entries load (for shared links with #id)
+  // Scroll to targeted query parameter article after entries load 
+  // (for shared links with ?article=id)
   useEffect(() => {
-    if (!entries.length) return;
+    if (!entries.length || !targetArticleId) return;
 
-    const hash = window.location.hash;
-    if (!hash) return;
-
-    const id = decodeURIComponent(hash.slice(1));
-
-    const target = document.getElementById(id);
+    const target = document.getElementById(targetArticleId);
 
     if (target) {
       setTimeout(() => {
         target.scrollIntoView({
-          behavior: "smooth",
-          block: "start",
+          behavior: 'smooth',
+          block: 'start',
         });
       }, 100);
     }
-  }, [entries]);
+  }, [entries, targetArticleId]);
 
   // const isAdmin = adminList.includes(user?.email);
 
