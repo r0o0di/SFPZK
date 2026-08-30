@@ -349,7 +349,7 @@ export default function MediaGallery({ media }) {
                   }`
                 }
               >
-                <div className="flex gap-2 px-2 py-2">
+                <div className="flex justify-center gap-2 px-2 py-2">
                   {media.map((link, idx) => (
                     <button
                       type="button"
@@ -363,8 +363,7 @@ export default function MediaGallery({ media }) {
                       }}
                       className={`
                         gallery-thumbnails
-                        flex-shrink-0
-                        w-15
+                        flex-shrink-0 w-15
                         h-15
                         rounded-lg
                         overflow-hidden
