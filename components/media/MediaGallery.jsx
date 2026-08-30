@@ -7,6 +7,7 @@ import {
 } from "@/components/ui/dialog";
 import { Maximize, Minimize } from "lucide-react";
 import MediaRenderer from "@/components/media/MediaRenderer";
+import SwipeableMedia from "@/components/media/SwipeableMedia";
 
 export default function MediaGallery({ media }) {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -219,7 +220,6 @@ export default function MediaGallery({ media }) {
 
     setImageLoaded(false);
   };
-
   return (
     <>
       {/* Gallery preview */}
@@ -267,8 +267,8 @@ export default function MediaGallery({ media }) {
         <DialogContent
           aria-describedby={undefined}
           className={`transition-all duration-300 ease-in-out ${isFullscreen
-              ? "is-full-screen fixed inset-0 translate-x-0 translate-y-0 w-screen h-[100dvh] max-w-none rounded-none border-none p-0 m-0"
-              : "bg-transparent border-none max-w-[95vw] w-full"
+            ? "is-full-screen fixed inset-0 translate-x-0 translate-y-0 w-screen h-[100dvh] max-w-none rounded-none border-none p-0 m-0"
+            : "bg-transparent border-none max-w-[95vw] w-full"
             }`}
         >
           <DialogTitle className="sr-only">
@@ -277,8 +277,8 @@ export default function MediaGallery({ media }) {
 
           <div
             className={`transition-all duration-300 ease-in-out ${isFullscreen
-                ? "relative w-screen h-[100dvh] flex flex-col items-center justify-center overflow-hidden bg-black"
-                : "w-full max-h-[90dvh] flex flex-col items-center gap-4 overflow-hidden"
+              ? "relative w-screen h-[100dvh] flex flex-col items-center justify-center overflow-hidden bg-black"
+              : "w-full max-h-[90dvh] flex flex-col items-center gap-4 overflow-hidden"
               }`}
           >
             {/* Main media */}
@@ -297,12 +297,48 @@ export default function MediaGallery({ media }) {
                 </>
               )}
 
-              <MediaRenderer
+              <SwipeableMedia
+                disabled={media.length <= 1}
+                onSwipeLeft={showNext}
+                onSwipeRight={showPrevious}
                 onClick={toggleFullscreen}
-                link={media[currentIndex]}
-                onLoad={() => setImageLoaded(true)}
-                fit={isFullscreen ? "contain" : "cover"}
-              />
+                previous={
+                  media.length > 1 ? (
+                    <MediaRenderer
+                      link={
+                        media[
+                        (currentIndex - 1 + media.length) %
+                        media.length
+                        ]
+                      }
+                      onLoad={() => null}
+                      fit={isFullscreen ? "contain" : "cover"}
+                    />
+                  ) : null
+                }
+                next={
+                  media.length > 1 ? (
+                    <MediaRenderer
+                      link={
+                        media[
+                        (currentIndex + 1) % media.length
+                        ]
+                      }
+                      onLoad={() => null}
+                      fit={isFullscreen ? "contain" : "cover"}
+                    />
+                  ) : null
+                }
+              >
+                <MediaRenderer
+                  link={media[currentIndex]}
+                  onLoad={() => setImageLoaded(true)}
+                  fit={isFullscreen ? "contain" : "cover"}
+                />
+              </SwipeableMedia>
+
+
+
 
               {/* Maximize / Minimize */}
 
@@ -326,6 +362,10 @@ export default function MediaGallery({ media }) {
               </button>
             </div>
 
+
+
+
+
             {/* Counter */}
 
             <div
@@ -337,6 +377,9 @@ export default function MediaGallery({ media }) {
             >
               {currentIndex + 1} / {media.length}
             </div>
+
+
+            
 
             {/* Thumbnails */}
 
