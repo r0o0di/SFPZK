@@ -21,6 +21,7 @@ export default function SwipeableMedia({
 
     const SWIPE_THRESHOLD = 50;
     const TRANSITION_DURATION = 220;
+    const SWIPE_GAP = 5;
 
     const handleTouchStart = (e) => {
         if (
@@ -122,7 +123,7 @@ export default function SwipeableMedia({
             // Swipe left.
             // Current image leaves to the left.
             // Next image enters from the right.
-            setDragX(-containerWidth);
+            setDragX(-(containerWidth + SWIPE_GAP));
 
             setTimeout(() => {
                 onSwipeLeft?.();
@@ -135,7 +136,7 @@ export default function SwipeableMedia({
             // Swipe right.
             // Current image leaves to the right.
             // Previous image enters from the left.
-            setDragX(containerWidth);
+            setDragX(containerWidth + SWIPE_GAP);
 
             setTimeout(() => {
                 onSwipeRight?.();
@@ -167,6 +168,7 @@ export default function SwipeableMedia({
     const showPrevious = dragX > 0;
     const showNext = dragX < 0;
 
+
     return (
         <div
             ref={containerRef}
@@ -186,7 +188,7 @@ export default function SwipeableMedia({
                 <div
                     className="absolute inset-0 w-full h-full"
                     style={{
-                        transform: `translateX(calc(-100% + ${dragX}px))`,
+                        transform: `translateX(calc(-100% + ${dragX}px - ${SWIPE_GAP}px))`,
                         transition: isTransitioning
                             ? `transform ${TRANSITION_DURATION}ms ease-out`
                             : "none",
@@ -202,7 +204,7 @@ export default function SwipeableMedia({
                 <div
                     className="absolute inset-0 w-full h-full"
                     style={{
-                        transform: `translateX(calc(100% + ${dragX}px))`,
+                        transform: `translateX(calc(100% + ${dragX}px + ${SWIPE_GAP}px))`,
                         transition: isTransitioning
                             ? `transform ${TRANSITION_DURATION}ms ease-out`
                             : "none",
@@ -211,7 +213,6 @@ export default function SwipeableMedia({
                     {next}
                 </div>
             )}
-
             {/* Current image */}
 
             <div
