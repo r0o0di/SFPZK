@@ -349,7 +349,7 @@ export default function MediaGallery({ media }) {
                   }`
                 }
               >
-                <div className="flex justify-center gap-2 px-2 py-2">
+                <div className="flex gap-2 px-2 py-2">
                   {media.map((link, idx) => (
                     <button
                       type="button"
@@ -370,8 +370,6 @@ export default function MediaGallery({ media }) {
                         transition-all
                         duration-200
                         flex
-                        items-center
-                        justify-center
                         bg-gray-800
                         ${idx === currentIndex
                           ? "scale-[1.2]"
