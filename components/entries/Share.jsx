@@ -24,7 +24,7 @@ import { Share2, Copy, CopyCheck } from "lucide-react"
 export default function Share({ id }) {
   const [isDialogOpen, setIsDialogOpen] = useState(false)
 
-  const shareUrl = `https://sfpzk.vercel.app/çalakî#${id}` // replace with actual domain
+  const shareUrl = `https://sfpzk.com/çalakî#${id}` // replace with actual domain
 
   const [copied, setCopied] = useState(false);
   const handleClick = () => {
