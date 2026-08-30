@@ -3,17 +3,17 @@
 // special characters like ç, î, ê in the URL
 // app/[customPage]/page.js (or your dynamic route file)
 import { notFound } from 'next/navigation';
-import { db } from '@/lib/firebase'; // Or Firebase Admin Admin SDK if preferred
+import { db } from '@/lib/firebase';
 import { doc, getDoc } from 'firebase/firestore';
+import { normalizeDateForStorage } from '@/lib/utils'; // Import your date helper
 import CustomPageClient from './CustomPageClient';
 
 export async function generateMetadata({ params, searchParams }) {
   const { customPage } = await params;
   const param = decodeURIComponent(customPage);
   const resolvedSearchParams = await searchParams;
-  const articleId = resolvedSearchParams?.article;
+  const rawArticleId = resolvedSearchParams?.article;
 
-  // Base page metadata defaults
   const metadataMap = {
     'çalakî': {
       title: 'Çalakî | SFPZK',
@@ -42,29 +42,32 @@ export async function generateMetadata({ params, searchParams }) {
 
   let dynamicTitle = page.title;
   let dynamicDescription = page.description;
-  let pageUrl = `${page.url}${articleId ? `?article=${encodeURIComponent(articleId)}` : ''}`;
+  const pageUrl = `/çalakî${rawArticleId ? `?article=${encodeURIComponent(rawArticleId)}` : ''}`;
 
-  // Fetch specific article data for dynamic social metadata
-  if (param === 'çalakî' && articleId) {
+  if (param === 'çalakî' && rawArticleId) {
     try {
-      const docRef = doc(db, 'çalakî', articleId);
+      // Convert "08-11-2025" -> "2025-11-08" to match your Firestore Document ID
+      const docId = normalizeDateForStorage(rawArticleId);
+
+      const docRef = doc(db, 'çalakî', docId);
       const docSnap = await getDoc(docRef);
 
       if (docSnap.exists()) {
-        const data = docSnap.data();
-        if (data.title) {
-          dynamicTitle = `${data.title} | Çalakî - SFPZK`;
+        const articleData = docSnap.data();
+
+        if (articleData.title) {
+          dynamicTitle = `${articleData.title} | Çalakî - SFPZK`;
         }
-        if (data.content) {
-          // Truncate content for social description preview (~160 chars)
-          const cleanText = data.content.replace(/\s+/g, ' ').trim();
+        
+        if (articleData.content) {
+          const cleanText = articleData.content.replace(/\s+/g, ' ').trim();
           dynamicDescription = cleanText.length > 160 
             ? `${cleanText.substring(0, 157)}...` 
             : cleanText;
         }
       }
     } catch (error) {
-      console.error('Error fetching article for metadata:', error);
+      console.error('Error fetching dynamic article metadata:', error);
     }
   }
 
@@ -78,7 +81,7 @@ export async function generateMetadata({ params, searchParams }) {
       title: dynamicTitle,
       description: dynamicDescription,
       url: pageUrl,
-      type: 'website',
+      type: 'article',
       locale: 'ku_IQ',
       siteName: 'SFPZK',
       images: [
