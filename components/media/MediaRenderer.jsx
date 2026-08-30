@@ -1,6 +1,7 @@
 export default function MediaRenderer({
   link,
   onLoad,
+  onClick,
   fit = "cover",
 }) {
   if (!link) return null;
@@ -26,6 +27,7 @@ export default function MediaRenderer({
             ? "w-full h-full flex items-center justify-center"
             : "aspect-video w-full h-full"
         }
+        onClick={onClick}
       >
         <iframe
           src={`https://www.youtube.com/embed/${videoId}`}
@@ -53,6 +55,7 @@ export default function MediaRenderer({
             ? "w-full h-full flex items-center justify-center overflow-hidden"
             : "w-full"
         }
+        onClick={onClick}
       >
         <iframe
           src={`https://www.facebook.com/plugins/post.php?href=${encoded}&show_text=false&width=500`}
@@ -81,7 +84,8 @@ export default function MediaRenderer({
         src={`https://i.imgur.com/${match[1]}.jpg`}
         alt="Imgur"
         onLoad={onLoad}
-        className={`${mediaClass} rounded-lg`}
+        onClick={onClick}
+        className={`${mediaClass} rounded-lg cursor-pointer`}
       />
     );
   }
@@ -94,13 +98,14 @@ export default function MediaRenderer({
             ? "w-full h-full flex items-center justify-center rounded-lg overflow-hidden"
             : "w-full h-full flex items-center justify-center rounded-lg"
         }
+        onClick={onClick}
       >
         <img
           src={link}
           alt="Photo"
           loading="lazy"
           onLoad={onLoad}
-          className={`${mediaClass} rounded-lg`}
+          className={`${mediaClass} rounded-lg cursor-pointer`}
         />
       </div>
     );

@@ -236,6 +236,7 @@ export default function MediaGallery({ media }) {
             onClick={() => openGallery(idx)}
           >
             <MediaRenderer
+            onClick={toggleFullscreen}
               link={link}
               onLoad={() => null}
               fit="cover"
@@ -298,6 +299,7 @@ export default function MediaGallery({ media }) {
               )}
 
               <MediaRenderer
+              onClick={toggleFullscreen}
                 link={media[currentIndex]}
                 onLoad={() => setImageLoaded(true)}
                 fit={isFullscreen ? "contain" : "cover"}
@@ -308,8 +310,8 @@ export default function MediaGallery({ media }) {
               <button
                 type="button"
                 onClick={toggleFullscreen}
-                className={`absolute top-3 z-50 p-2 rounded-lg bg-black/50 text-white hover:bg-black/70 transition cursor-pointer
-                  ${isFullscreen ? "right-5" : "right-3"}
+                className={`absolute bottom-3 z-50 p-2 rounded-lg bg-black/50 text-white hover:bg-black/70 transition cursor-pointer
+                  ${isFullscreen ? "right-5 bottom-[100px]" : "right-3"}
                 `}
                 aria-label={
                   isFullscreen
@@ -380,6 +382,7 @@ export default function MediaGallery({ media }) {
                       `}
                     >
                       <MediaRenderer
+                      onClick={toggleFullscreen}
                         link={link}
                         onLoad={() => null}
                         fit="cover"
