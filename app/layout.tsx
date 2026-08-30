@@ -21,7 +21,7 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://sfpzk.vercel.app"),
+  metadataBase: new URL("https://sfpzk.com"),
   
   verification: {
     google: "v3eH3ARM0nDCQRb5qwmMQ2m4BZ56Kv0NdWOvgEOuqyQ",
@@ -49,7 +49,7 @@ export const metadata: Metadata = {
   openGraph: {
     locale: "ku_IQ",
     siteName: "SFPZK",
-    url: "https://sfpzk.vercel.app",
+    url: "https://sfpzk.com",
     type: "website",
     title: "SFPZK",
     description: "SFPZK - Saziya Fêrkirin û Parastina Zimanê Kurdî",
@@ -71,7 +71,7 @@ export const metadata: Metadata = {
   },
 
   alternates: {
-    canonical: "https://sfpzk.vercel.app",
+    canonical: "https://sfpzk.com",
   },
 };
 
