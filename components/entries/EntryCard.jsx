@@ -145,7 +145,7 @@ export default function EntryCard({
                 className={`text-gray-200 leading-relaxed whitespace-pre-wrap ${!isExpanded && textTooLong ? 'overflow-hidden' : ''} cursor-pointer`}
                 style={!isExpanded && textTooLong ? { maxHeight: '6.2em' } : {}}
               >
-                <p>
+                <p className="entry-content">
                   {entry.translating ? (
                     <>
                       <Loader2Icon className="animate-spin inline" /> Tê wergerandin...

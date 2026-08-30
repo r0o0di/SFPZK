@@ -1,0 +1,60 @@
+"use client";
+
+import DisplayEntries from '@/components/entries/DisplayEntries';
+import CourseForm from '@/components/forms/CourseForm';
+import CertificateForm from '@/components/certificates/CertificateForm';
+import KontaktForm from '@/components/forms/KontaktForm';
+import { useAdminState } from '@/lib/useAuth';
+import { Loader2Icon } from 'lucide-react';
+
+export default function CustomPageClient({ param }) {
+  const { user, authLoading, isAdmin } = useAdminState();
+
+  if (param === 'çalakî') {
+    return (
+      <div className="py-8 px-2">
+        <DisplayEntries />
+      </div>
+    );
+  }
+
+  if (param === 'fêrbûn') {
+    return <CourseForm />;
+  }
+
+  if (param === 'têkilî') {
+    return <KontaktForm />;
+  }
+
+  if (param === 'fêrname') {
+    if (authLoading) {
+      return (
+        <div className="min-h-screen bg-slate-950 text-slate-200 flex items-center justify-center p-8">
+          <div className="p-8 text-center">
+            <Loader2Icon className="animate-spin inline size-10" />
+          </div>
+        </div>
+      );
+    }
+
+    if (!isAdmin) {
+      return (
+        <div className="min-h-screen bg-slate-950 text-slate-200 flex items-center justify-center p-8">
+          <div className="max-w-md rounded-3xl border border-red-600/40 bg-slate-900/90 p-8 text-center">
+            <h1 className="text-2xl font-semibold text-red-300 mb-4">
+              Tu ne adminî
+            </h1>
+
+            <p className="text-slate-300">
+              Tenê admin dikarin vê rûpelê bibînin.
+            </p>
+          </div>
+        </div>
+      );
+    }
+
+    return <CertificateForm />;
+  }
+
+  return null;
+}
