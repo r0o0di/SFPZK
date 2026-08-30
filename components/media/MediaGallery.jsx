@@ -331,7 +331,7 @@ export default function MediaGallery({ media }) {
             <div
               className={
                 isFullscreen
-                  ? "absolute top-4 left-1/2 -translate-x-1/2 z-40 text-white text-sm font-medium bg-black/50 px-3 py-1 rounded-full"
+                  ? "absolute bottom-[100px] left-1/2 -translate-x-1/2 z-40 text-white text-sm font-medium bg-black/50 px-3 py-1 rounded-full"
                   : "text-white text-sm font-medium"
               }
             >
