@@ -14,6 +14,7 @@ export default function MediaGallery({ media }) {
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [imageLoaded, setImageLoaded] = useState(false);
+  const [imageError, setImageError] = useState(false);
 
   const thumbnailRefs = useRef([]);
 
@@ -24,9 +25,11 @@ export default function MediaGallery({ media }) {
       if (e.key === "ArrowRight") {
         setCurrentIndex((prev) => (prev + 1) % media.length);
         setImageLoaded(false);
+        setImageError(false);
       } else if (e.key === "ArrowLeft") {
         setCurrentIndex((prev) => (prev - 1 + media.length) % media.length);
         setImageLoaded(false);
+        setImageError(false);
       }
     }
 
@@ -59,6 +62,7 @@ export default function MediaGallery({ media }) {
   const openGallery = (idx) => {
     setCurrentIndex(idx);
     setImageLoaded(false);
+    setImageError(false);
     setIsDialogOpen(true);
 
     window.history.pushState(
@@ -92,47 +96,20 @@ export default function MediaGallery({ media }) {
     setIsFullscreen(true);
   };
   useEffect(() => {
-    if (!isDialogOpen) return;
+    if (!isDialogOpen || media.length < 2) return;
 
-    media.forEach((url) => {
+    const adjacentIndexes = [
+      (currentIndex - 1 + media.length) % media.length,
+      (currentIndex + 1) % media.length,
+    ];
+
+    adjacentIndexes.forEach((index) => {
+      const url = media[index];
+      if (typeof url !== 'string') return;
       const img = new Image();
       img.src = url;
     });
-  }, [isDialogOpen, media]);
-
-  useEffect(() => {
-    let cancelled = false;
-    const url = media[currentIndex];
-
-    if (!url) return;
-
-    const img = new Image();
-    img.src = url;
-
-    if (img.complete) {
-      setImageLoaded(true);
-    } else {
-      setImageLoaded(false);
-
-      img.onload = () => {
-        if (!cancelled) {
-          setImageLoaded(true);
-        }
-      };
-
-      img.onerror = () => {
-        if (!cancelled) {
-          setImageLoaded(true);
-        }
-      };
-    }
-
-    return () => {
-      cancelled = true;
-      img.onload = null;
-      img.onerror = null;
-    };
-  }, [currentIndex, media]);
+  }, [isDialogOpen, currentIndex, media]);
 
   useEffect(() => {
     if (!isDialogOpen) return;
@@ -211,6 +188,7 @@ export default function MediaGallery({ media }) {
     );
 
     setImageLoaded(false);
+    setImageError(false);
   };
 
   const showNext = () => {
@@ -219,6 +197,7 @@ export default function MediaGallery({ media }) {
     );
 
     setImageLoaded(false);
+    setImageError(false);
   };
   return (
     <>
@@ -289,12 +268,18 @@ export default function MediaGallery({ media }) {
                 : "max-w-[900px] aspect-[5/4] rounded-lg shadow-lg"
                 }`}
             >
-              {!imageLoaded && (
+              {!imageLoaded && !imageError && (
                 <>
                   <div className="absolute inset-0 bg-gray-900 z-20" />
 
                   <div className="absolute inset-0 bg-gray-700/60 animate-pulse z-30" />
                 </>
+              )}
+
+              {imageError && (
+                <div className="absolute inset-0 z-30 flex items-center justify-center bg-gray-900 p-6 text-center text-sm text-red-200">
+                  Media nehate barkirin.
+                </div>
               )}
 
               <SwipeableMedia
@@ -333,6 +318,7 @@ export default function MediaGallery({ media }) {
                 <MediaRenderer
                   link={media[currentIndex]}
                   onLoad={() => setImageLoaded(true)}
+                  onError={() => { setImageLoaded(false); setImageError(true); }}
                   fit={isFullscreen ? "contain" : "cover"}
                 />
               </SwipeableMedia>

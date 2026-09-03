@@ -1,6 +1,7 @@
 export default function MediaRenderer({
   link,
   onLoad,
+  onError,
   onClick,
   fit = "cover",
 }) {
@@ -83,7 +84,9 @@ export default function MediaRenderer({
       <img
         src={`https://i.imgur.com/${match[1]}.jpg`}
         alt="Imgur"
+          decoding="async"
         onLoad={onLoad}
+          onError={onError}
         onClick={onClick}
         className={`${mediaClass} rounded-lg cursor-pointer`}
       />
@@ -104,7 +107,9 @@ export default function MediaRenderer({
           src={link}
           alt="Photo"
           loading="lazy"
+          decoding="async"
           onLoad={onLoad}
+          onError={onError}
           className={`${mediaClass} rounded-lg cursor-pointer`}
         />
       </div>

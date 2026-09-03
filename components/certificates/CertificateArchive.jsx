@@ -1,10 +1,15 @@
 import React from 'react';
 import { Button } from '@/components/ui/button';
-import { Loader2Icon, Download, Trash2, SquarePen, MoreVertical } from 'lucide-react';
+import { Loader2Icon, Download, RefreshCw, Trash2, SquarePen, MoreVertical } from 'lucide-react';
 
 export default function CertificateArchive({
     certificates,
     loading,
+    loadingMore,
+    error,
+    onRetry,
+    hasMore,
+    listRef,
     menuId,
     onMenuToggle,
     onDownload,
@@ -21,10 +26,18 @@ export default function CertificateArchive({
                 <div className="flex items-center gap-2 text-slate-400">
                     <Loader2Icon className="animate-spin size-4" />
                 </div>
+            ) : error ? (
+                <div className="grid gap-3 text-sm text-red-300">
+                    <p>{error}</p>
+                    <Button type="button" onClick={onRetry} className="w-fit cursor-pointer bg-red-700 hover:bg-red-600">
+                        <RefreshCw className="size-4" />
+                        Dîsa biceribîne
+                    </Button>
+                </div>
             ) : certificates.length === 0 ? (
                 <p className="text-slate-400 text-sm">Tu fêrname hîn nehatine qeydkirin.</p>
             ) : (
-                <div className="grid gap-3 max-h-[400px] overflow-y-auto pr-2 pt-2 custom-scrollbar overscroll-contain">
+                <div ref={listRef} className="grid gap-3 max-h-[400px] overflow-y-auto pr-2 pt-2 custom-scrollbar overscroll-contain">
                     {certificates.map((cert) => (
                         <div key={cert.id} className="relative flex items-center justify-between p-4 pt-5 rounded-xl border border-slate-700 bg-slate-950/40 hover:bg-slate-950/80 transition-colors">
                             <span className="absolute -top-2.5 left-4 px-2 text-[11px] text-slate-400 bg-slate-900/70">
@@ -69,6 +82,13 @@ export default function CertificateArchive({
                             </div>
                         </div>
                     ))}
+                    {loadingMore && (
+                        <div className="flex items-center justify-center gap-2 py-3 text-sm text-slate-400">
+                            <Loader2Icon className="size-4 animate-spin" />
+                            Zêdetir fêrname li ser rê ne...
+                        </div>
+                    )}
+                    {hasMore && <div data-archive-load-more className="h-1" aria-hidden="true" />}
                 </div>
             )}
         </div>

@@ -12,8 +12,10 @@ import {
   collection,
   getDoc,
   getDocs,
+  limit,
   orderBy,
   query,
+  startAfter,
   deleteDoc,
   doc,
   setDoc,
@@ -23,14 +25,60 @@ import { normalizeDateForStorage } from '@/lib/utils';
 import { storage } from '@/lib/firebase';
 import { ref as storageRef, deleteObject } from 'firebase/storage';
 import { Button } from '@/components/ui/button';
+import { RefreshCw } from 'lucide-react';
 import { getStoragePathFromUrl } from '@/lib/storageHelpers';
 import { loadTranslationFromCache, saveTranslationToCache } from '@/lib/translationCache';
 import EntriesSkeleton from '@/components/entries/EntriesSkeleton';
 import { useSearchParams } from 'next/navigation';
 
+const ENTRIES_CACHE_KEY = 'entries-cache-v1';
+const ENTRIES_CACHE_TTL = 60 * 1000;
+const ENTRIES_PAGE_SIZE = 5;
+let entriesCache = null;
+let entriesRequest = null;
+
+function readEntriesCache() {
+  if (entriesCache && Date.now() - entriesCache.cachedAt < ENTRIES_CACHE_TTL) {
+    return entriesCache;
+  }
+
+  if (typeof window === 'undefined') return null;
+
+  try {
+    const cached = JSON.parse(sessionStorage.getItem(ENTRIES_CACHE_KEY) || 'null');
+    if (cached && Date.now() - cached.cachedAt < ENTRIES_CACHE_TTL) {
+      entriesCache = cached;
+      return cached;
+    }
+    sessionStorage.removeItem(ENTRIES_CACHE_KEY);
+  } catch (error) {
+    sessionStorage.removeItem(ENTRIES_CACHE_KEY);
+  }
+
+  return null;
+}
+
+function writeEntriesCache(nextEntries, cursor) {
+  const cached = { entries: nextEntries, cursor, cachedAt: Date.now() };
+  entriesCache = cached;
+
+  try {
+    sessionStorage.setItem(ENTRIES_CACHE_KEY, JSON.stringify(cached));
+  } catch (error) {
+    // A full or unavailable session cache should not block Firestore data.
+  }
+}
+
 
 export default function DisplayEntries() {
   const [entries, setEntries] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [loadError, setLoadError] = useState(null);
+  const [isLoadingMore, setIsLoadingMore] = useState(false);
+  const [hasMore, setHasMore] = useState(true);
+  const lastEntryDocRef = useRef(null);
+  const lastEntryCursorRef = useRef(null);
+  const loadMoreRef = useRef(null);
   const { user, isAdmin } = useAdminState();
   const [editingId, setEditingId] = useState(null);
   const [editData, setEditData] = useState({ date: '', title: '', content: '', media: [] });
@@ -67,23 +115,82 @@ export default function DisplayEntries() {
     return () => window.removeEventListener('popstate', handlePopState);
   }, []);
 
-  async function fetchEntries() {
-    const ref = collection(db, 'çalakî');
-    const q = query(ref, orderBy('date', 'desc'));
-    const snap = await getDocs(q);
-    setEntries(snap.docs.map(d => {
-      const data = d.data();
-      return {
-        id: d.id,
-        ...data,
-        date: normalizeDateForStorage(data.date),
-      };
-    }));
+  async function fetchEntries({ force = false, loadMore = false } = {}) {
+    if (!loadMore && !force) {
+      const cachedEntries = readEntriesCache();
+      if (cachedEntries) {
+        setEntries(cachedEntries.entries);
+        lastEntryCursorRef.current = cachedEntries.cursor || null;
+        setIsLoading(false);
+        setHasMore(cachedEntries.entries.length === ENTRIES_PAGE_SIZE);
+        setLoadError(null);
+        return cachedEntries;
+      }
+    }
+
+    if (entriesRequest) return entriesRequest;
+
+    if (loadMore) setIsLoadingMore(true);
+    else setIsLoading(true);
+    setLoadError(null);
+    entriesRequest = (async () => {
+      const ref = collection(db, 'çalakî');
+      const q = query(
+        ref,
+        orderBy('date', 'desc'),
+        ...(loadMore && lastEntryCursorRef.current ? [startAfter(lastEntryCursorRef.current)] : []),
+        limit(ENTRIES_PAGE_SIZE),
+      );
+      const snap = await getDocs(q);
+      const nextEntries = snap.docs.map(d => {
+        const data = d.data();
+        return {
+          id: d.id,
+          ...data,
+          date: normalizeDateForStorage(data.date),
+        };
+      });
+      lastEntryDocRef.current = snap.docs[snap.docs.length - 1] || lastEntryDocRef.current;
+      if (snap.docs.length > 0) {
+        lastEntryCursorRef.current = snap.docs[snap.docs.length - 1].data().date;
+      }
+      setHasMore(snap.docs.length === ENTRIES_PAGE_SIZE);
+      setEntries(prev => {
+        const combined = loadMore ? [...prev, ...nextEntries] : nextEntries;
+        if (!loadMore) writeEntriesCache(combined, lastEntryCursorRef.current);
+        return combined;
+      });
+      return nextEntries;
+    })();
+
+    try {
+      return await entriesRequest;
+    } catch (error) {
+      console.error('Error loading entries:', error);
+      setLoadError('Di barkirina çalakiyan de şaşîtîyek çêbû.');
+      throw error;
+    } finally {
+      entriesRequest = null;
+      setIsLoading(false);
+      setIsLoadingMore(false);
+    }
   }
 
   useEffect(() => {
     fetchEntries();
   }, []);
+
+  useEffect(() => {
+    const loadMoreElement = loadMoreRef.current;
+    if (!loadMoreElement || !hasMore || isLoading || isLoadingMore || loadError) return;
+
+    const observer = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting) fetchEntries({ loadMore: true }).catch(() => {});
+    }, { rootMargin: '600px' });
+
+    observer.observe(loadMoreElement);
+    return () => observer.disconnect();
+  }, [hasMore, isLoading, isLoadingMore, loadError, entries.length]);
 
   // Scroll to targeted query parameter article after entries load 
   // (for shared links with ?article=id)
@@ -125,6 +232,12 @@ export default function DisplayEntries() {
 
     await deleteDoc(doc(db, 'çalakî', id));
     setEntries(prev => prev.filter(e => e.id !== id));
+    entriesCache = null;
+    try {
+      sessionStorage.removeItem(ENTRIES_CACHE_KEY);
+    } catch (error) {
+      // Ignore unavailable browser storage.
+    }
   };
 
   const resetEditingState = () => {
@@ -208,7 +321,16 @@ export default function DisplayEntries() {
     if (newId !== editingId) await deleteDoc(doc(db, 'çalakî', editingId));
 
     resetEditingState();
-    fetchEntries();
+    entriesCache = null;
+    try {
+      sessionStorage.removeItem(ENTRIES_CACHE_KEY);
+    } catch (error) {
+      // Ignore unavailable browser storage.
+    }
+    lastEntryDocRef.current = null;
+    lastEntryCursorRef.current = null;
+    setHasMore(true);
+    fetchEntries({ force: true });
   };
 
   const handleTranslate = async (entryId, content, targetLang) => {
@@ -271,12 +393,26 @@ export default function DisplayEntries() {
 
         <h1 className="text-3xl font-semibold text-center mb-8 text-yellow-200">Çalakî</h1>
 
-        {entries.length === 0 && (
+        {isLoading && (
           <>
           <EntriesSkeleton />
           <EntriesSkeleton />
           <EntriesSkeleton />
           </>
+        )}
+
+        {!isLoading && loadError && (
+          <div className="grid gap-3 rounded-xl border border-red-800/60 bg-red-950/30 p-6 text-center text-red-200">
+            <p>{loadError}</p>
+            <Button type="button" onClick={() => fetchEntries({ force: true }).catch(() => {})} className="mx-auto w-fit cursor-pointer bg-red-700 hover:bg-red-600">
+              <RefreshCw className="size-4" />
+              Dîsa biceribîne
+            </Button>
+          </div>
+        )}
+
+        {!isLoading && !loadError && entries.length === 0 && (
+          <p className="rounded-xl border border-slate-700 p-6 text-center text-slate-400">Hîn tu çalakî tune.</p>
         )}
 
         {entries.map(entry => (
@@ -296,6 +432,14 @@ export default function DisplayEntries() {
             onResetTranslation={resetTranslation}
           />
         ))}
+
+        {isLoadingMore && (
+          <div className="flex items-center justify-center gap-2 py-6 text-slate-400">
+            <RefreshCw className="size-4 animate-spin" />
+            Çalakiyên din li ser rê ne...
+          </div>
+        )}
+        {!isLoading && !loadError && hasMore && <div ref={loadMoreRef} className="h-1" aria-hidden="true" />}
       </div>
     </div>
   );

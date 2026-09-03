@@ -4,20 +4,38 @@ import { Loader2Icon, Download, SquarePen, X } from "lucide-react";
 import { toast } from "sonner";
 import { useAuthState } from '@/lib/useAuth';
 import { generateCertificateDocId, saveToFirestore } from '@/lib/firestoreHelpers';
-import { collection, getFirestore, onSnapshot, doc, deleteDoc, writeBatch } from 'firebase/firestore';
+import { collection, getDocs, getFirestore, doc, deleteDoc, limit, orderBy, query, startAfter, writeBatch } from 'firebase/firestore';
 import CertificateFields from '@/components/certificates/CertificateFields';
 import CertificateArchive from '@/components/certificates/CertificateArchive';
+
+const CERTIFICATE_CACHE_TTL = 60 * 1000;
+const CERTIFICATE_PAGE_SIZE = 5;
+let certificateCache = null;
+let certificateRequest = null;
+
+function sortCertificates(certData) {
+    return certData.sort((a, b) => {
+        const numA = parseInt(a.studentNumber, 10) || 0;
+        const numB = parseInt(b.studentNumber, 10) || 0;
+        return numB - numA;
+    });
+}
 
 export default function CertificateForm() {
     const { user } = useAuthState();
     const [generating, setGenerating] = useState(false);
     const [certificates, setCertificates] = useState([]);
     const [loadingArchive, setLoadingArchive] = useState(true);
+    const [archiveError, setArchiveError] = useState(null);
+    const [loadingMoreArchive, setLoadingMoreArchive] = useState(false);
+    const [hasMoreArchive, setHasMoreArchive] = useState(true);
     const [downloadingCertId, setDownloadingCertId] = useState(null);
     const [editingCertificateId, setEditingCertificateId] = useState(null);
     const [editingCertificate, setEditingCertificate] = useState(null);
     const [archiveMenuId, setArchiveMenuId] = useState(null);
     const archiveMenuRef = useRef(null);
+    const archiveListRef = useRef(null);
+    const archiveCursorRef = useRef(null);
 
     // Grading configuration per student level (ast)
     const AST_CONFIG = {
@@ -134,31 +152,80 @@ export default function CertificateForm() {
 
 
 
-    // Fetch archive data in real-time and sort numerically by studentNumber (newest/highest first)
-    useEffect(() => {
-        const db = getFirestore();
-        const unsubscribe = onSnapshot(collection(db, 'fêrname'), (snapshot) => {
-            const certData = snapshot.docs.map(doc => ({
-                id: doc.id,
-                ...doc.data()
-            }));
+    async function fetchCertificates({ force = false, loadMore = false } = {}) {
+        if (!loadMore && !force && certificateCache && Date.now() - certificateCache.cachedAt < CERTIFICATE_CACHE_TTL) {
+            setCertificates(certificateCache.certificates);
+            archiveCursorRef.current = certificateCache.cursor;
+            setHasMoreArchive(certificateCache.hasMore);
+            setArchiveError(null);
+            setLoadingArchive(false);
+            return certificateCache.certificates;
+        }
 
-            // Sort numerically descending (highest/newest number first)
-            certData.sort((a, b) => {
-                const numA = parseInt(a.studentNumber, 10) || 0;
-                const numB = parseInt(b.studentNumber, 10) || 0;
-                return numB - numA;
+        if (certificateRequest) return certificateRequest;
+
+        if (loadMore) setLoadingMoreArchive(true);
+        else setLoadingArchive(true);
+        setArchiveError(null);
+        const certificatesQuery = query(
+            collection(getFirestore(), 'fêrname'),
+            orderBy('studentNumber', 'desc'),
+            ...(loadMore && archiveCursorRef.current ? [startAfter(archiveCursorRef.current)] : []),
+            limit(CERTIFICATE_PAGE_SIZE),
+        );
+        certificateRequest = getDocs(certificatesQuery)
+            .then((snapshot) => {
+                const certData = sortCertificates(snapshot.docs.map(certDoc => ({
+                    id: certDoc.id,
+                    ...certDoc.data()
+                })));
+                const hasMore = snapshot.docs.length === CERTIFICATE_PAGE_SIZE;
+                archiveCursorRef.current = snapshot.docs[snapshot.docs.length - 1] || archiveCursorRef.current;
+                setHasMoreArchive(hasMore);
+                setCertificates((previous) => {
+                    const nextCertificates = loadMore ? [...previous, ...certData] : certData;
+                    if (!loadMore) {
+                        certificateCache = {
+                            certificates: nextCertificates,
+                            cursor: archiveCursorRef.current,
+                            hasMore,
+                            cachedAt: Date.now(),
+                        };
+                    }
+                    return nextCertificates;
+                });
+                return certData;
+            })
+            .catch((error) => {
+                console.error('Error loading archive records:', error);
+                setArchiveError('Di barkirina arşîvê de şaşîtîyek çêbû.');
+                throw error;
+            })
+            .finally(() => {
+                certificateRequest = null;
+                setLoadingArchive(false);
+                setLoadingMoreArchive(false);
             });
 
-            setCertificates(certData);
-            setLoadingArchive(false);
-        }, (error) => {
-            console.error("Error loading archive records:", error);
-            setLoadingArchive(false);
-        });
+        return certificateRequest;
+    }
 
-        return () => unsubscribe();
+    useEffect(() => {
+        fetchCertificates().catch(() => {});
     }, []);
+
+    useEffect(() => {
+        const archiveList = archiveListRef.current;
+        if (!archiveList || !hasMoreArchive || loadingArchive || loadingMoreArchive || archiveError) return;
+
+        const observer = new IntersectionObserver(([entry]) => {
+            if (entry.isIntersecting) fetchCertificates({ loadMore: true }).catch(() => {});
+        }, { root: archiveList, rootMargin: '120px' });
+
+        const sentinel = archiveList.querySelector('[data-archive-load-more]');
+        if (sentinel) observer.observe(sentinel);
+        return () => observer.disconnect();
+    }, [certificates.length, hasMoreArchive, loadingArchive, loadingMoreArchive, archiveError]);
 
     // NEW EFFECT: Automatically fetch the largest studentNumber + 1 and fill it if the field is empty
     useEffect(() => {
@@ -260,6 +327,8 @@ export default function CertificateForm() {
         try {
             const db = getFirestore();
             await deleteDoc(doc(db, 'fêrname', id));
+            certificateCache = null;
+            await fetchCertificates({ force: true });
             toast.success('Fêrname bi serkeftî hat rakirin!');
         } catch (err) {
             console.error('Failed to delete record:', err);
@@ -443,6 +512,9 @@ export default function CertificateForm() {
                 await saveToFirestore('fêrname', docId, payload);
             }
 
+            certificateCache = null;
+            await fetchCertificates({ force: true });
+
             if (isEditing) {
                 cancelCertificateEdit();
                 toast.success('Fêrnameyê hate sererastkirin!');
@@ -543,6 +615,11 @@ export default function CertificateForm() {
             <CertificateArchive
                 certificates={certificates}
                 loading={loadingArchive}
+                loadingMore={loadingMoreArchive}
+                error={archiveError}
+                onRetry={() => fetchCertificates({ force: true }).catch(() => {})}
+                hasMore={hasMoreArchive}
+                listRef={archiveListRef}
                 menuId={archiveMenuId}
                 onMenuToggle={(id) => setArchiveMenuId((currentId) => currentId === id ? null : id)}
                 onDownload={(cert) => handleDownloadCertificate(cert).finally(() => setArchiveMenuId(null))}

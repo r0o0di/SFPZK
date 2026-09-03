@@ -53,27 +53,27 @@ export default function KontaktForm() {
     // === end limit ===
 
     setSubmitted(true);
-    const fetchForm = await fetch('/api/send-kontakt-form', {
+    const sendRequest = fetch('/api/send-kontakt-form', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(form),
     }).then(async (res) => {
       if (!res.ok) throw new Error('Failed to send');
-      setForm({
-        name: '',
-        email: '',
-        phone: '',
-        note: '',
-      });
-      return res;
+      setForm({ name: '', email: '', phone: '', note: '' });
     });
-    setSubmitted(false);
 
-    toast.promise(fetchForm, {
+    toast.promise(sendRequest, {
       loading: '',
       success: 'Hat şandin.',
       error: 'Failed to send. Please try again.',
     });
+    try {
+      await sendRequest;
+    } catch (error) {
+      console.error('Contact form submission failed:', error);
+    } finally {
+      setSubmitted(false);
+    }
   };
 
 

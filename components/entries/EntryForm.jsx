@@ -206,7 +206,9 @@ export default function EntryForm({
           const file = item.file;
           const path = `images/${date}/${file.name}`;
           const storageRef = ref(storage, path);
-          const uploadTask = uploadBytesResumable(storageRef, file);
+          const uploadTask = uploadBytesResumable(storageRef, file, {
+            cacheControl: 'public,max-age=31536000,immutable',
+          });
 
           // wait for upload with progress updates
           const downloadUrl = await new Promise((resolve, reject) => {
