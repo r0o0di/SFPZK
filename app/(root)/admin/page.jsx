@@ -110,7 +110,7 @@ export default function FormPage() {
           <div className="grid gap-6 mt-[3rem]">
 
             <h1 className="text-3xl font-semibold text-center text-yellow-200">Çalakîyeke Nû Biweşîne</h1>
-            <EntryForm onSubmit={handleFormSubmit} buttonText="Biweşîne" />
+            <EntryForm onSubmit={handleFormSubmit} buttonText="Biweşîne" persistDraft />
 
 
             <div className="rounded-3xl border border-slate-700 bg-slate-950/80 p-6 mt-12 shadow-sm">

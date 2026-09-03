@@ -27,7 +27,7 @@ export default function Navbar() {
     ...links,
     ...(isAdmin
       ? [
-        { href: '/admin', label: 'Nû' },
+        { href: '/admin', label: 'Nû Çalakî' },
         { href: '/f%C3%AArname', label: 'Fêrname' },
       ]
       : []),

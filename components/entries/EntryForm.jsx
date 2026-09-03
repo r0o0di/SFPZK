@@ -1,5 +1,5 @@
 // used to create a form for adding or editing entries
-// used in both @/app/DisplayEntries.jsx and @/app/new-entry/page.jsx
+// used in both @/app/DisplayEntries.jsx and @/app/admin/page.jsx
 import React, { useState, useEffect } from 'react';
 import { DatePicker } from '@/components/entries/DatePicker';
 import { Input } from "@/components/ui/input";
@@ -13,6 +13,30 @@ import { storage } from '@/lib/firebase';
 import { ref, uploadBytesResumable, getDownloadURL, deleteObject } from 'firebase/storage';
 import { normalizeDateForStorage } from '@/lib/utils';
 
+const NEW_ENTRY_DRAFT_KEY = 'new-entry-draft';
+const NEW_ENTRY_DRAFT_DURATION = 2 * 24 * 60 * 60 * 1000;
+
+function getSavedDraft() {
+  if (typeof window === 'undefined') return null;
+
+  try {
+    const saved = localStorage.getItem(NEW_ENTRY_DRAFT_KEY);
+    if (!saved) return null;
+
+    const draft = JSON.parse(saved);
+    if (!draft.expiresAt || Date.now() >= draft.expiresAt) {
+      localStorage.removeItem(NEW_ENTRY_DRAFT_KEY);
+      return null;
+    }
+
+    return draft;
+  } catch (error) {
+    console.error('Failed to load new entry draft:', error);
+    localStorage.removeItem(NEW_ENTRY_DRAFT_KEY);
+    return null;
+  }
+}
+
 
 export default function EntryForm({
   initialDate = '',
@@ -22,19 +46,49 @@ export default function EntryForm({
   onSubmit,
   buttonText = 'Save Entry',
   onCancel,
+  persistDraft = false,
 }) {
   const [date, setDate] = useState(normalizeDateForStorage(initialDate));
   const [title, setTitle] = useState(initialTitle);
   const [content, setContent] = useState(initialContent);
   const [mediaLinks, setMediaLinks] = useState(initialMedia);
   const [newMedia, setNewMedia] = useState('');
+  const [draftLoaded, setDraftLoaded] = useState(!persistDraft);
+  const [draftCleared, setDraftCleared] = useState(false);
 
   useEffect(() => {
-    setDate(normalizeDateForStorage(initialDate));
-    setTitle(initialTitle);
-    setContent(initialContent);
-    setMediaLinks(initialMedia || []);
-  }, []); // Only run once on mount
+    if (!persistDraft) return;
+
+    const draft = getSavedDraft();
+    if (draft) {
+      setDate(normalizeDateForStorage(draft.date || ''));
+      setTitle(draft.title || '');
+      setContent(draft.content || '');
+      setMediaLinks(draft.mediaLinks || []);
+    }
+    setDraftLoaded(true);
+  }, [persistDraft]);
+
+  useEffect(() => {
+    if (!persistDraft || !draftLoaded || draftCleared || typeof window === 'undefined') return;
+
+    const serializableMedia = mediaLinks.filter((item) => {
+      if (typeof item === 'string') return true;
+      return item && (item.storageUrl || (item.url && !item.url.startsWith('blob:')));
+    });
+
+    try {
+      localStorage.setItem(NEW_ENTRY_DRAFT_KEY, JSON.stringify({
+        date,
+        title,
+        content,
+        mediaLinks: serializableMedia,
+        expiresAt: Date.now() + NEW_ENTRY_DRAFT_DURATION,
+      }));
+    } catch (error) {
+      console.warn('Failed to save new entry draft:', error);
+    }
+  }, [persistDraft, draftLoaded, draftCleared, date, title, content, mediaLinks]);
 
   function getMediaType(link) {
     if (!link) return null;
@@ -97,9 +151,17 @@ export default function EntryForm({
     setMediaLinks(mediaLinks.filter((_, i) => i !== idx));
   }
 
+  function clearDraft() {
+    if (persistDraft && typeof window !== 'undefined') {
+      localStorage.removeItem(NEW_ENTRY_DRAFT_KEY);
+      setDraftCleared(true);
+    }
+  }
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    clearDraft();
 
     if (!date) {
       toast.error('Dîrok pêwîst e.');
@@ -294,7 +356,7 @@ export default function EntryForm({
 
 
       <div className="grid gap-2">
-        <Button className="select-none cursor-pointer bg-green-500 hover:bg-green-600 mt-5 h-11" type="submit">
+        <Button onClick={clearDraft} className="select-none cursor-pointer bg-green-500 hover:bg-green-600 mt-5 h-11" type="submit">
           <Save />
           {buttonText}
         </Button>
