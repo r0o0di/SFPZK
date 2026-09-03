@@ -4,12 +4,12 @@ import { db, auth, provider } from '@/lib/firebase';
 import { setDoc, doc, Timestamp } from 'firebase/firestore';
 import { signInWithPopup, signOut } from 'firebase/auth';
 import { Loader2Icon } from 'lucide-react';
-import { useAuthState } from '@/lib/useAuth';
+import { useAuthState, useAdminState } from '@/lib/useAuth';
 import { saveToFirestore } from '@/lib/firestoreHelpers';
 import { normalizeDateForStorage } from '@/lib/utils';
 
 export default function FormPage() {
-  const { user, authLoading } = useAuthState();
+  const { user, authLoading, isAdmin } = useAdminState();
 
   const handleLogin = async () => {
     try {
@@ -61,6 +61,36 @@ export default function FormPage() {
     );
   }
 
+  if (!isAdmin && user) {
+    return (
+      <div className="min-h-screen bg-slate-950 text-slate-200 flex flex-col items-center justify-center p-8">
+        <div className="max-w-md rounded-3xl border border-red-600/40 bg-slate-900/90 p-8 text-center">
+          <h1 className="text-2xl font-semibold text-red-300 mb-4">
+            Tu ne adminî
+          </h1>
+
+          <p className="text-slate-300">
+            Tenê admin dikarin vê rûpelê bibînin.
+          </p>
+        </div>
+          <div className="rounded-3xl border border-slate-700 bg-slate-950/80 p-6 mt-12 shadow-sm">
+              <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                <div>
+                  <p className="text-yellow-200 text-lg font-semibold">{user.displayName}</p>
+                  <p className="text-slate-300 text-sm">{user.email}</p>
+                </div>
+                <button className="rounded-2xl bg-red-500 px-5 py-2 text-sm font-semibold text-white transition hover:bg-red-600 cursor-pointer"
+                  onClick={handleLogout}>
+                  Derkeve
+                </button>
+              </div>
+            </div>
+      </div>
+      
+    );
+  }
+
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-900 to-slate-800 flex items-center justify-center py-[1.5rem] px-[.5rem]">
       <div className="w-full max-w-4xl">
@@ -89,7 +119,8 @@ export default function FormPage() {
                   <p className="text-yellow-200 text-lg font-semibold">{user.displayName}</p>
                   <p className="text-slate-300 text-sm">{user.email}</p>
                 </div>
-                <button className="rounded-2xl bg-red-500 px-5 py-2 text-sm font-semibold text-white transition hover:bg-red-600 cursor-pointer" onClick={handleLogout}>
+                <button className="rounded-2xl bg-red-500 px-5 py-2 text-sm font-semibold text-white transition hover:bg-red-600 cursor-pointer"
+                  onClick={handleLogout}>
                   Derkeve
                 </button>
               </div>
