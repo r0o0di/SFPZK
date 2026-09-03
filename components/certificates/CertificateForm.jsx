@@ -7,6 +7,7 @@ import { generateCertificateDocId, saveToFirestore } from '@/lib/firestoreHelper
 import { collection, getDocs, getFirestore, doc, deleteDoc, limit, orderBy, query, startAfter, writeBatch } from 'firebase/firestore';
 import CertificateFields from '@/components/certificates/CertificateFields';
 import CertificateArchive from '@/components/certificates/CertificateArchive';
+import { sanitizeText } from '@/lib/inputSanitization';
 
 const CERTIFICATE_CACHE_TTL = 60 * 1000;
 const CERTIFICATE_PAGE_SIZE = 5;
@@ -272,6 +273,12 @@ export default function CertificateForm() {
     const handleChange = e => {
         let { name, value } = e.target;
 
+        if (name === 'studentName' || name === 'studentBirthplace' || name === 'teacherName' || name === 'certificateLocation') {
+            value = sanitizeText(value, 120);
+        } else if (name === 'studentBirthdate' || name === 'certificateDate') {
+            value = sanitizeText(value, 10).trim();
+        }
+
         if (["gradeReading", "gradeWriting", "gradeVekitMijar"].includes(name)) {
             const cfg = AST_CONFIG[form.studentLevel] || AST_CONFIG['Yekem'];
             const max = name === 'gradeReading'
@@ -475,28 +482,38 @@ export default function CertificateForm() {
         if (!isFormReady) return;
 
         const isEditing = Boolean(editingCertificateId);
-        const submittedForm = { ...form };
+        const submittedForm = {
+            ...form,
+            branchName: sanitizeText(form.branchName, 80),
+            studentLevel: sanitizeText(form.studentLevel, 20),
+            studentName: sanitizeText(form.studentName, 120),
+            studentBirthdate: sanitizeText(form.studentBirthdate, 10).trim(),
+            studentBirthplace: sanitizeText(form.studentBirthplace, 120),
+            teacherName: sanitizeText(form.teacherName, 120),
+            certificateLocation: sanitizeText(form.certificateLocation, 120),
+            certificateDate: sanitizeText(form.certificateDate, 10).trim(),
+        };
 
         // Save certificate data to Firestore for archival
         try {
-            const docId = generateCertificateDocId(form.certificateDate, form.studentLevel, form.studentName);
+            const docId = generateCertificateDocId(submittedForm.certificateDate, submittedForm.studentLevel, submittedForm.studentName);
             const payload = {
-                branchName: form.branchName,
-                studentLevel: form.studentLevel,
-                studentName: form.studentName,
-                studentNumber: Number(form.studentNumber),
-                studentBirthdate: form.studentBirthdate,
-                studentBirthplace: form.studentBirthplace,
-                gradeWriting: form.gradeWriting,
-                gradeVekitORMijar: form.gradeVekitMijar,
+                branchName: submittedForm.branchName,
+                studentLevel: submittedForm.studentLevel,
+                studentName: submittedForm.studentName,
+                studentNumber: Number(submittedForm.studentNumber),
+                studentBirthdate: submittedForm.studentBirthdate,
+                studentBirthplace: submittedForm.studentBirthplace,
+                gradeWriting: Number(submittedForm.gradeWriting),
+                gradeVekitORMijar: Number(submittedForm.gradeVekitMijar),
                 totalScore,
-                certificateLocation: form.certificateLocation,
-                certificateDate: form.certificateDate,
-                teacherName: form.teacherName,
+                certificateLocation: submittedForm.certificateLocation,
+                certificateDate: submittedForm.certificateDate,
+                teacherName: submittedForm.teacherName,
                 createdBy: editingCertificate?.createdBy || user?.email || ''
             };
 
-            if (showReading) payload.gradeReading = form.gradeReading;
+            if (showReading) payload.gradeReading = Number(submittedForm.gradeReading);
 
             if (isEditing) {
                 const db = getFirestore();

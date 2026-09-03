@@ -313,7 +313,7 @@ export default function EntryForm({
         <Label htmlFor={"content"}>Nivîs</Label>
         <Textarea
           id={"content"}
-          className="selection:bg-primary selection:text-primary-foreground"
+          className="selection:bg-primary selection:text-primary-foreground max-h-[300px]"
           name={"content"}
           value={content}
           onChange={e => setContent(e.target.value)}

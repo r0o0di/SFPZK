@@ -5,6 +5,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from '@/components/ui/button';
 import { Loader2Icon, Mail } from "lucide-react";
 import { toast } from "sonner";
+import { sanitizeKontaktForm, validateContactFields } from '@/lib/inputSanitization';
 
 
 export default function KontaktForm() {
@@ -20,22 +21,20 @@ export default function KontaktForm() {
   });
 
   const handleChange = e => {
-    setForm({ ...form, [e.target.name]: e.target.value });
+    setForm(prev => sanitizeKontaktForm({ ...prev, [e.target.name]: e.target.value }));
   };
 
-  const isFormReady = Boolean(
-    form.name &&
-    form.phone &&
-    form.email &&
-    form.note
-  );
+  const isFormReady = validateContactFields(form);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (!isFormReady) {
+      toast.error('Ji kerema xwe nav, e-mail, telefon û peyamê rast binivîse.');
       return;
     }
+
+    const submittedForm = sanitizeKontaktForm(form);
 
     // === 10/day submission limit ===
     const now = Date.now();
@@ -56,7 +55,7 @@ export default function KontaktForm() {
     const sendRequest = fetch('/api/send-kontakt-form', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(form),
+      body: JSON.stringify(submittedForm),
     }).then(async (res) => {
       if (!res.ok) throw new Error('Failed to send');
       setForm({ name: '', email: '', phone: '', note: '' });
@@ -90,33 +89,35 @@ export default function KontaktForm() {
           <div className="grid xs:grid-cols-2 gap-4">
             <div className="grid gap-2">
               <Label htmlFor="name">Nav</Label>
-              <Input type="text" id="name" name="name" placeholder="Sevîn Omer" value={form.name} onChange={handleChange} required />
+              <Input type="text" id="name" name="name" maxLength={100} placeholder="Sevîn Omer" value={form.name} onChange={handleChange} required />
             </div>
             <div className="grid gap-2">
               <Label htmlFor="phone">Jimara Telefonê</Label>
-              <Input type="tel" id="phone" name="phone" placeholder="+4912345678900" value={form.phone} onChange={handleChange} required />
+              <Input type="tel" id="phone" name="phone" maxLength={30} placeholder="+4912345678900" value={form.phone} onChange={handleChange} required />
             </div>
           </div>
 
           <div className="grid gap-2">
             <Label htmlFor="email">E-Mail</Label>
-            <Input type="email" id="email" name="email" placeholder="abc@gmail.com" value={form.email} onChange={handleChange} required />
+            <Input type="email" id="email" name="email" maxLength={254} placeholder="abc@gmail.com" value={form.email} onChange={handleChange} required />
           </div>
 
           <div className='grid gap-2'>
             <Label htmlFor={"note"}>Peyam</Label>
             <Textarea
               id={"note"}
-              className="selection:bg-primary selection:text-primary-foreground"
+              className="selection:bg-primary selection:text-primary-foreground max-h-[250px]"
               name={"note"}
               value={form.note}
               onChange={handleChange}
+              maxLength={2000}
               placeholder={`Peyama xwe li vir binivîse...`}
               required
             />
           </div>
 
           <div>
+            <p className="mb-2 text-right text-xs text-slate-400">{form.note.length}/2000</p>
             <Button
               className={`w-full mt-2 select-none transition-colors duration-200 ${isFormReady && !submitted ? 'bg-green-500 hover:bg-green-600 text-secondary cursor-pointer' : 'bg-gray-500 text-gray-200 cursor-not-allowed'}`}
               type="submit"

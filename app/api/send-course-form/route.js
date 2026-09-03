@@ -1,7 +1,18 @@
 import nodemailer from 'nodemailer';
+import { sanitizeCourseForm, validateCourseFields } from '@/lib/inputSanitization';
 
 export async function POST(req) {
-  const { name, age, email, phone, option, note } = await req.json();
+  let body;
+  try {
+    body = await req.json();
+  } catch {
+    return Response.json({ error: 'Invalid JSON' }, { status: 400 });
+  }
+  const { name, age, email, phone, option, note } = sanitizeCourseForm(body);
+
+  if (!validateCourseFields({ name, age, email, phone, option })) {
+    return Response.json({ error: 'Invalid form data' }, { status: 400 });
+  }
 
   const transporter = nodemailer.createTransport({
     service: 'gmail',
