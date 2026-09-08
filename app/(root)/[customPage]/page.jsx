@@ -20,7 +20,7 @@ function extractFirstImageUrl(mediaArray) {
 
   for (const item of mediaArray) {
     let url = typeof item === 'string' ? item : item?.storageUrl || item?.url || '';
-    
+
     // Check if the item is an image file or direct storage upload
     if (url && (/\.(jpe?g|png|gif|webp)(?:\?|$)/i.test(url) || url.includes('firebasestorage.googleapis.com'))) {
       return url;
@@ -65,7 +65,10 @@ export async function generateMetadata({ params, searchParams }) {
   let dynamicTitle = page.title;
   let dynamicDescription = page.description;
   let dynamicImage = 'https://sfpzk.com/sfpzk-logo.png'; // Fallback default image
-  const pageUrl = `https://sfpzk.com/çalakî${rawArticleId ? `?article=${encodeURIComponent(rawArticleId)}` : ''}`;
+  const pageUrl = `https://sfpzk.com/${encodeURIComponent(param)}${param === 'çalakî' && rawArticleId
+      ? `?article=${encodeURIComponent(rawArticleId)}`
+      : ''
+    }`;
 
   if (param === 'çalakî' && rawArticleId) {
     try {
