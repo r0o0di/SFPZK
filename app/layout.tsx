@@ -40,6 +40,7 @@ export const metadata: Metadata = {
     "Learning",
     "Education",
     "Kurmanji",
+    "Saziya Fêrkirin û Parastina Zimanê Kurdî",
   ],
 
   other: {
@@ -70,9 +71,9 @@ export const metadata: Metadata = {
     images: ["/sfpzk-logo.png"],
   },
 
-  alternates: {
-    canonical: "https://sfpzk.com",
-  },
+  // alternates: {
+  //   canonical: "https://sfpzk.com",
+  // },
 };
 
 export default function RootLayout({
