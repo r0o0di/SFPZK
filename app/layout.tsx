@@ -41,6 +41,19 @@ export const metadata: Metadata = {
     "Education",
     "Kurmanji",
     "Saziya Fêrkirin û Parastina Zimanê Kurdî",
+    "Kurdish Language Learning",
+    "Kurdish Language Education",
+    "kurdish online learning",
+    "kurdish online course",
+    "Kurdish Language Teaching and Preservation Institution",
+    "تعلم اللغة الكردية",
+    "تعليم اللغة الكردية",
+    "مؤسسة تعليم وحماية اللغة الكردية",
+    "kurdisch lernen",
+    "kurdisch lernen online",
+    "kurdisch online kurs",
+    "Institut für den Unterricht und die Bewahrung der kurdischen Sprache"
+
   ],
 
   other: {
